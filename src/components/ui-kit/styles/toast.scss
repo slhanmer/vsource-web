@@ -1,12 +1,17 @@
+// Top centre. `--toast-offset-top` lets each app clear its own header without
+// this file needing to know how tall that header is — set it once on :root.
+// Defaults to 20px if unset.
 .toast-container {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  top: var(--toast-offset-top, 20px);
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 9999;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  align-items: flex-end;
+  align-items: center;
+  pointer-events: none;
 }
 
 .toast {
@@ -16,7 +21,8 @@
   font-weight: 600;
   font-size:$font-size-sm;
   color: whitesmoke;
-  animation: slideUpFade 0.3s ease;
+  animation: slideDownFade 0.3s ease;
+  pointer-events: auto;
   min-width: 180px;
   max-width: 320px;
   line-height: 1.4;
@@ -25,6 +31,12 @@
   text-align: center;
   display: inline-block;
   white-space: pre-wrap;
+}
+
+// Exit animation. Previously `.exiting` was applied by Toast.tsx but never
+// styled, so toasts vanished instead of animating out.
+.toast.exiting {
+  animation: slideUpFade 0.3s ease forwards;
 }
 
 // If text breaks onto multiple lines, align text to the left
@@ -50,13 +62,8 @@
 
 @media (max-width: $breakpoint-mobile) {
   .toast-container {
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%);
-    align-items: center;
-    bottom: 16px;
+    top: var(--toast-offset-top, 16px);
     width: calc(100% - 32px); // safe padding on edges
-    pointer-events: none; // optional, common on mobile
   }
 
   .toast {
@@ -64,10 +71,11 @@
   }
 }
 
-@keyframes slideUpFade {
+// Enter: drop in from above the viewport edge.
+@keyframes slideDownFade {
   from {
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(-40px);
   }
   to {
     opacity: 1;
@@ -75,13 +83,14 @@
   }
 }
 
-@keyframes slideDownFade {
+// Exit: lift back out the way it came.
+@keyframes slideUpFade {
   from {
     opacity: 1;
     transform: translateY(0);
   }
   to {
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(-40px);
   }
 }

@@ -38,6 +38,8 @@ export { TimeInputMask } from './ui-kit/TimeInputMask'
 export { useToast, ToastProvider } from './ui-kit/Toast'
 export { ToggleButton } from './ui-kit/ToggleButton'
 export { Tooltip } from './ui-kit/Tooltip'
+export { VSourceMark } from './ui-kit/VSourceMark'
+export type { VSourceMarkProps } from './ui-kit/VSourceMark'
 
 // SECURITY COMPONENTS
 export { default as HoneypotField } from './security/HoneyPot'

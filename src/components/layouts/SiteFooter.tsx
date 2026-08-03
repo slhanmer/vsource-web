@@ -1,42 +1,73 @@
 import Link from 'next/link'
-import { SITE_NAV } from './siteNav'
+import Image from 'next/image'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEnvelope, faPhone, faLocationDot } from '@fortawesome/free-solid-svg-icons'
+import { CONTACT } from '@constants'
 
 import './styles/siteFooter.scss'
 
 /**
- * Site footer: nav mirror, contact details and legal line.
+ * Site footer — the bottom fascia.
  *
- * PLACEHOLDER — ABN, email and phone are carried over from the current
- * vsource.dev and need confirming before launch. Deliberately does NOT render
- * the visitor's IP address, which the existing site does.
+ * Borrows the portal's ContactMenu language: a debossed chrome band carrying an
+ * icon-led contact strip. The portal hides that strip behind a rotated opener
+ * because screen space is scarce in an app; on a marketing site the contact
+ * details are the point, so they are always visible.
+ *
+ * No nav mirror: the header is sticky and always reachable, so repeating the
+ * routes down here is dead weight.
+ *
+ * Icons come from Font Awesome rather than the @icons barrel: importing from
+ * that barrel drags every SVG in the folder through svgr, and the loader does
+ * not apply to all of them from a server component.
+ *
+ * Both tiers are bands that pad by `--scrollbar-w`, so their centred inner
+ * containers line up with page content inside the scroller.
  */
 export default function SiteFooter() {
   const year = new Date().getFullYear()
 
   return (
     <footer className="site-footer">
-      <div className="site-footer__inner">
-        <div className="site-footer__brand">
-          <span className="site-footer__wordmark">V&thinsp;Source</span>
-          <p className="site-footer__tagline">Software and engineering.</p>
-        </div>
-
-        <nav className="site-footer__nav" aria-label="Footer">
-          {SITE_NAV.map((item) => (
-            <Link key={item.href} href={item.href} className="site-footer__link">
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="site-footer__contact">
-          <a href="mailto:admin@vsource.dev">admin@vsource.dev</a>
-          <span className="site-footer__abn">ABN 51 276 613 779</span>
+      <div className="site-footer__contact-band">
+        <div className="site-footer__contact-inner">
+          <a className="site-footer__contact" href={`mailto:${CONTACT.email}`}>
+            <FontAwesomeIcon icon={faEnvelope} className="site-footer__icon" />
+            <span>{CONTACT.email}</span>
+          </a>
+          <a className="site-footer__contact" href={CONTACT.phoneHref}>
+            <FontAwesomeIcon icon={faPhone} className="site-footer__icon" />
+            <span>{CONTACT.phone}</span>
+          </a>
+          <a
+            className="site-footer__contact"
+            href={CONTACT.locationHref}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FontAwesomeIcon icon={faLocationDot} className="site-footer__icon" />
+            <span>{CONTACT.location}</span>
+          </a>
         </div>
       </div>
 
       <div className="site-footer__legal">
-        <span>&copy; {year} V Source. All rights reserved.</span>
+        <div className="site-footer__legal-inner">
+          <Link href="/" className="site-footer__brand" aria-label="V Source home">
+            <Image
+              src="/logos/vsource-logo-full.png"
+              alt="V Source"
+              width={1500}
+              height={500}
+              unoptimized
+              className="site-footer__logo"
+            />
+          </Link>
+          <span className="site-footer__legal-text">
+            &copy; {year} V Source Development
+            <span className="site-footer__abn">ABN {CONTACT.abn}</span>
+          </span>
+        </div>
       </div>
     </footer>
   )

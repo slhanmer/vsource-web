@@ -1,11 +1,16 @@
 // Shared page furniture for the marketing site.
 .page {
-  max-width: 1120px;
+  max-width: 1320px;
   margin: 0 auto;
   padding: $spacing-2xl $spacing-lg;
   font-family: $font-family-ui;
   color: $text-primary;
 
+  // ACCENT POLICY (see also hero, crew): cyan points, green acts.
+  // The logo works the same way — the neon V draws the eye, the green wordmark
+  // carries the substance. Cyan marks eyebrows and links; green is reserved for
+  // things you press. Headings are NOT coloured: size and weight already carry
+  // the emphasis, and colouring them as well is the main "template" tell.
   &__eyebrow {
     margin: 0 0 $spacing-xs;
     font-family: $font-family-button;
@@ -13,19 +18,23 @@
     font-weight: $font-weight-semibold;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: $action-primary;
+    color: $route-active;
   }
 
   &__title {
+    text-align: left;
     margin: 0 0 $spacing-md;
     font-family: $font-family-button;
     font-size: $font-size-2xl;
     font-weight: $font-weight-bold;
     line-height: 1.15;
+    text-shadow:
+      0 1px 0 var(--carve-lip),
+      0 -1px 0 var(--carve-dark);
   }
 
   &__lede {
-    max-width: 60ch;
+    max-width: 68ch;
     margin: 0 0 $spacing-2xl;
     font-size: $font-size-md;
     line-height: $line-height-relaxed;
@@ -37,20 +46,31 @@
   }
 
   &__section-title {
+    // Global h1-h4 are centred for the app shell; the marketing grid is left.
+    text-align: left;
     margin: 0 0 $spacing-md;
     font-family: $font-family-button;
     font-size: $font-size-xl;
     font-weight: $font-weight-semibold;
+    // Etched lettering — light on the lower rim, carve above.
+    text-shadow:
+      0 1px 0 var(--carve-lip),
+      0 -1px 0 var(--carve-dark);
   }
 }
 
 // Marks unwritten copy. Every instance must be gone before launch —
 // grep for `placeholder-copy` to find what's left.
 .placeholder-copy {
+  // Debossed: darker than the page, shadow along the top, light on the lower
+  // rim. A note cut into the surface rather than a card sitting on it.
   padding: $spacing-md;
-  border: $stroke-thin dashed $action-primary;
+  border: $stroke-hairline dashed var(--chrome-edge);
   border-radius: $radius-md;
   background: $surface-sunken;
+  box-shadow:
+    inset 0 2px 3px -2px var(--carve-dark),
+    inset 0 -1px 0 0 var(--carve-lip);
   font-size: $font-size-sm;
   color: $text-secondary;
 
@@ -67,13 +87,24 @@
   gap: $spacing-lg;
 }
 
+// Raised card: light catches the top inner edge, the underside carries the
+// carve shadow, and the whole thing sits proud of the page. Mirrors the
+// portal's raised surfaces — see collapse.scss / dragDropColumns.scss.
 .card {
   padding: $spacing-lg;
   background: $surface-card;
-  border: $stroke-hairline solid $surface-chrome;
-  border-radius: $radius-lg;
+  border: $stroke-hairline solid var(--chrome-edge);
+  // EMBOSSED, not shadowed. A raised surface is lighter than the page and
+  // bevelled: light catches the top edge, the underside carries the carve.
+  // No outer drop shadow — depth lives in the edge, which is the whole reason
+  // this reads as machined rather than as a generic card.
+  border-radius: $radius-md;
+  box-shadow:
+    inset 0 1px 0 0 var(--carve-lip),
+    inset 0 -1px 0 0 var(--carve-dark);
 
   h3 {
+    text-align: left;
     margin: 0 0 $spacing-xs;
     font-family: $font-family-button;
     font-size: $font-size-md;
@@ -85,5 +116,20 @@
     font-size: $font-size-sm;
     line-height: $line-height-normal;
     color: $text-secondary;
+  }
+
+  // Clickable variant. Presses in on hover — the same inversion the header nav
+  // keys use, so "this is a control" is consistent across the site.
+  &--link {
+    display: block;
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background: $surface-action-primary;
+      box-shadow:
+        inset 0 2px 4px -1px var(--carve-dark),
+        inset 0 -1px 0 0 var(--carve-lip);
+    }
   }
 }

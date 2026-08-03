@@ -1,54 +1,120 @@
+///////////////////////////////////////////////////////////////////////////////
+//  SITE HEADER — instrument fascia
+//  Two tiers. The band is debossed into the page; the readout strip beneath is
+//  cut deeper still. Nav items are machined keys: embossed proud of the band,
+//  with the active route pressed IN. Depth is by edge throughout — no drop
+//  shadows anywhere in this file, deliberately.
+///////////////////////////////////////////////////////////////////////////////
+
+$band-height: 68px;
+$band-height-mobile: 56px;
+
 .site-header {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: $surface-page;
-  border-bottom: $stroke-hairline solid $surface-chrome;
+
+  //////////////////////////////////////////////////////////////////////////
+  //  TIER 1 — chrome band
+  //////////////////////////////////////////////////////////////////////////
+  &__band {
+    // Matches the scroller's reserved scrollbar gutter so the centred inner
+    // aligns with page content. Padding on the band, not the inner: a
+    // background paints the padding box, so the chrome still spans full width.
+    padding-right: var(--scrollbar-w, 0px);
+    background: var(--surface-chrome);
+    box-shadow:
+      inset 0 2px 3px var(--nav-deboss-top),
+      inset 0 -1px 1px var(--nav-deboss-lip);
+    border-bottom: $stroke-hairline solid var(--chrome-edge);
+  }
 
   &__inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: $spacing-lg;
-    max-width: 1120px;
+    max-width: 1320px;
     margin: 0 auto;
-    padding: $spacing-md $spacing-lg;
+    padding: 0 $spacing-lg;
+    min-height: $band-height;
+
+    @media (max-width: $breakpoint-mobile) {
+      min-height: $band-height-mobile;
+    }
   }
 
   &__brand {
-    font-family: $font-family-button;
-    font-size: $font-size-lg;
-    font-weight: $font-weight-bold;
-    color: $action-primary;
+    display: inline-flex;
+    align-items: center;
     text-decoration: none;
-    letter-spacing: 0.02em;
   }
 
+  // 3:1 source asset. INTERIM: the supplied PNG has a #215c30 wordmark, which
+  // is 2.37:1 against the dark band and effectively invisible, so it is lifted
+  // in CSS. Replace with a light-on-dark SVG variant from Figma and delete the
+  // filter — at which point this can also be a mark + wordmark lockup rather
+  // than one fixed raster.
+  &__logo {
+    height: 74px;
+    width: auto;
+    display: block;
+    filter: brightness(1.75) saturate(1.15);
+
+    [data-theme='light'] & {
+      filter: none;
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+      height: 34px;
+    }
+  }
+
+  //////////////////////////////////////////////////////////////////////////
+  //  NAV — machined keys
+  //////////////////////////////////////////////////////////////////////////
   &__nav {
     display: flex;
     align-items: center;
-    gap: $spacing-lg;
+    gap: $spacing-xs;
 
-    @media (max-width: 768px) {
+    @media (max-width: $breakpoint-tablet) {
       display: none;
     }
   }
 
-  &__link {
-    font-family: $font-family-ui;
-    font-size: $font-size-base;
+  &__key {
+    font-family: $font-family-button;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     color: $text-secondary;
     text-decoration: none;
-    padding-bottom: $spacing-2xs;
-    border-bottom: $stroke-thick solid transparent;
+    padding: $spacing-xs $spacing-md;
+    border-radius: $radius-sm;
+    border: $stroke-hairline solid var(--chrome-edge);
+    background: $surface-card;
+    // Proud of the band: light on the top edge, carve underneath.
+    box-shadow:
+      inset 0 1px 0 0 var(--carve-lip),
+      inset 0 -1px 0 0 var(--carve-dark);
+    transition:
+      color 0.15s ease,
+      background-color 0.15s ease;
 
     &:hover {
       color: $text-primary;
     }
 
+    // Pressed in. The inversion is the point — the page you are on is the key
+    // that is depressed into the fascia.
     &.is-active {
-      color: $action-primary;
-      border-bottom-color: $action-primary;
+      color: $route-active;
+      background: var(--surface-chrome-dark);
+      box-shadow:
+        inset 0 2px 4px -1px var(--carve-dark),
+        inset 0 -1px 0 0 var(--carve-lip);
     }
   }
 
@@ -61,16 +127,77 @@
     color: $text-primary;
     padding: $spacing-2xs;
 
-    @media (max-width: 768px) {
+    @media (max-width: $breakpoint-tablet) {
       display: inline-flex;
     }
   }
 
+  //////////////////////////////////////////////////////////////////////////
+  //  TIER 2 — readout strip, cut deeper
+  //////////////////////////////////////////////////////////////////////////
+  &__readout {
+    padding-right: var(--scrollbar-w, 0px);
+    background: var(--surface-chrome-dark);
+    box-shadow: inset 0 2px 3px -1px var(--carve-dark);
+    border-bottom: $stroke-hairline solid var(--chrome-edge);
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__readout-inner {
+    display: flex;
+    align-items: center;
+    gap: $spacing-lg;
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: $spacing-2xs $spacing-lg;
+    font-family: $font-family-mono;
+    font-size: $font-size-xs;
+    white-space: nowrap;
+  }
+
+  &__stat {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+  }
+
+  &__stat-label {
+    margin: 0;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: $text-subtle;
+  }
+
+  &__stat-value {
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    color: $text-secondary;
+  }
+
+  &__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: $radius-full;
+    background: $action-primary;
+    margin-right: $spacing-xs;
+    flex: 0 0 auto;
+  }
+
+  //////////////////////////////////////////////////////////////////////////
+  //  MOBILE DRAWER
+  //////////////////////////////////////////////////////////////////////////
   &__drawer {
     display: none;
     flex-direction: column;
-    border-top: $stroke-hairline solid $surface-chrome;
-    background: $surface-page;
+    border-top: $stroke-hairline solid var(--chrome-edge);
+    background: var(--surface-chrome-dark);
+    box-shadow: inset 0 2px 4px -1px var(--carve-dark);
 
     &.is-open {
       display: flex;
@@ -82,15 +209,17 @@
   }
 
   &__drawer-link {
-    font-family: $font-family-ui;
+    font-family: $font-family-button;
     font-size: $font-size-md;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
     color: $text-primary;
     text-decoration: none;
     padding: $spacing-md $spacing-lg;
-    border-bottom: $stroke-hairline solid $surface-chrome-light;
+    border-bottom: $stroke-hairline solid var(--chrome-edge);
 
     &.is-active {
-      color: $action-primary;
+      color: $route-active;
       font-weight: $font-weight-semibold;
     }
   }

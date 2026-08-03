@@ -2,24 +2,32 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { SITE_STATUS } from '@constants'
 import { SITE_NAV } from './siteNav'
 
 import './styles/siteHeader.scss'
 
 /**
- * Site header: wordmark, primary nav, and a mobile drawer.
+ * Site header — the instrument fascia.
+ *
+ * Two tiers, following the portal's header + breadcrumb pattern:
+ *
+ *   1. A debossed chrome band carrying the mark and the nav. Nav items are
+ *      machined keys — embossed proud of the band, with the active route
+ *      pressed into it. That inversion is the whole idea: the current page is
+ *      the key that is depressed.
+ *   2. A readout strip cut deeper still, carrying real state (see
+ *      constants/status.ts). It is what makes the header inform rather than
+ *      merely navigate, and it is the reason this does not read as the
+ *      logo-left / nav-right bar every site builder ships.
  *
  * The drawer closes on the click that navigates rather than in an effect
  * watching the pathname — synchronous setState inside an effect forces a second
- * render pass, and the click is the only way the drawer can trigger navigation
- * anyway.
- *
- * PLACEHOLDER — the wordmark is set in type until the V Source logo lands, at
- * which point this should render a `VSourceWordmark` component the same way the
- * portal renders `AptiumWordmark`.
+ * render pass, and the click is the only way the drawer can navigate anyway.
  */
 export default function SiteHeader() {
   const pathname = usePathname()
@@ -29,39 +37,63 @@ export default function SiteHeader() {
 
   return (
     <header className="site-header">
-      <div className="site-header__inner">
-        <Link
-          href="/"
-          className="site-header__brand"
-          aria-label="V Source home"
-          onClick={closeMenu}
-        >
-          V&thinsp;Source
-        </Link>
+      <div className="site-header__band">
+        <div className="site-header__inner">
+          <Link
+            href="/"
+            className="site-header__brand"
+            aria-label="V Source home"
+            onClick={closeMenu}
+          >
+            <Image
+              src="/logos/vsource-logo-full.png"
+              alt="V Source"
+              width={1500}
+              height={500}
+              unoptimized
+              priority
+              className="site-header__logo"
+            />
+          </Link>
 
-        <nav className="site-header__nav" aria-label="Primary">
-          {SITE_NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`site-header__link ${pathname === item.href ? 'is-active' : ''}`}
-              aria-current={pathname === item.href ? 'page' : undefined}
-            >
-              {item.label}
-            </Link>
+          <nav className="site-header__nav" aria-label="Primary">
+            {SITE_NAV.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`site-header__key ${pathname === item.href ? 'is-active' : ''}`}
+                aria-current={pathname === item.href ? 'page' : undefined}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
+          <button
+            type="button"
+            className="site-header__toggle"
+            aria-expanded={menuOpen}
+            aria-controls="site-mobile-nav"
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            <FontAwesomeIcon icon={menuOpen ? faXmark : faBars} />
+          </button>
+        </div>
+      </div>
+
+      <div className="site-header__readout">
+        <dl className="site-header__readout-inner">
+          {SITE_STATUS.map((entry) => (
+            <div key={entry.label} className="site-header__stat">
+              <dt className="site-header__stat-label">{entry.label}</dt>
+              <dd className="site-header__stat-value">
+                {entry.live && <span className="site-header__dot" aria-hidden="true" />}
+                {entry.value}
+              </dd>
+            </div>
           ))}
-        </nav>
-
-        <button
-          type="button"
-          className="site-header__toggle"
-          aria-expanded={menuOpen}
-          aria-controls="site-mobile-nav"
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-          onClick={() => setMenuOpen((open) => !open)}
-        >
-          <FontAwesomeIcon icon={menuOpen ? faXmark : faBars} />
-        </button>
+        </dl>
       </div>
 
       <nav

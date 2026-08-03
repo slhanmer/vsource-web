@@ -1,0 +1,106 @@
+// Site shell.
+//
+// global.scss sets `html { overflow: hidden }`, so the document never scrolls —
+// scrolling belongs to `.page-container`. This site follows that convention.
+//
+// The frame is a full-height flex column: header band, scroller, footer band.
+// Content scrolls between two fixed pieces of chrome, which is how an actual
+// instrument panel behaves and is why the footer is NOT inside the scroller:
+//
+//   1. `.page-container` sets `scrollbar-gutter: stable`, permanently reserving
+//      the scrollbar strip. Anything inside the scroller stops short of the
+//      viewport edge, so a footer in there never spans the full width.
+//   2. Flexing the scroller means no `calc(100dvh - <header height>)` anywhere.
+//      That arithmetic silently breaks the moment the header changes height,
+//      and it has already changed twice.
+.site-frame {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  position: relative;
+  background: var(--surface-page);
+
+}
+
+// Scroll region. Exists so the scrollbar has somewhere to live between the two
+// bands without any `calc(100dvh - <chrome height>)` arithmetic.
+.site-scroll {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+}
+
+.page-container.site-shell {
+  align-items: stretch;
+  background: transparent;
+  // Overrides the kit's fixed height — the flex parent owns sizing now.
+  // `min-height: 0` is what actually allows a flex child to scroll rather than
+  // growing to fit its content.
+  height: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+
+  // Pushes short pages' content to fill the scroller so the page does not end
+  // halfway up a tall viewport.
+  > main {
+    flex: 1 0 auto;
+  }
+
+  ////////////////////////////////////////////////////////////////////////////
+  //  SCROLLBAR
+  //  The kit's global channel runs flush to the viewport edge and butts into
+  //  the header and footer bands, which reads as an accident rather than a
+  //  carved groove. Scoped here rather than changed globally, because the
+  //  portal's app shell wants it flush.
+  //
+  //  Transparent borders plus `background-clip: padding-box` are how you inset
+  //  a scrollbar — the track and thumb cannot take margin.
+  ////////////////////////////////////////////////////////////////////////////
+  &::-webkit-scrollbar {
+    width: 20px;
+  }
+
+  &::-webkit-scrollbar-track {
+    border: 5px solid transparent;
+    background-clip: padding-box;
+    background-color: var(--surface-recessed);
+    border-radius: $radius-full;
+    box-shadow: none;
+    // Keeps the groove clear of the chrome at both ends.
+    margin-block: $spacing-xs;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border: 6px solid transparent;
+    background-clip: padding-box;
+    background-color: $text-subtle;
+    border-radius: $radius-full;
+    box-shadow: none;
+
+    &:hover {
+      background-color: $action-primary;
+    }
+  }
+
+  // Firefox has no per-part control; thin keeps it from dominating the edge.
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-subtle) transparent;
+}
+
+// Toasts are top-centre and would otherwise land on top of the header band.
+// The kit reads this variable and falls back to 20px when it is not set, so
+// each app clears its own chrome without the kit knowing the height.
+:root {
+  // Width of the custom scrollbar below. The header and footer bands pad by
+  // this amount so their centred content lines up with content inside the
+  // scroller, which is centred within `width - gutter` because of
+  // `scrollbar-gutter: stable`. Without it everything in the scroller sits
+  // half a gutter to the left of the chrome.
+  --scrollbar-w: 20px;
+  --toast-offset-top: 108px;
+
+  @media (max-width: 480px) {
+    --toast-offset-top: 92px;
+  }
+}

@@ -1,20 +1,10 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
 import { Providers } from './providers'
 import SiteHeader from '@components/layouts/SiteHeader'
 import SiteFooter from '@components/layouts/SiteFooter'
 import '@styles/global.scss'
+import './styles/shell.scss'
 import '@fortawesome/fontawesome-free/css/all.min.css'
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-})
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-})
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.vsource.dev'),
@@ -26,9 +16,17 @@ export const metadata: Metadata = {
     'V Source builds software and engineering solutions for regulated and technical industries.',
 }
 
+/**
+ * Root layout.
+ *
+ * `data-theme="dark"` is set server-side so the dark ground is the default and
+ * there is no flash of light theme before hydration. The inline script below
+ * only overrides it when the visitor has explicitly chosen a theme — it runs
+ * before paint, which is why it is inline and not a component.
+ */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-AU" suppressHydrationWarning>
+    <html lang="en-AU" data-theme="dark" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -36,11 +34,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <Providers>
-          <SiteHeader />
-          {children}
-          <SiteFooter />
+          <div className="site-frame">
+            <SiteHeader />
+            <div className="site-scroll">
+              <div className="page-container top-align site-shell">{children}</div>
+            </div>
+            <SiteFooter />
+          </div>
         </Providers>
       </body>
     </html>

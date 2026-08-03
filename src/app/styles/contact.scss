@@ -1,0 +1,127 @@
+.contact {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: $spacing-2xl;
+  margin-bottom: $spacing-2xl;
+  align-items: start;
+
+  @media (max-width: $breakpoint-tablet) {
+    grid-template-columns: 1fr;
+    gap: $spacing-xl;
+  }
+
+  //////////////////////////////////////////////////////////////////////////
+  //  FORM — raised panel, embossed like a card
+  //////////////////////////////////////////////////////////////////////////
+  &__form {
+    display: flex;
+    flex-direction: column;
+    // Generous, because each field reserves a line for its error message —
+    // without the gap the message sits on top of the next field's label.
+    gap: $spacing-md;
+    padding: $spacing-xl;
+    background: $surface-card;
+    border: $stroke-hairline solid var(--chrome-edge);
+    border-radius: $radius-md;
+    box-shadow:
+      inset 0 1px 0 0 var(--carve-lip),
+      inset 0 -1px 0 0 var(--carve-dark);
+
+    @media (max-width: $breakpoint-mobile) {
+      padding: $spacing-lg;
+    }
+  }
+
+  &__actions {
+    margin-top: $spacing-md;
+  }
+
+  //////////////////////////////////////////////////////////////////////////
+  //  SUCCESS — replaces the form in place
+  //////////////////////////////////////////////////////////////////////////
+  &__sent {
+    padding: $spacing-xl;
+    background: $surface-card;
+    border: $stroke-hairline solid var(--chrome-edge);
+    border-radius: $radius-md;
+    box-shadow:
+      inset 0 1px 0 0 var(--carve-lip),
+      inset 0 -1px 0 0 var(--carve-dark);
+  }
+
+  &__sent-heading {
+    text-align: left;
+    margin: 0 0 $spacing-sm;
+    font-family: $font-family-button;
+    font-size: $font-size-xl;
+    color: $text-primary;
+  }
+
+  &__sent-body {
+    max-width: 52ch;
+    margin: 0 0 $spacing-lg;
+    color: $text-secondary;
+    line-height: $line-height-relaxed;
+  }
+
+  //////////////////////////////////////////////////////////////////////////
+  //  ASIDE — debossed, cut into the page
+  //////////////////////////////////////////////////////////////////////////
+  &__aside {
+    padding: $spacing-lg;
+    background: $surface-sunken;
+    border: $stroke-hairline solid var(--chrome-edge);
+    border-radius: $radius-md;
+    box-shadow:
+      inset 0 2px 3px -2px var(--carve-dark),
+      inset 0 -1px 0 0 var(--carve-lip);
+  }
+
+  &__aside-heading {
+    text-align: left;
+    margin: 0 0 $spacing-2xs;
+    font-family: $font-family-button;
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+  }
+
+  &__aside-note {
+    margin: 0 0 $spacing-lg;
+    font-size: $font-size-sm;
+    color: $text-secondary;
+  }
+
+  &__details {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: $spacing-md;
+
+    li {
+      display: grid;
+      gap: $spacing-2xs;
+      font-family: $font-family-mono;
+      font-size: $font-size-sm;
+      color: $text-primary;
+      word-break: break-word;
+    }
+
+    a {
+      color: $route-active;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &__label {
+    font-size: $font-size-xs;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $text-subtle;
+  }
+}

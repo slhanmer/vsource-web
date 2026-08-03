@@ -1,0 +1,107 @@
+.work {
+  margin-bottom: $spacing-2xl;
+
+  // Editorial three-column: index, heading, prose. The heading holding its own
+  // column is what lets the section span the full width while the paragraphs
+  // keep a readable ~68ch measure — otherwise wide screens leave half the page
+  // empty. Collapses to a single column below tablet.
+  &__section {
+    display: grid;
+    grid-template-columns: 3rem minmax(180px, 260px) minmax(0, 1fr);
+    gap: $spacing-lg $spacing-xl;
+    padding: $spacing-xl 0;
+    border-top: $stroke-hairline solid var(--chrome-edge);
+
+    @media (max-width: 1100px) {
+      grid-template-columns: 3rem minmax(0, 1fr);
+      gap: $spacing-md $spacing-lg;
+    }
+
+    @media (max-width: $breakpoint-tablet) {
+      grid-template-columns: 1fr;
+      gap: $spacing-xs;
+    }
+  }
+
+  &__index {
+    margin: 0;
+    font-family: $font-family-mono;
+    font-size: $font-size-sm;
+    color: $route-active;
+    padding-top: 0.35rem;
+  }
+
+  &__heading {
+    text-align: left;
+    margin: 0;
+    // Follows the reader down a long section on wide screens.
+    position: sticky;
+    top: $spacing-lg;
+    align-self: start;
+
+    @media (max-width: 1100px) {
+      position: static;
+      margin: 0 0 $spacing-md;
+    }
+    font-family: $font-family-button;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    text-shadow:
+      0 1px 0 var(--carve-lip),
+      0 -1px 0 var(--carve-dark);
+  }
+
+  &__para {
+    max-width: 74ch;
+    margin: 0 0 $spacing-md;
+    font-size: $font-size-base;
+    line-height: $line-height-relaxed;
+    color: $text-secondary;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  // Debossed status panel — cut into the page, not sitting on it.
+  &__status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $spacing-md $spacing-lg;
+    padding: $spacing-lg;
+    background: $surface-sunken;
+    border: $stroke-hairline solid var(--chrome-edge);
+    border-radius: $radius-md;
+    box-shadow:
+      inset 0 2px 3px -2px var(--carve-dark),
+      inset 0 -1px 0 0 var(--carve-lip);
+  }
+
+  &__status-label {
+    margin: 0;
+    font-family: $font-family-mono;
+    font-size: $font-size-xs;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $text-subtle;
+  }
+
+  &__status-value {
+    margin: 0;
+    flex: 1 1 auto;
+    font-size: $font-size-base;
+    color: $text-primary;
+  }
+
+  &__status-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    width: auto;
+    padding: 0 $spacing-lg;
+    text-decoration: none;
+  }
+}

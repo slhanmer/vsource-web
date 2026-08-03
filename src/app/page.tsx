@@ -1,37 +1,41 @@
 import Link from 'next/link'
+import { CASE_STUDY_TEASER, CREW, SERVICES } from '@constants'
 import './styles/pages.scss'
 import './styles/home.scss'
 
 /**
- * Home page — STRUCTURE ONLY.
+ * Home page.
  *
- * Every string below is placeholder. Copy is pending the crew details and the
- * engineering offering; the Aptium reference needs sign-off on how much can be
- * named while the project is still in development.
+ * Framed from the visitor's problem rather than from our capabilities: the
+ * hero opens on a situation most readers recognise, and the mechanism (owning
+ * the stack) is what stops "cheaper" reading as "worse". Everything below is
+ * proof of that mechanism.
+ *
+ * Service cards and the work teaser map over the shared constants so the home
+ * page and the detail pages cannot drift apart.
  */
 export default function Home() {
   return (
     <main>
       <section className="hero">
         <div className="hero__inner">
-          <p className="page__eyebrow">Software &amp; engineering</p>
-          <h1 className="hero__title">We build software that has to keep working.</h1>
+          <p className="page__eyebrow">Custom software</p>
+          <h1 className="hero__title">
+            Most businesses bend themselves around software that nearly fits.
+          </h1>
           <p className="hero__lede">
-            V Source is a three-person studio in Brisbane. We take on the work that needs doing
-            properly — regulated products, technical integrations, systems that outlive the people
-            who commissioned them.
+            We build to fit instead. Our own component library, our own ORM, our own servers —
+            which is why software built exactly for you now costs a fraction of what it used to,
+            and why nobody else&rsquo;s release schedule can break it.
           </p>
           <div className="hero__actions">
-            <Link href="/contact" className="hero__cta">
+            <Link href="/contact" className="basic-button">
               Start a conversation
             </Link>
-            <Link href="/work" className="hero__cta hero__cta--ghost">
+            <Link href="/work" className="basic-button secondary-button">
               See our work
             </Link>
           </div>
-          <p className="placeholder-copy hero__note">
-            headline, lede and both CTAs are stand-ins. Needs the real positioning.
-          </p>
         </div>
       </section>
 
@@ -39,36 +43,41 @@ export default function Home() {
         <section className="page__section">
           <h2 className="page__section-title">What we do</h2>
           <div className="card-grid">
-            <article className="card">
-              <h3>Software</h3>
-              <p>
-                Web applications, APIs and the infrastructure under them. React, TypeScript, Node.
-              </p>
-            </article>
-            <article className="card">
-              <h3>Engineering</h3>
-              <p>Placeholder — awaiting the actual engineering offering.</p>
-            </article>
-            <article className="card">
-              <h3>Ongoing support</h3>
-              <p>We stay with what we build. Maintenance, iteration and the unglamorous parts.</p>
-            </article>
+            {SERVICES.map((service) => (
+              <article key={service.title} className="card">
+                <h3>{service.title}</h3>
+                <p>{service.summary}</p>
+              </article>
+            ))}
           </div>
+          <p className="home__more">
+            <Link href="/services">How we work &rarr;</Link>
+          </p>
         </section>
 
         <section className="page__section">
           <h2 className="page__section-title">Selected work</h2>
-          <div className="placeholder-copy">
-            Aptium case study goes here — a TGA-regulated Class A medical imaging device management
-            suite, currently in development. Needs sign-off before it goes live.
-          </div>
+          <Link href="/work" className="card card--link home__work">
+            <h3>{CASE_STUDY_TEASER.title}</h3>
+            <p>{CASE_STUDY_TEASER.summary}</p>
+            <span className="home__work-cta">{CASE_STUDY_TEASER.cta} &rarr;</span>
+          </Link>
         </section>
 
         <section className="page__section">
           <h2 className="page__section-title">The crew</h2>
-          <div className="placeholder-copy">
-            Three cards — names, roles, background. Awaiting details.
+          <div className="card-grid">
+            {CREW.map((member) => (
+              <article key={member.name} className="card">
+                <h3>{member.name}</h3>
+                <p className="card__role">{member.role}</p>
+                <p>{member.summary}</p>
+              </article>
+            ))}
           </div>
+          <p className="home__more">
+            <Link href="/crew">Read the longer version &rarr;</Link>
+          </p>
         </section>
       </div>
     </main>

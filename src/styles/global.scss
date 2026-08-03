@@ -1,78 +1,94 @@
 /* =========================================================================
-   THEME TOKENS  (APT-427 dark mode)
-   Tenant-owned brand hues are overridden by TenantProvider at runtime.
-   Light (:root) and dark ([data-theme='dark']) blocks are kept in the SAME
-   order so they read side by side.
+   THEME TOKENS — V SOURCE
+   Palette derived from the V Source logo: forest green wordmark, neon cyan
+   mark, warm gold glow. Light (:root) and dark ([data-theme='dark']) blocks
+   are kept in the SAME order so they read side by side.
+
+   Dark is the default (see <html data-theme="dark"> in app/layout.tsx) — the
+   logo carries a glow, and glow only reads on a dark ground.
+
+   Contrast is measured, not eyeballed. The logo green (#215c30) is AAA on the
+   light page and FAILS on the dark one (2.37), so dark swaps in a brightened
+   green (#4fb56c, 7.32 AAA) and puts dark ink on filled buttons rather than
+   white. The neon cyan is 11.19 on dark and 1.60 on light — it is an accent on
+   dark and decoration only on light. Never set it as body text on white.
    ========================================================================= */
 
 :root {
-  /* ── Brand (tenant-owned; provider overrides) ───────────────────────── */
-  --brand-accent: #533178; /* tenant primary  */
-  --brand-highlight: #6ab2e2; /* tenant highlight */
+  /* ── Brand ──────────────────────────────────────────────────────────── */
+  --brand-accent: #215c30; /* forest green — the "source" wordmark */
+  --brand-highlight: #19a5a8; /* teal — light-safe cousin of the neon */
 
   /* ── Accent lane — LIGHT: primary = accent, route = highlight ───────── */
   --action-primary: var(--brand-accent);
-  --action-primary-hover: #42275f;
+  --action-primary-hover: #194723;
   --route-active: var(--brand-highlight);
-  --state-info: #66ade6;
+  --state-info: #2f8f92;
 
   /* ── Wordmark ───────────────────────────────────────────────────────── */
-  --wordmark-ink: #cac7c0;
+  --wordmark-ink: #c3d0c8;
   --wordmark-lip: rgba(255, 255, 255, 0.4);
-  --wordmark-carve: rgba(57, 57, 57, 0.7);
+  --wordmark-carve: rgba(47, 58, 52, 0.7);
 
   /* ── Chrome surfaces + carve/deboss (light) ─────────────────────────── */
-  --surface-chrome: #e4e1db;
-  --surface-chrome-light: #eae7e1;
-  --surface-chrome-dark: #dbd8d2;
-  --chrome-edge: #d3d0cb;
-  --nav-deboss-top: rgba(57, 57, 57, 0.22);
+  --surface-chrome: #dfe7e2;
+  --surface-chrome-light: #e9efeb;
+  --surface-chrome-dark: #d3ded7;
+  --chrome-edge: #c8d4cd;
+  --nav-deboss-top: rgba(47, 58, 52, 0.22);
   --nav-deboss-lip: rgba(255, 255, 255, 0);
-  --carve-dark: rgba(57, 57, 57, 0.28); /* top/side recess shadow */
-  --carve-side: rgba(57, 57, 57, 0.12);
+  --carve-dark: rgba(47, 58, 52, 0.28); /* top/side recess shadow */
+  --carve-side: rgba(47, 58, 52, 0.12);
   --carve-lip: rgba(255, 255, 255, 0.5); /* lower-rim light-catch */
-  --menu-panel-edge: #b8b5b0;
+  --menu-panel-edge: #b0bfb6;
 
   /* ── Surfaces ───────────────────────────────────────────────────────── */
-  --surface-page: #fbfaf7;
-  --surface-sunken: #f6f4ef;
-  --surface-device: #393939;
-  --surface-device-border: #e7e1d6;
-  --surface-viewer: #fbfaf7;
-  --surface-action-primary: #ece7f3;
+  /* Elevation vars were previously declared in the dark block only, while the
+     SCSS tokens pointed at static #ffffff primitives — so every card rendered
+     white in both themes. Declared in both blocks now; see _tokens.scss. */
+  --surface-page: #f7faf8;
+  --surface-sunken: #eef4f0;
+  --surface-recessed: #fbfdfc;
+  --surface-card: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-overlay: #ffffff;
+  --surface-device: #16221c;
+  --surface-device-border: #dfe7e2;
+  --surface-viewer: #f7faf8;
+  --surface-action-primary: #e2efe6;
 
   /* ── Surface tints (status banners/cards) ───────────────────────────── */
-  --surface-success: #e6f0e8;
+  --surface-success: #e2efe6;
   --surface-warning: #fbf0de;
   --surface-error: #f7e4e1;
-  --surface-info: #e4f0f8;
-  --surface-processing: #ece7f3;
-  --surface-active: #ece7f3;
+  --surface-info: #e0f2f2;
+  --surface-processing: #e2efe6;
+  --surface-active: #e2efe6;
 
   /* ── Scrollbar ──────────────────────────────────────────────────────── */
-  --scrollbar-track: #eae7e1;
-  --scrollbar-thumb: #b8b5b0;
+  --scrollbar-track: #e9efeb;
+  --scrollbar-thumb: #b0bfb6;
 
   /* ── Slide switch ───────────────────────────────────────────────────── */
   --switch-channel-inset: rgba(0, 0, 0, 0.28); /* dark recess up top      */
   --switch-lip: rgba(255, 255, 255, 0.6); /* light catch, lower rim  */
-  --switch-knob: #fbfaf7; /* = surface-page          */
+  --switch-knob: #f7faf8; /* = surface-page          */
   --switch-knob-shadow: rgba(0, 0, 0, 0.25);
   --switch-knob-highlight: rgba(255, 255, 255, 0.7);
-  --switch-knob-ink: #393939; /* = text-secondary        */
+  --switch-knob-ink: #2f3a34; /* = text-primary          */
 
   /* ── Disabled ───────────────────────────────────────────────────────── */
-  --surface-disabled: #f0eee9;
-  --text-on-disabled: #6b6862;
-  --border-subtle-colour: #dbd8d2;
+  --surface-disabled: #edf1ee;
+  --text-on-disabled: #6b7872;
+  --border-subtle-colour: #d3ded7;
 
   /* ── Text ───────────────────────────────────────────────────────────── */
-  --text-primary: #393939;
-  --text-secondary: #393939;
-  --text-on-dark: #fbfaf7;
-  --text-on-action: #fbfaf7; /* label on filled accent — white on purple (9.68 AAA) */
-  --text-placeholder: #727578;
-  --text-subtle: #7a6a8a;
+  --text-primary: #2f3a34; /* 11.25 AAA on page */
+  --text-secondary: #4a574f; /* 7.4  AAA on page */
+  --text-on-dark: #f7faf8;
+  --text-on-action: #ffffff; /* white on forest green (7.96 AAA) */
+  --text-placeholder: #6b7872;
+  --text-subtle: #5c6b62; /* 5.35 AA on page */
   --error-text: #{$state-error};
   --warning-text: #{$amber-text-light}; /* #976217 — AA on page + warning tint */
   --success-text: #{$green-text-light}; /* #207544 — vivid green, AA both */
@@ -83,78 +99,87 @@
   --rating-star-edge: #a3661a; /* darker amber edge stroke        */
   --rating-star-hover-top: #f0b43a;
   --rating-star-hover-bottom: #d99226;
-  --rating-star-empty: #cbc3d1;
+  --rating-star-empty: #cbd6cf;
 }
 
 [data-theme='dark'] {
-  /* ── Accent lane — DARK swap: primary = highlight, route = accent ───── */
-  --action-primary: var(--brand-highlight);
-  --action-primary-hover: #4a97c9;
-  --route-active: var(--brand-accent);
-  --state-info: #6ab2e2;
+  /* ── Brand — DARK swap: the logo green is unreadable here ───────────── */
+  --brand-accent: #4fb56c; /* brightened green — 7.32 AAA on page */
+  --brand-highlight: #1edcea; /* the neon, finally in its element    */
+
+  /* ── Accent lane — DARK ─────────────────────────────────────────────── */
+  --action-primary: var(--brand-accent);
+  --action-primary-hover: #63c47d;
+  --route-active: var(--brand-highlight);
+  --state-info: #1edcea;
 
   /* ── Wordmark ───────────────────────────────────────────────────────── */
-  --wordmark-ink: #2c3648;
+  --wordmark-ink: #16221c;
   --wordmark-lip: rgba(255, 255, 255, 0.14);
   --wordmark-carve: rgba(0, 0, 0, 0.6);
 
   /* ── Chrome surfaces + carve/deboss (dark) ──────────────────────────── */
-  --surface-chrome: #1f2a3d;
-  --surface-chrome-light: #16161a; /* device card / radial toggle */
-  --surface-chrome-dark: #182231;
+  /* Chrome sits BEHIND the page, so it is darker than --surface-page. Light
+     falls from above: recessed surfaces are darker and catch light on their
+     lower rim; raised surfaces are lighter and catch it on the top edge.
+     Getting this backwards makes the header read as a raised bar. */
+  --surface-chrome: #070e0b;
+  --surface-chrome-light: #0d1512;
+  --surface-chrome-dark: #040807;
   --chrome-edge: rgba(255, 255, 255, 0.08);
   --nav-deboss-top: rgba(0, 0, 0, 0.35);
   --nav-deboss-lip: rgba(255, 255, 255, 0.1);
   --carve-dark: rgba(0, 0, 0, 0.45);
   --carve-side: rgba(0, 0, 0, 0.2);
   --carve-lip: rgba(255, 255, 255, 0.1); /* white light-catch (dark-recess rule) */
-  --menu-panel-edge: #4a5160;
+  --menu-panel-edge: #2f4238;
 
   /* ── Surfaces ───────────────────────────────────────────────────────── */
-  --surface-page: #1a1f28; /* main page — deep blue-slate */
-  --surface-sunken: #14181f; /* list well — recessed        */
-  --surface-recessed: #0f1319; /* deepest carve (empty tracks)*/
-  --surface-card: #232b38; /* raised cards — proud        */
-  --surface-overlay: #2a3340;
-  --surface-device: #0d0d0f; /* device surfaces — near-black*/
-  --surface-device-border: #8a8d94;
-  --viewport-glass: rgba(38, 38, 43, 0.7);
-  --surface-viewer: #1a1a1d;
-  --surface-action-primary: #1a2e3a;
+  --surface-page: #0b1310; /* main page — near-black with a green cast */
+  --surface-sunken: #080f0c; /* list well — recessed                     */
+  --surface-recessed: #060b09; /* deepest carve (empty tracks)             */
+  --surface-card: #121c17; /* raised cards — proud                     */
+  --surface-raised: #121c17;
+  --surface-overlay: #16221c;
+  --surface-device: #050908; /* device surfaces — near-black             */
+  --surface-device-border: #3a4a42;
+  --viewport-glass: rgba(11, 19, 16, 0.7);
+  --surface-viewer: #0e1512;
+  --surface-action-primary: #12291c;
 
   /* ── Surface tints (status banners/cards) ───────────────────────────── */
-  --surface-success: #1b3324;
-  --surface-warning: #3a2e14;
-  --surface-error: #3a1f1c;
-  --surface-info: #1a2e3a;
-  --surface-processing: #1a2e3a;
-  --surface-active: #1a2e3a;
+  --surface-success: #12291c;
+  --surface-warning: #33280f;
+  --surface-error: #331a17;
+  --surface-info: #0f2b2e;
+  --surface-processing: #0f2b2e;
+  --surface-active: #12291c;
 
   /* ── Scrollbar ──────────────────────────────────────────────────────── */
-  --scrollbar-track: #0f1319;
-  --scrollbar-thumb: #4a5160;
+  --scrollbar-track: #080f0c;
+  --scrollbar-thumb: #2f4238;
 
   /* ── Slide switch ───────────────────────────────────────────────────── */
   --switch-channel-inset: rgba(0, 0, 0, 0.8);
   --switch-lip: rgba(255, 255, 255, 0.22); /* stronger light-catch = the carve */
-  --switch-knob: #2a3444; /* raised slate, proud of channel   */
+  --switch-knob: #16221c; /* raised, proud of channel         */
   --switch-knob-shadow: transparent; /* no dark halo on dark channel     */
   --switch-knob-highlight: rgba(255, 255, 255, 0.14);
-  --switch-knob-ink: #fbfaf7; /* = text-on-dark                   */
+  --switch-knob-ink: #e8f0ea; /* = text-on-dark                   */
 
   /* ── Disabled ───────────────────────────────────────────────────────── */
-  --surface-disabled: #232a35;
-  --text-on-disabled: #6f7378;
+  --surface-disabled: #1a231e;
+  --text-on-disabled: #6b7872;
   --border-subtle-colour: rgba(255, 255, 255, 0.08);
 
   /* ── Text ───────────────────────────────────────────────────────────── */
-  --text-primary: #f4f2ee;
-  --text-secondary: #c4c0c2;
-  --text-on-dark: #fbfaf7;
-  --text-on-action: #1a1f28; /* label on filled accent — dark ink on blue (7.15 AAA) */
-  --text-placeholder: #9a9da0;
-  --text-subtle: #9a9598;
-  --error-text: #e57a6f;
+  --text-primary: #e8f0ea; /* 16.22 AAA on page */
+  --text-secondary: #a3b8ab; /*  8.97 AAA on page */
+  --text-on-dark: #e8f0ea;
+  --text-on-action: #0b1310; /* dark ink on bright green (5.61 AA) */
+  --text-placeholder: #7c8f85;
+  --text-subtle: #7c8f85;
+  --error-text: #ff8f7a;
   --warning-text: #{$amber-text-dark}; /* #d08720 — AA on dark page + tint */
   --success-text: #{$green-text-dark}; /* #57c06d — vivid green, AA both */
 
@@ -164,7 +189,7 @@
   --rating-star-edge: #b3771f;
   --rating-star-hover-top: #ffc850;
   --rating-star-hover-bottom: #e8a030;
-  --rating-star-empty: #4a5160;
+  --rating-star-empty: #2f4238;
 }
 //////////////////////////////////// BASIC APP SETUP ///////////////////////////
 * {
@@ -180,7 +205,7 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Geist', sans-serif;
+  font-family: $font-family-ui;
   color: $text-primary;
   height: 100%;
   min-height: auto;

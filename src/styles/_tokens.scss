@@ -11,37 +11,41 @@
 
 
 ///////////////////////////// PRIMITIVES (raw) /////////////////////////////////
-// Purple — the active / selected / primary lane
-$purple-50: #ece7f3;
-$purple-300: #b295d1;
-$purple-500: #9268bc;
-$purple-700: #533178;
-$purple-800: #42275f;
-$purple-900: #341e4b;
+// Green — the brand lane, taken from the "source" wordmark
+$green-50: #e2efe6;
+$green-300: #7fc994;
+$green-500: #4fb56c; // dark-mode primary — 7.32 AAA on #0b1310
+$green-700: #215c30; // THE logo green — light-mode primary, 7.58 AAA on page
+$green-800: #194723;
+$green-900: #094414; // darkest letterform shadow in the mark
 
-// Blue — utility highlight (dark-surface / info accent)
-$blue-400: #6ab2e2;
-$blue-500: #4a97c9;
-$blue-600: #3a7ba6;
+// Cyan / teal — the neon V. Sings on dark, useless as text on light.
+$cyan-400: #1edcea; // 11.19 AAA on dark page, 1.60 FAIL on light
+$cyan-500: #19a5a8; // light-safe cousin
+$cyan-600: #147f82;
+$cyan-100: #d4f9ff; // hot highlight inside the stroke
 
-// Cream / chrome — warm light surfaces & device chrome
-$cream-50: #fbfaf7;
-$cream-100: #f4f2ee;
-$chrome-100: #eae7e1;
-$chrome-200: #e7e1d6;
-$chrome-300: #dbd8d2;
-$chrome-350: #d3d0cb;
-$chrome-grey: #e4e1db;
-$sunken: #f6f4ef;
+// Gold — the warm halo behind the V. Accent only, never a surface.
+$gold-500: #e8c547;
 
-// Ink / charcoal — text & carved device surfaces
-$ink-900: #393939;
-$charcoal-800: #393939;
-$grey-500: #8c9094;
+// Cool light surfaces — very slightly green-cast so they sit under the brand
+$paper-50: #f7faf8;
+$paper-100: #eef4f0;
+$chrome-100: #e9efeb;
+$chrome-200: #dfe7e2;
+$chrome-300: #d3ded7;
+$chrome-350: #c8d4cd;
+$chrome-grey: #dfe7e2;
+$sunken: #eef4f0;
+
+// Ink / charcoal — text & carved surfaces
+$ink-900: #2f3a34;
+$charcoal-800: #2f3a34;
+$grey-500: #6b7872;
 
 // Neutrals (disabled etc.)
-$neutral-200: #dad8d3;
-$neutral-400: #6b6862;
+$neutral-200: #d3ded7;
+$neutral-400: #6b7872;
 
 // Status primitives
 $red-600: #b23a2f;
@@ -49,56 +53,58 @@ $green-600: #3f8a4f;
 $amber-500: #c9821f;
 // Status TEXT primitives — accessible (AA) variants for text use only.
 // Distinct from the -500 fills, which stay for surfaces + rating-star lane.
-// Green is a vivid AA green (reads clearly green, not grey) on both tint + page.
 $amber-text-light: #976217; // AA on page + warning tint
-$amber-text-dark:  #d08720; // AA on dark page + dark warning tint
+$amber-text-dark: #d08720; // AA on dark page + dark warning tint
 $green-text-light: #207544; // vivid green, AA on page + success tint
-$green-text-dark:  #57c06d; // vivid green, AA on dark page + dark success tint
- $state-success-50: #e6f0e8;
+$green-text-dark: #57c06d; // vivid green, AA on dark page + dark success tint
+$state-success-50: #e2efe6;
 $warning-50: #fbf0de;
 $error-50: #f7e4e1;
-$info-50: #e4f0f8;
+$info-50: #e0f2f2;
 
 // Elevation primitives (light surfaces — depth by edge, fill only on small elements)
-$elevation-0-recessed: #fcfbf9;
+$elevation-0-recessed: #fbfdfc;
 $elevation-1-card: #ffffff;
-$elevation-2-page: #fbfaf7;
+$elevation-2-page: #f7faf8;
 $elevation-3-overlay: #ffffff;
 
-// Dark primitives — defined for APT-427 (dark mode). Unused in light; harmless.
-$neutral-950: #1f1b1d;
-$neutral-900: #2a2528;
-$neutral-850: #332e31;
+// Dark primitives — the dark theme's own ground
+$neutral-950: #0b1310;
+$neutral-900: #121c17;
+$neutral-850: #16221c;
 
-
-//////////////////////// THEMEABLE TOKENS (tenant) /////////////////////////////
-// Renamed to the new scheme. Aptium values are defaults; provider overrides.
-// NB: --action-primary (purple) is now the active/primary accent (was --highlight blue).
+//////////////////////// THEMEABLE TOKENS ///////////////////////////////////////
+// These resolve through CSS variables declared in global.scss, so they flip
+// with [data-theme]. Anything that must differ between light and dark belongs
+// here rather than in the static block below.
 $action-primary: var(--action-primary);
 $action-primary-hover: var(--action-primary-hover);
-$route-active: var(--route-active); // blue utility highlight (dark-surface/info)
-$state-info: var(--state-info); // derived (tinycolor) — subtle info accent
+$route-active: var(--route-active); // neon cyan on dark, teal on light
+$state-info: var(--state-info);
 $surface-page: var(--surface-page);
-$surface-sunken: var(--surface-sunken); // derived (tinycolor)
+$surface-sunken: var(--surface-sunken);
+$surface-action-primary: var(--surface-action-primary); // tint behind primary elements
 $text-primary: var(--text-primary);
 $text-secondary: var(--text-secondary);
 $text-on-dark: var(--text-on-dark);
 $text-placeholder: var(--text-placeholder);
-$text-subtle: var(--text-subtle); // derived (tinycolor)
+$text-subtle: var(--text-subtle);
 
 
 //////////////////////// SEMANTIC TOKENS (static) //////////////////////////////
-// Surfaces
-$surface-card: $elevation-1-card;
-$surface-recessed: $elevation-0-recessed;
-$surface-raised: $elevation-1-card;
-$surface-overlay: $elevation-3-overlay;
+// Surfaces — themeable. These MUST resolve through CSS variables: pointing
+// them at the raw $elevation-* primitives makes every card white in dark mode,
+// which is the bug that shipped in the portal's half-built dark theme.
+$surface-card: var(--surface-card);
+$surface-recessed: var(--surface-recessed);
+$surface-raised: var(--surface-raised);
+$surface-overlay: var(--surface-overlay);
 $surface-chrome: $chrome-grey;
 $surface-chrome-light: $chrome-100;
 $surface-chrome-dark: $chrome-300;
 $surface-dark: $ink-900;
 $surface-disabled: var(--surface-disabled);
-$surface-processing: $purple-50;
+$surface-processing: $green-50;
 $scrim: rgba(57, 57, 57, 0.9); // modal/overlay backdrop — not in Figma, ink-900 @ 60%
 
 // Device surface — charcoal exception (status card, radial menu, device chrome).
@@ -115,7 +121,7 @@ $surface-info: $info-50;
 // Text
 $text-on-action: var(--text-on-action); // label on filled accent — themed (white light / dark ink dark)
 $text-on-disabled: var(--text-on-disabled); 
-$text-hero: $purple-700; // dark-mode behaviour handled in APT-427
+$text-hero: $green-700; // light-mode hero ink; dark flips via --text-primary
 $text-success: var(--success-text); // theme-aware AA text (fill lane = $state-success)
 $text-warning: var(--warning-text); // theme-aware AA text (fill lane = $state-warning)
 $text-danger: $red-600;
@@ -123,16 +129,22 @@ $text-chrome-etched: $chrome-350;
 
 // Action / state
 $action-destructive: $red-600;
-$action-primary-pressed: $purple-900;
+$action-primary-pressed: $green-900;
 $state-error: $red-600;
 $state-success: $green-600;
 $state-warning: $amber-500;
 
 
 /////////////////////////////// TYPOGRAPHY /////////////////////////////////////
-$font-family-ui: 'Nunito Sans', sans-serif;
-$font-family-input: 'Patrick Hand', cursive; // NB: handwriting font — confirm intentional
-$font-family-button: 'Montserrat', sans-serif;
+// Chakra Petch is squared and angular — it echoes the neon V and the stencil
+// DEVELOPMENT lettering. Deliberately confined to headings, nav and buttons;
+// IBM Plex Sans carries every paragraph. That split is what keeps the site
+// reading as engineering rather than esports, so resist widening it.
+$font-family-ui: 'IBM Plex Sans', system-ui, sans-serif;
+$font-family-input: 'IBM Plex Sans', system-ui, sans-serif;
+$font-family-button: 'Chakra Petch', system-ui, sans-serif;
+$font-family-display: 'Chakra Petch', system-ui, sans-serif;
+$font-family-mono: 'IBM Plex Mono', ui-monospace, monospace;
 
 $font-size-xs: 12px;
 $font-size-sm: 14px;
@@ -156,6 +168,10 @@ $line-height-relaxed: 28px;
 $heading-desktop: 2rem;
 $heading-tablet: 1.75rem;
 $heading-mobile: 1rem;
+
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap');
 
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');

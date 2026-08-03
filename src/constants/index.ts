@@ -1,3 +1,12 @@
 export { DEFAULT_PASSWORD_RULES } from './validation'
+export { CREW } from './crew'
+export { CASE_STUDY, CASE_STUDY_TEASER, NAME_CLIENT, client } from './work'
+export { SERVICES, APPROACH } from './services'
+export { CONTACT } from './contact'
+export { SITE_STATUS } from './status'
+export type { StatusEntry } from './status'
+export type { Service } from './services'
+export type { WorkSection } from './work'
+export type { CrewMember } from './crew'
 import * as DEV_OPTIONS from './developerOptions'
 export { DEV_OPTIONS }

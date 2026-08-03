@@ -8,7 +8,7 @@
 // ─────────────────────────────────────────────────────────────
 
 button {
-  font-family: 'Montserrat', sans-serif;
+  font-family: $font-family-button;
   font-size: $font-size-lg;
   display: inline-flex;
   justify-content: center;
@@ -45,7 +45,7 @@ button {
     border 0.2s ease-in-out;
 
   &:hover {
-    background-color: $action-primary-hover;
+    background-color: var(--route-active);
   }
 
   &:active {

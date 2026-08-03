@@ -1,72 +1,108 @@
-.site-footer {
-  background: $surface-sunken;
-  border-top: $stroke-hairline solid $surface-chrome;
-  margin-top: $spacing-2xl;
+///////////////////////////////////////////////////////////////////////////////
+//  SITE FOOTER — the bottom fascia
+//  Mirrors the header: a chrome band debossed into the page. Three tiers, each
+//  cut a little deeper than the last, so the page ends by receding rather than
+//  by stopping. Depth is by edge — no drop shadows anywhere.
+///////////////////////////////////////////////////////////////////////////////
 
-  &__inner {
+// Pinned below the scroller, so it is permanently on screen and has to earn
+// its height. Two tight tiers only.
+.site-footer {
+  flex: 0 0 auto;
+
+  //////////////////////////////////////////////////////////////////////////
+  //  CONTACT BAND — the loudest tier, borrowed from the portal ContactMenu
+  //////////////////////////////////////////////////////////////////////////
+  &__contact-band {
+    padding-right: var(--scrollbar-w, 0px);
+    background: var(--surface-chrome);
+    border-top: $stroke-hairline solid var(--chrome-edge);
+    box-shadow:
+      inset 0 2px 3px var(--nav-deboss-top),
+      inset 0 -1px 1px var(--nav-deboss-lip);
+  }
+
+  &__contact-inner {
     display: flex;
     flex-wrap: wrap;
-    gap: $spacing-xl;
-    justify-content: space-between;
-    max-width: 1120px;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-md $spacing-xl;
+    max-width: 1320px;
     margin: 0 auto;
-    padding: $spacing-2xl $spacing-lg $spacing-xl;
+    padding: $spacing-xs $spacing-lg;
+
+    @media (max-width: $breakpoint-tablet) {
+      justify-content: flex-start;
+      gap: $spacing-md $spacing-lg;
+    }
   }
 
-  &__wordmark {
-    font-family: $font-family-button;
-    font-size: $font-size-md;
-    font-weight: $font-weight-bold;
-    color: $action-primary;
-  }
-
-  &__tagline {
-    margin: $spacing-2xs 0 0;
-    font-family: $font-family-ui;
-    font-size: $font-size-sm;
-    color: $text-secondary;
-  }
-
-  &__nav {
-    display: flex;
-    flex-direction: column;
+  &__contact {
+    display: inline-flex;
+    align-items: center;
     gap: $spacing-xs;
-  }
-
-  &__link {
-    font-family: $font-family-ui;
+    font-family: $font-family-mono;
     font-size: $font-size-sm;
     color: $text-secondary;
     text-decoration: none;
 
     &:hover {
-      color: $action-primary;
+      color: $route-active;
+
+      .site-footer__icon {
+        color: $route-active;
+      }
     }
   }
 
-  &__contact {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-xs;
-    font-family: $font-family-ui;
-    font-size: $font-size-sm;
+  &__icon {
+    font-size: $font-size-base;
+    color: $text-subtle;
+    flex: 0 0 auto;
+    transition: color 0.2s ease;
+  }
 
-    a {
-      color: $action-primary;
-      text-decoration: none;
+  // INTERIM — see the note on .site-header__logo. Wants a light-on-dark
+  // variant from Figma rather than a CSS brightness lift.
+  &__logo {
+    height: 22px;
+    width: auto;
+    display: block;
+    opacity: 0.85;
+    filter: brightness(1.75) saturate(1.15);
+
+    [data-theme='light'] & {
+      filter: none;
     }
+  }
+
+  //////////////////////////////////////////////////////////////////////////
+  //  LEGAL — the deepest cut, quietest tier. Mark and small print only; the
+  //  sticky header already carries the routes.
+  //////////////////////////////////////////////////////////////////////////
+  &__legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-xs $spacing-lg;
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: $spacing-xs $spacing-lg;
+    font-family: $font-family-mono;
+    font-size: $font-size-xs;
+    color: $text-subtle;
+  }
+
+  &__legal-text {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-xs $spacing-lg;
+    align-items: center;
   }
 
   &__abn {
-    color: $text-subtle;
-  }
-
-  &__legal {
-    border-top: $stroke-hairline solid $surface-chrome;
-    padding: $spacing-md $spacing-lg;
-    text-align: center;
-    font-family: $font-family-ui;
-    font-size: $font-size-xs;
-    color: $text-subtle;
+    letter-spacing: 0.04em;
   }
 }

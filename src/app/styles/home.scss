@@ -1,15 +1,23 @@
+// Deliberately NOT full-bleed: every page sits in the same column, and a hero
+// that ignores it leaves no continuous left and right edge to frame against.
+//
+// It also carries no background or bottom rule. Inside the wide-screen frame,
+// a hero with its own fill reads as a separate block stacked in the panel
+// rather than as the top of one continuous page — the chrome bands are the
+// only divisions that should be visible.
 .hero {
-  background: linear-gradient(180deg, $surface-sunken 0%, $surface-page 100%);
-  border-bottom: $stroke-hairline solid $surface-chrome;
-
   &__inner {
-    max-width: 1120px;
+    max-width: 1320px;
     margin: 0 auto;
-    padding: $spacing-2xl $spacing-lg;
+    padding: $spacing-2xl $spacing-lg $spacing-lg;
     font-family: $font-family-ui;
   }
 
   &__title {
+    text-align: left;
+    text-shadow:
+      0 1px 0 var(--carve-lip),
+      0 -2px 1px var(--carve-dark);
     max-width: 18ch;
     margin: 0 0 $spacing-lg;
     font-family: $font-family-button;
@@ -33,34 +41,81 @@
     gap: $spacing-md;
   }
 
-  &__cta {
+  // Hero CTAs render the ui-kit's own .basic-button classes so they carry the
+  // kit's states, transitions and etching for free.
+  //
+  // Two overrides are needed because these are anchors, not buttons:
+  // button.scss puts `display: inline-flex` and the centring on the bare
+  // `button` element selector rather than on `.basic-button`, so an <a> gets
+  // the 40px height with no vertical centring and the label rides high. Width
+  // is relaxed too — the kit fixes buttons at 250px, wrong for a hero.
+  //
+  // The real fix is to move those properties onto `.basic-button` in the kit so
+  // any element can wear the class. Worth doing when the kit is next touched.
+  &__actions .basic-button {
     display: inline-flex;
     align-items: center;
-    padding: $spacing-sm $spacing-lg;
-    border-radius: $radius-button;
-    background: $action-primary;
-    color: $text-on-action;
-    font-family: $font-family-button;
-    font-size: $font-size-base;
-    font-weight: $font-weight-semibold;
+    justify-content: center;
+    line-height: 1;
+    width: auto;
+    min-width: 200px;
+    padding: 0 $spacing-lg;
     text-decoration: none;
+  }
+
+  // Secondary action takes the cyan outline: it points, it does not act.
+  &__actions .secondary-button {
+    background: transparent;
+    border: $stroke-thin solid $route-active;
+    color: $route-active;
 
     &:hover {
-      background: $action-primary-hover;
-    }
-
-    &--ghost {
-      background: transparent;
-      color: $action-primary;
-      border: $stroke-thin solid $action-primary;
-
-      &:hover {
-        background: $surface-sunken;
-      }
+      background: $surface-sunken;
     }
   }
 
-  &__note {
-    margin-top: $spacing-xl;
+}
+
+.card__role {
+  font-family: $font-family-button;
+  font-size: $font-size-xs;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $text-subtle;
+  margin: 0 0 $spacing-xs !important;
+}
+
+.home__work {
+  max-width: 74ch;
+
+  h3 {
+    font-size: $font-size-lg;
+  }
+}
+
+.home__work-cta {
+  display: inline-block;
+  margin-top: $spacing-md;
+  font-family: $font-family-button;
+  font-size: $font-size-sm;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: $route-active;
+}
+
+.home__more {
+  margin-top: $spacing-lg;
+  font-family: $font-family-button;
+  font-size: $font-size-sm;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+
+  a {
+    color: $route-active;
+    text-decoration: none;
+
+    &:hover {
+      color: $action-primary;
+    }
   }
 }

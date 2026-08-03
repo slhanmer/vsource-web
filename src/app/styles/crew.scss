@@ -1,0 +1,79 @@
+.crew {
+  // auto-fit rather than a fixed column count: three people currently fill a
+  // wide screen in one row, and a fourth reflows without anyone touching this
+  // file. A fixed two-column grid left an orphan card on its own row, which is
+  // what three items in a two-up always does.
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: $spacing-lg;
+  margin-bottom: $spacing-2xl;
+
+  // Vertical: portrait, then name, then bio. Side-by-side needs width the
+  // column does not have once there are three of them across.
+  &__card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-md;
+    padding: $spacing-lg;
+    background: $surface-card;
+    border: $stroke-hairline solid var(--chrome-edge);
+    border-radius: $radius-md;
+    box-shadow:
+      inset 0 1px 0 0 var(--carve-lip),
+      inset 0 -1px 0 0 var(--carve-dark);
+
+  }
+
+  &__portrait {
+    flex: 0 0 auto;
+    width: 64px;
+    height: 64px;
+    border-radius: $radius-full;
+    background: $surface-action-primary;
+    border: $stroke-thin solid $action-primary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  &__portrait-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__initials {
+    font-family: $font-family-button;
+    font-size: $font-size-md;
+    font-weight: $font-weight-bold;
+    letter-spacing: 0.04em;
+    color: $action-primary;
+  }
+
+  &__name {
+    text-align: left;
+    margin: 0;
+    font-family: $font-family-button;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+  }
+
+  &__role {
+    margin: $spacing-2xs 0 $spacing-sm;
+    font-family: $font-family-button;
+    font-size: $font-size-sm;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: $text-subtle;
+  }
+
+  &__bio {
+    margin: 0;
+    font-size: $font-size-sm;
+    line-height: $line-height-relaxed;
+    color: $text-secondary;
+  }
+}
