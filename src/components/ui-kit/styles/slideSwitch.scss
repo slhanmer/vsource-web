@@ -1,0 +1,155 @@
+.slide-switch {
+  -webkit-tap-highlight-color: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  margin: 5px;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+
+    &:focus-visible + .slide-switch__track {
+      box-shadow:
+        inset 0 2px 4px 0 var(--switch-channel-inset),
+        0 0 0 3px var(--switch-focus-ring, rgba(106, 178, 226, 0.6));
+    }
+  }
+
+  // ── Labelled variant: label ABOVE the switch, matching Input/Dropdown ──────
+  // Column layout puts field-label on top; align-items flex-start pins it left
+  // so it lines up with Input/Dropdown labels sitting in the same row.
+  &.ss--labelled {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 5px 0;
+  }
+
+  // Field label — MUST match .input-label exactly so toggles, inputs and
+  // dropdowns share one label style in a form row.
+  // TODO(Simon): reconcile the 4 values below against .input-label in input.scss.
+  // input.scss isn't in the mounted project, so these mirror the token scale but
+  // are NOT yet confirmed pixel-identical.
+  &__field-label {
+    font-weight: 600;
+    font-size: $font-size-base;
+    color: $text-primary;
+    line-height: $line-height-snug; // ← match .input-label line-height
+    text-align: left;
+    user-select: none;
+    padding-left: 2px; // aligns with input field inset
+  }
+
+  // ── ON state = track fills accent (labelled variant only) ─────────────────
+  // Driven off the checked sibling to match every other state hook here.
+  // Scoped to .ss--labelled so the knob variant's neutral track is untouched.
+  &.ss--labelled input:checked + .slide-switch__track {
+    background-color: var(--surface-action-primary);
+    // keep the carved channel read — inset + lip stay
+    box-shadow:
+      inset 0 2px 4px 0 var(--switch-channel-inset),
+      inset 0 -1px 1px 0 var(--switch-lip);
+  }
+
+  // ON = knob fills accent, track stays the neutral carved channel
+  &.ss--labelled input:checked + .slide-switch__track .slide-switch__knob {
+    background: var(--action-primary);
+    // crisp defined edge — thin dark rim, no soft glow
+    height: 25px;
+    width: 25px;
+    box-shadow:
+      0 1px 2px 0 var(--switch-knob-shadow),
+      inset 0 0 0 1px var(--action-primary-pressed);
+  }
+
+  // ── Carved channel: light from top → dark inset up top, light catch on lower rim ──
+  &__track {
+    position: relative;
+    display: flex;
+    align-items: center;
+    // flex: none so parent direction (row OR column) can't resize the track on
+    // either axis — width/height below are authoritative. (flex-basis would map
+    // to height in the labelled column layout and collapse the track to a circle.)
+    flex: none;
+    width: var(--switch-width, 80px);
+    height: 30px;
+    border-radius: 999px;
+    background: var(--surface-sunken);
+    box-shadow:
+      inset 0 2px 4px 0 var(--switch-channel-inset),
+      inset 0 -1px 1px 0 var(--switch-lip);
+    border: 1px solid var(--chrome-edge);
+    transition: background-color 0.2s ease;
+  }
+
+  &__track-label {
+    position: absolute;
+    right: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  input:checked + .slide-switch__track .slide-switch__track-label {
+    right: auto;
+    left: 10px;
+  }
+
+  // knob-variant track-label contrast against a filled track (labelled only)
+  &.ss--labelled input:checked + .slide-switch__track .slide-switch__track-label {
+    color: var(--text-on-action);
+  }
+
+  // ── Raised knob: same light source — highlight on top, soft shadow below ──
+  &__knob {
+    position: absolute;
+    top: 50%;
+    left: 2px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--switch-knob);
+    box-shadow:
+      0 1px 2px 0 var(--switch-knob-shadow),
+      inset 0 1px 0 0 var(--switch-knob-highlight);
+    transform: translateY(-50%);
+    transition: transform 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__knob-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--switch-knob-ink);
+    line-height: 1;
+
+    img,
+    svg {
+      width: 12px;
+      height: 12px;
+      display: block;
+    }
+  }
+
+  input:checked + .slide-switch__track .slide-switch__knob {
+    transform: translateY(-50%) translateX(calc(var(--switch-width, 80px) - 31px));
+  }
+
+  &.is-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}

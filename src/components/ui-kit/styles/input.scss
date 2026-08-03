@@ -1,0 +1,263 @@
+.input-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .input-label {
+    display: block;
+    padding: 0 4px;
+    font-weight: 600;
+    font-size: $font-size-base;
+    color: $text-primary;
+
+    &.subtle-label {
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    &.disabled {
+      color: $text-on-disabled;
+    }
+
+    &.required {
+      color: var(--error-text);
+    }
+  }
+
+  .character-counter {
+    font-size: 0.75rem;
+    text-align: right;
+    margin-top: 2px;
+
+    &.near-limit {
+      color: $state-warning;
+    }
+
+    &.at-limit {
+      color: var(--error-text);
+    }
+  }
+
+  &.full-width {
+    max-width: none;
+    width: 100%;
+  }
+
+  .hide-show-icon {
+    align-self: center;
+    color: $text-on-disabled;
+    height: 24px;
+    width: 24px;
+    margin-left: 5px;
+  }
+
+  &.no-validation {
+    // margin-bottom: 15px;
+  }
+
+  .input-field-row {
+    position: relative;
+    align-self: center;
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    width: 100%;
+
+    &.full-width {
+      max-width: none;
+      width: 100%;
+
+      .input-field-row {
+        max-width: none;
+        width: 100%;
+      }
+
+      .input-field {
+        width: 100%;
+      }
+    }
+
+    .right-icon {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      line-height: 0;
+    }
+
+    &.no-label {
+      padding-top: 0;
+    }
+
+    &.preview {
+      padding-top: 0;
+    }
+
+    .input-field {
+      height: 40px;
+      align-self: center;
+      text-align: left;
+      padding: 10px;
+      border: $border-primary;
+      border-radius: $radius-button;
+      background-color: $surface-page;
+      font-size: $font-size-lg;
+      color: $text-primary;
+
+      font-weight: 500;
+      font-family: $font-family-input;
+      transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+      width: 100%;
+      caret-color: $text-primary;
+
+      // One-time code — a single field, not a row of boxes, so paste and platform
+      // autofill keep working. The indent compensates for the trailing tracking on
+      // the last glyph, which would otherwise sit the string left of centre.
+      &.code-field {
+        margin: 0 auto;
+        font-size: $font-size-2xl;
+        font-weight: $font-weight-semibold;
+        letter-spacing: 0.35em;
+        text-indent: 0.35em;
+        text-align: center;
+
+        @media (max-width: $breakpoint-mobile) {
+          font-size: $font-size-xl;
+          letter-spacing: 0.28em;
+          text-indent: 0.28em;
+        }
+      }
+
+      &[type='number'] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      &.panel-editor-active {
+        border: 1px solid $action-primary;
+        //
+      }
+
+      &.textarea {
+        resize: vertical;
+        height: auto;
+
+        &.size-small {
+          min-height: 110px;
+          max-height: 400px;
+        }
+
+        &.size-medium {
+          min-height: 150px;
+          max-height: 600px;
+        }
+
+        &.size-large {
+          min-height: 150px;
+          max-height: 600px;
+        }
+      }
+
+      &:focus {
+        border: $border-focus;
+        outline: none;
+
+        &.required {
+        }
+      }
+
+      &:disabled {
+        background-color: $surface-disabled;
+        border: $border-disabled;
+        color: $text-on-disabled;
+        box-shadow: none;
+        cursor: not-allowed;
+
+        &.success {
+          color: $state-success !important;
+          background-color: $surface-page !important;
+          border-color: $state-success;
+        }
+      }
+
+      &::placeholder {
+        color: $text-on-disabled !important;
+        font-size: $font-size-lg;
+        opacity: 1; // fixes Safari fade issue
+      }
+
+      &.required::placeholder {
+        color: $text-placeholder !important;
+      }
+
+      &[aria-required='true']::placeholder {
+        color: $text-placeholder !important;
+      }
+    }
+  }
+
+  &.has-error {
+    .input-field {
+      caret-color: var(--error-text);
+    }
+
+    .input-error {
+      margin-top: 2px;
+      color: var(--error-text);
+      font-size: $font-size-xs;
+      font-weight: $font-weight-regular;
+      align-self: center;
+      padding: 0;
+    }
+  }
+
+  .input-field.required,
+  .input-field[aria-invalid='true'] {
+    // background-color: $surface-error;
+    border-color: var(--error-text);
+    caret-color: var(--error-text);
+  }
+
+  .input-field:-webkit-autofill:focus {
+    border-color: $state-info;
+    box-shadow: 0 0 0 3px rgba(58, 95, 120, 0.2);
+    outline: none;
+    -webkit-text-fill-color: $text-primary;
+    -webkit-box-shadow:
+      0 0 0 1000px $surface-page inset,
+      0 0 0 3px rgba(58, 95, 120, 0.2); // background + focus ring
+  }
+
+  .input-field:-webkit-autofill {
+    -webkit-text-fill-color: $text-primary;
+    -webkit-box-shadow: 0 0 0 1000px $surface-page inset; // keep normal bg
+    caret-color: $text-primary; // Safari caret
+  }
+}
+
+.input-error-container {
+  align-self: flex-start;
+  padding-left: 5px;
+  height: 0;
+}
+
+.input-wrapper.reserves-error .input-error-container {
+  height: auto;
+  min-height: 17px;
+}
+
+.colour-input-wrapper {
+  position: relative; // gives the picker an anchor
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

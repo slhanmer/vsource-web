@@ -1,0 +1,23 @@
+.drag-indicator-container {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+
+  .chevron {
+    color: $action-primary;
+    font-weight: 900;
+    font-size: 16px;
+    transition: all 0.2s ease-in-out;
+
+    &.disabled {
+     color: $text-on-disabled;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+  }
+}

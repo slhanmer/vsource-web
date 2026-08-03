@@ -1,0 +1,56 @@
+.context-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  border-radius: calc(#{$radius-button} - 2px);
+  cursor: pointer;
+  white-space: nowrap;
+
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: $font-size-base;
+  font-weight: $font-weight-regular;
+  color: $text-primary;
+
+  transition:
+    background-color 0.12s ease,
+    color 0.12s ease;
+
+  &:hover:not(:disabled),
+  &:focus-visible:not(:disabled) {
+    background: $surface-recessed;
+    color: $action-primary;
+    outline: none;
+  }
+
+  &--danger {
+    color: $state-error;
+
+    &:hover:not(:disabled),
+    &:focus-visible:not(:disabled) {
+      background: var(--surface-error, $surface-recessed);
+      color: $state-error;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    width: 16px;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+
+  &__label {
+    flex: 1 1 auto;
+  }
+}

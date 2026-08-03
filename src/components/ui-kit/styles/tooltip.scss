@@ -1,0 +1,52 @@
+.tooltip-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 0.25rem;
+  width: auto;
+  max-width: fit-content;
+
+  > :first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .tooltip-trigger {
+    flex: 0 0 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: $action-primary;
+    cursor: pointer;
+    transform: translateX(2px);
+    transform: translatey(-2px);
+  }
+}
+
+.tooltip-bubble {
+  position: fixed;
+  height: fit-content;
+  width: max-content;
+  background: $scrim;
+  color: $text-on-dark;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  padding: 6px 10px;
+  border-radius: $radius-button;
+  z-index: 9999;
+  pointer-events: none;
+  white-space: normal;
+  text-align: center;
+  overflow: visible;
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .tooltip-bubble {
+    top: calc(100% + 4px);
+    bottom: auto;
+    left: 0;
+    transform: none;
+    width: 90%;
+    max-width: none;
+  }
+}

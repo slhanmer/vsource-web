@@ -1,0 +1,28 @@
+.progress-bar-container {
+  background: $surface-sunken;
+  width: 80%;
+  min-width: 250px;
+  max-width: 300px;
+  border: 1px solid $action-primary;
+  border-radius: $radius-large;
+  overflow: hidden;
+  box-shadow: 0 1px 3px $action-primary;
+  margin: 0 auto;
+
+  .progress-zero {
+    color: $action-primary;
+    margin-left: 2px;
+    transform: translateY(1px);
+  }
+
+  .progress-bar {
+    height: 24px;
+    background-color: $action-primary;
+    transition: width 0.3s ease;
+    text-align: center;
+    color: $text-on-dark;
+    font-weight: 400;
+    line-height: 25px;
+    font-size:$font-size-sm;
+  }
+}

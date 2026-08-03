@@ -1,0 +1,147 @@
+$option-height: 30px; // must match OPTION_H in TimeInputMask.tsx
+$visible-options: 5; // must match VISIBLE in TimeInputMask.tsx
+$column-height: $option-height * $visible-options;
+
+.time-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  .time-input-row {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+  }
+
+  .time-picker-icon {
+    color: $text-primary;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+    outline: none;
+
+    &:hover {
+      color: $action-primary;
+    }
+
+    &:focus-visible {
+      outline: $border-focus;
+      outline-offset: 2px;
+      border-radius: $radius-sm;
+    }
+  }
+}
+
+.time-picker {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: $spacing-xs;
+  padding: 0 $spacing-sm;
+  // Light card surface — the material the channels are cut out of.
+  background: var(--surface-card, #{$surface-card});
+  border-radius: $radius-md;
+  border: $stroke-hairline solid var(--chrome-edge);
+  box-shadow: inset 0 -1px 1px 0 var(--carve-lip);
+  
+  &__column {
+    position: relative;
+    flex: 0 0 auto;
+  }
+
+  &__band {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: $option-height;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 2;
+    border-top: $stroke-hairline solid var(--action-primary);
+    border-bottom: $stroke-hairline solid var(--action-primary);
+    background: transparent;
+  }
+
+  &__drum {
+    position: relative;
+    z-index: 1;
+    height: $column-height;
+    min-width: 62px;
+    overflow-y: auto;
+    perspective: 600px;
+    transform-style: preserve-3d;
+    outline: none;
+
+    // Channel cut into the card. The fill is a clear step down from the
+    // housing so the cut is visible before any shadow work; the gradient then
+    // gives the barrel its crown, and the insets do the carved edge —
+    // shadow across the top and sides, light returning on the lower rim.
+   background:
+      linear-gradient(
+        to bottom,
+        rgba(57, 57, 57, 0.12) 0%,
+        rgba(57, 57, 57, 0.02) 32%,
+        rgba(255, 255, 255, 0.6) 50%,
+        rgba(57, 57, 57, 0.02) 68%,
+        rgba(57, 57, 57, 0.06) 100%
+      ),
+      var(--surface-sunken);
+    border-radius: $radius-sm;
+    box-shadow:
+      inset 0 3px 5px -1px var(--carve-dark),
+      inset 2px 0 3px -2px var(--carve-side),
+      inset -2px 0 3px -2px var(--carve-side),
+      inset 0 -2px 1px -1px var(--carve-lip);
+
+    // Options disappear into the housing at the very rim rather than fading
+    // across the whole channel.
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%);
+
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  // Half-height above and below so every option can reach the centre band.
+  &__spacer {
+    height: ($column-height - $option-height) * 0.5;
+    flex: 0 0 auto;
+  }
+
+  &__option {
+    height: $option-height;
+    line-height: $option-height;
+    flex: 0 0 auto;
+    text-align: center;
+    font-family: $font-family-ui;
+    font-size: $font-size-base;
+    color: $text-primary;
+    cursor: pointer;
+    user-select: none;
+    backface-visibility: hidden;
+    // Transform and opacity are written per-frame from JS; declaring them
+    // here would fight the scroll handler.
+    will-change: transform, opacity;
+    -webkit-font-smoothing: antialiased;
+
+    // Set by the scroll handler on whichever option sits under the band.
+    &.is-centre {
+      color: var(--action-primary);
+      font-weight: $font-weight-semibold;
+    }
+  }
+
+ 
+  &__separator {
+    // Aligned to the band rather than the flex row, so it sits on the
+    // selection line regardless of column height.
+    align-self: center;
+    height: $option-height;
+    line-height: $option-height;
+    z-index: 1;
+    color: $text-subtle;
+    font-weight: $font-weight-semibold;
+    font-size: $font-size-base;
+  }
+}

@@ -1,0 +1,106 @@
+.star-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+
+  // text below the stars, centred (modal default)
+  &--text-below {
+    flex-direction: column;
+  }
+
+  // stars row — holds the radiogroup + keyboard focus
+  &__stars {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-2xs;
+    outline: none;
+
+    // group focus ring (keyboard) — carried on the radiogroup, not each star
+    &:focus-visible {
+      border-radius: $radius-sm;
+      box-shadow: 0 0 0 $stroke-thin var(--action-primary);
+    }
+  }
+
+  // textual readout
+  &__text {
+    font-family: $font-family-ui;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: var(--text-primary);
+    white-space: nowrap;
+
+    &--empty {
+      font-weight: $font-weight-regular;
+      color: var(--text-placeholder);
+      font-style: italic;
+    }
+  }
+
+  &__star {
+    // strip the button chrome — this is functional content, flat
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: none;
+    line-height: 0;
+    cursor: pointer;
+    color: inherit;
+
+    &:disabled {
+      cursor: default;
+    }
+
+    svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  // ── star states — amber rating lane, flat + crafted edge ──────────────
+  // Flat per the three-state rule (functional content = colour, not shadow).
+  // The gradient + edge stroke give it fidelity so it reads as a struck
+  // object, not an emoji — depth of *surface*, not depth of *elevation*.
+  .star-grad-top { stop-color: var(--rating-star-top); }
+  .star-grad-bottom { stop-color: var(--rating-star-bottom); }
+
+  .star-fill {
+    stroke: var(--rating-star-edge);
+    stroke-width: 0.6;
+    stroke-linejoin: round;
+  }
+
+  // Empty star = clean muted outline. No carve — the amber fills carry
+  // the interest; the empty state is just the absence of a rating.
+  .star-outline {
+    stroke: var(--rating-star-empty);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+
+  // ── size presets ──────────────────────────────────────────────────────
+  &--sm .star-rating__star { width: 20px; height: 20px; }
+  &--md .star-rating__star { width: 28px; height: 28px; }
+  &--lg .star-rating__star { width: 40px; height: 40px; }
+
+  // ── read-only / disabled ──────────────────────────────────────────────
+  &--readonly .star-rating__star { cursor: default; }
+
+  &--disabled {
+    opacity: $opacity-disabled;
+    .star-rating__star { cursor: default; }
+  }
+}
+
+// Hover preview is a pointer affordance only. On touch, :hover sticks after
+// tap and lies about state — gate the whole hover treatment behind a real
+// pointer (matches the Tooltip rule: hover is meaningless on touch).
+@media (hover: hover) and (pointer: fine) {
+  .star-rating:not(.star-rating--readonly):not(.star-rating--disabled) {
+    .star-rating__star:hover {
+      .star-grad-top { stop-color: var(--rating-star-hover-top); }
+      .star-grad-bottom { stop-color: var(--rating-star-hover-bottom); }
+    }
+  }
+}

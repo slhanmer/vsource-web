@@ -1,0 +1,137 @@
+.date-picker-popover {
+  // The calendar sits in a carved well, matching the time drums' housing.
+  padding: $spacing-xs;
+
+  .react-datepicker {
+    border: $stroke-hairline solid var(--chrome-edge);
+    font-family: $font-family-ui;
+    background: var(--surface-page);
+    border-radius: $radius-sm;
+    box-shadow:
+      inset 0 3px 5px -1px var(--carve-dark),
+      inset 2px 0 3px -2px var(--carve-side),
+      inset -2px 0 3px -2px var(--carve-side),
+      inset 0 -2px 1px -1px var(--carve-lip);
+    overflow: hidden;
+  }
+
+  .react-datepicker__header {
+    background: var(--surface-chrome-light);
+    border-bottom: $stroke-hairline solid var(--chrome-edge);
+    box-shadow:
+      inset 0 3px 5px -1px var(--carve-dark),
+      inset 2px 0 3px -2px var(--carve-side),
+      inset -2px 0 3px -2px var(--carve-side),
+      inset 0 -2px 1px -1px var(--carve-lip);
+  }
+
+  .react-datepicker__current-month,
+  .react-datepicker__day-name {
+    color: $text-primary;
+    font-family: $font-family-ui;
+  }
+
+  // Vendor draws the arrows as CSS triangles via ::before, so the colour is a
+  // border colour rather than a text colour.
+  .react-datepicker__navigation-icon::before {
+    border-color: $text-primary;
+    transition: border-color 0.2s ease-in-out;
+  }
+
+  .react-datepicker__navigation:hover .react-datepicker__navigation-icon::before {
+    border-color: var(--action-primary);
+  }
+
+  .react-datepicker__day {
+    color: $text-primary;
+  }
+
+  .react-datepicker__day--outside-month {
+    color: $text-on-disabled;
+  }
+
+  .react-datepicker__day--selected,
+  .react-datepicker__day--keyboard-selected {
+    background: var(--action-primary);
+    color: var(--text-on-action);
+    border-radius: $radius-sm;
+  }
+
+  .react-datepicker__day:hover {
+    background: var(--surface-active);
+    border-radius: $radius-sm;
+  }
+
+  .react-datepicker__day--today {
+    font-weight: $font-weight-bold;
+    color: var(--text-primary);
+    background-color: var(--surface-info);
+      border-radius: $radius-sm;
+  }
+
+  .react-datepicker__day:not(.react-datepicker__day--selected):hover {
+    background: var(--action-primary);
+    color: var(--text-on-dark);
+    font-weight: $font-weight-semibold;
+    border-radius: $radius-sm;
+  }
+}
+
+.date-input-wrapper {
+  position: relative;
+  width: 100%;
+
+  .date-input-row {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+
+    // The ref wrapper the popover anchors to — needs to sit in the row, not
+    // wrap beneath it.
+    > span {
+      display: inline-flex;
+      align-items: center;
+      flex: 0 0 auto;
+    }
+
+    .date-picker-icon {
+      cursor: pointer;
+      color: $text-primary;
+      transition: color 0.2s ease-in-out;
+      outline: none;
+
+      &:hover {
+        color: $action-primary;
+      }
+
+      &:focus-visible {
+        outline: $border-focus;
+        outline-offset: 2px;
+        border-radius: $radius-sm;
+      }
+    }
+  }
+
+  .input-hint {
+    position: absolute;
+    bottom: -1.2rem;
+    left: 0.25rem;
+    font-size: 0.75rem;
+    color: $text-on-disabled;
+    opacity: 0;
+    transform: translateY(2px);
+    transition: all 0.2s ease;
+
+    &.error {
+      color: $state-error;
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  // General sibling — the Popover sits between the row and the hint in the DOM.
+  .date-input-row:focus-within ~ .input-hint {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

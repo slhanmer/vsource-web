@@ -1,0 +1,97 @@
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: $surface-page;
+  border-bottom: $stroke-hairline solid $surface-chrome;
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-lg;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: $spacing-md $spacing-lg;
+  }
+
+  &__brand {
+    font-family: $font-family-button;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: $action-primary;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+
+  &__nav {
+    display: flex;
+    align-items: center;
+    gap: $spacing-lg;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  &__link {
+    font-family: $font-family-ui;
+    font-size: $font-size-base;
+    color: $text-secondary;
+    text-decoration: none;
+    padding-bottom: $spacing-2xs;
+    border-bottom: $stroke-thick solid transparent;
+
+    &:hover {
+      color: $text-primary;
+    }
+
+    &.is-active {
+      color: $action-primary;
+      border-bottom-color: $action-primary;
+    }
+  }
+
+  &__toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: $font-size-lg;
+    color: $text-primary;
+    padding: $spacing-2xs;
+
+    @media (max-width: 768px) {
+      display: inline-flex;
+    }
+  }
+
+  &__drawer {
+    display: none;
+    flex-direction: column;
+    border-top: $stroke-hairline solid $surface-chrome;
+    background: $surface-page;
+
+    &.is-open {
+      display: flex;
+    }
+
+    @media (min-width: 769px) {
+      display: none !important;
+    }
+  }
+
+  &__drawer-link {
+    font-family: $font-family-ui;
+    font-size: $font-size-md;
+    color: $text-primary;
+    text-decoration: none;
+    padding: $spacing-md $spacing-lg;
+    border-bottom: $stroke-hairline solid $surface-chrome-light;
+
+    &.is-active {
+      color: $action-primary;
+      font-weight: $font-weight-semibold;
+    }
+  }
+}

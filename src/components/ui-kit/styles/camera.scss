@@ -1,0 +1,83 @@
+.camera-overlay-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: fit-content;
+
+  &.active {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: $action-primary;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+
+    .camera-feed {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .overlay-buttons {
+      position: absolute;
+      bottom: 8%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      pointer-events: all;
+    }
+
+    p {
+      position: absolute;
+      bottom: 1%;
+      width: 100%;
+      text-align: center;
+      color: white;
+      font-weight: 500;
+    }
+  }
+
+  .captured-preview {
+    width: 100%;
+    max-width: 300px;
+    aspect-ratio: 4 / 3;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 6px;
+      display: block;
+    }
+  }
+
+  .icon-only-button svg {
+    font-size: 40px;
+  }
+  .icon-only-button,
+  .button-container.icon-only-container {
+    width: 60px !important;
+    height: 60px !important;
+
+    &.small {
+      width: 40px !important;
+      height: 40px !important;
+    }
+  }
+
+  .camera-error {
+    color: $state-error;
+    padding: 1rem;
+    font-weight: bold;
+    background: $surface-error;
+  }
+}

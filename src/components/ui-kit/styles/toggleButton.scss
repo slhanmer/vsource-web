@@ -1,0 +1,84 @@
+.toggle-button {
+  display: flex;
+  width: fit-content;
+  height: 40px;
+
+  &.disabled {
+    color: $text-on-disabled;
+    background-color: $surface-disabled;
+  }
+
+  .toggle-button-option {
+    width: 140px;
+    // Figma: Montserrat Bold 20px, ink text in both states
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: $text-primary;
+    padding: 0 10px;
+    border-radius: 0;
+    border: 1px solid $text-primary; // #393939 stroke
+    background-color: $surface-page; // #fbfaf7 inactive
+    transition: all 0.2s ease-in-out;
+
+    &:not(:disabled):hover {
+      cursor: pointer;
+      color: $action-primary;
+    }
+
+    &:not(:first-of-type) {
+      border-left: none;
+    }
+
+    // Rounded outer corners for the default (inline) variant
+    &:first-of-type {
+      border-radius: $radius-button 0 0 $radius-button;
+    }
+    &:last-of-type {
+      border-radius: 0 $radius-button $radius-button 0;
+    }
+
+    // ── Active = carved well (Figma: chrome-grey fill + inner-shadow
+    //    recess + white light-catch lip). Depth by edge, per Etched. ──
+    &.active {
+      background-color: var(--surface-chrome, #e4e1db);
+      box-shadow:
+        inset 2px 3px 3px 0 var(--carve-dark, rgba(0, 0, 0, 0.35)),
+        1px 2px 2px 0 var(--carve-lip, rgba(255, 255, 255, 1));
+    }
+
+    &.disabled {
+      color: $text-on-disabled;
+      background-color: $surface-disabled;
+
+      &:hover {
+        color: $text-on-disabled;
+        background-color: $surface-disabled;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  // ── Full-width banded variant — fills container, equal segments,
+  //    square outer corners (Figma "Toggle: Full width", radius 0). ──
+  &--full {
+    width: 100%;
+
+    .toggle-button-option {
+      flex: 1 1 0;
+      width: auto;
+    }
+
+    // Heavier selector so square corners beat the base :first/:last rules
+    // regardless of source order.
+    .toggle-button-option:first-of-type {
+      border-radius: 0;
+      border-left: none;
+    }
+
+    .toggle-button-option:last-of-type {
+      border-radius: 0;
+       border-right: none;
+    }
+  }
+}

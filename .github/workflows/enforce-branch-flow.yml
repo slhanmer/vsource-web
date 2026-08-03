@@ -1,0 +1,30 @@
+name: Enforce Branch Flow
+
+on:
+  pull_request:
+    branches:
+      - staging
+      - production
+
+jobs:
+  enforce-flow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch flow
+        run: |
+          SOURCE="${{ github.head_ref }}"
+          TARGET="${{ github.base_ref }}"
+
+          echo "PR from '$SOURCE' into '$TARGET'"
+
+          if [ "$TARGET" = "staging" ] && [ "$SOURCE" != "development" ]; then
+            echo "❌ PRs to staging must come from development. Got: $SOURCE"
+            exit 1
+          fi
+
+          if [ "$TARGET" = "production" ] && [ "$SOURCE" != "staging" ]; then
+            echo "❌ PRs to production must come from staging. Got: $SOURCE"
+            exit 1
+          fi
+
+          echo "✅ Branch flow is valid."

@@ -1,0 +1,82 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+
+  &.open {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.modal-content {
+  background: $surface-page;
+  border-radius: $radius-large;
+  padding: $padding-lg;
+  width: 90%;
+  max-height: 98vh;
+  overflow-y: auto;
+  
+  opacity: 0;
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease;
+
+  .modal-overlay.open & {
+    opacity: 1;
+  }
+
+  .modal-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    margin-bottom: $margin-md;
+
+    &.no-close-button {
+      justify-content: center;
+    }
+
+    h2 {
+      @media (max-width: $breakpoint-mobile) {
+        font-size: 1.2rem;
+      }
+    }
+
+    .close-button {
+      font-size:$font-size-xl;
+      width: 16px;
+    }
+  }
+
+  .modal-footer {
+    margin-top: $margin-md;
+    text-align: right;
+  }
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;  
+}
+
+.modal-content.fullscreen {
+  width: 90vw;
+  height: 90vh;
+  max-width: 800px;
+  max-height: fit-content;
+}

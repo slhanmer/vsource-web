@@ -1,0 +1,681 @@
+// ─────────────────────────────────────────────────────────────
+// Button styles — aligned to Figma "Button" component set
+// Variants: Basic, Secondary, CTA, Danger, Success, Tertiary,
+//           Icon, Icon Only, Text Only, Toggle
+// Plus load-bearing app variants kept until their screens are reworked:
+//           cancel, fingerprint, close, edit, plus, minus, filter
+// .button-container removed — fingerprint keeps a minimal column wrapper.
+// ─────────────────────────────────────────────────────────────
+
+button {
+  font-family: 'Montserrat', sans-serif;
+  font-size: $font-size-lg;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+}
+
+// ── Base button box (250×40, radius, page padding) ────────────
+.basic-button {
+  background-color: $action-primary;
+  color: $surface-page;
+  text-align: center;
+  text-decoration: none;
+  font-size: $font-size-base;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0 10px;
+  border-radius: $radius-button;
+  border: none;
+  width: 250px;
+  height: 40px;
+
+  &.mobile {
+    width: 100%;
+  }
+
+  transition:
+    transform 0.1s ease,
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out,
+    border 0.2s ease-in-out;
+
+  &:hover {
+    background-color: $action-primary-hover;
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  &:disabled {
+    background-color: $surface-disabled;
+    color: $text-on-disabled;
+    box-shadow: none;
+    cursor: not-allowed;
+
+    &:hover {
+      background-color: $surface-disabled;
+      color: $text-on-disabled;
+    }
+
+    &:active {
+      transform: scale(1);
+    }
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  // Tooltip now anchors to the button itself (container removed)
+  + .button-tooltip {
+    color: $action-primary;
+    font-size: small;
+    font-weight: 400;
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // ── Secondary (Figma) ──────────────────────────────────────
+  &.secondary-button {
+    background-color: $surface-page;
+    color: $text-primary;
+    border: 1px solid $text-primary;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $surface-page;
+      border-color: $action-primary;
+      color: $action-primary;
+    }
+  }
+
+  // ── Tertiary (Figma) — 1.5px charcoal outline, page fill ────
+  &.tertiary-button {
+    background-color: $surface-page;
+    color: $text-primary;
+    border: 1.5px solid $text-primary; // rgb(57,57,57)
+    padding: 0 20px;
+    font-weight: 600;
+
+    &:hover:not(.disabled) {
+      border-color: $action-primary;
+      color: $action-primary;
+      background-color: var(--surface-active);
+    }
+
+    &:disabled,
+    &.disabled {
+      background-color: $surface-page;
+      color: $text-on-disabled;
+      border-color: $text-on-disabled;
+      cursor: not-allowed;
+    }
+  }
+
+  // ── CTA (Figma) ────────────────────────────────────────────
+  &.cta-button,
+  &.success-button {
+    background-color: $surface-page;
+    border: 1px solid $action-primary;
+    color: $action-primary;
+    font-weight: 600;
+    transition: all ease-in-out 0.2s;
+
+    &:disabled {
+      background-color: $surface-recessed;
+      color: $text-on-disabled;
+      border: none;
+      box-shadow: none;
+      cursor: not-allowed;
+
+      &:hover {
+        background-color: $surface-recessed;
+        color: $text-on-disabled;
+      }
+
+      &:active {
+        transform: scale(1);
+      }
+    }
+
+    + .button_tooltip {
+      color: $action-primary;
+      font-size: 20px;
+      margin-top: 2px;
+      font-weight: bold;
+    }
+
+    .icon {
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.7s ease;
+      max-width: 0;
+      white-space: nowrap;
+    }
+
+    .label-span {
+      flex-grow: 1;
+      flex-shrink: 1;
+      margin: 0 auto;
+    }
+
+    &:hover {
+      background-color: $action-primary;
+      color: var(--text-on-action);
+      border-color: $action-primary;
+
+      .icon {
+        background-color: $action-primary;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        flex-grow: 0;
+        flex-shrink: 0;
+        padding: 0 5px;
+        display: flex;
+        opacity: 1;
+        visibility: visible;
+        max-width: 100%;
+      }
+    }
+  }
+
+  // ── Success (Figma) ────────────────────────────────────────
+  &.success-button {
+    color: var(--success-text);
+    border-color: $state-success;
+
+    &:hover {
+      // deep green fill (fixed both themes) so the white label clears AA 4.5;
+      // $state-success #3f8a4f is a hair too light for 16px white text (3.88)
+      background-color: #377946;
+      color: whitesmoke;
+      border-color: #377946;
+    }
+  }
+
+  // ── Danger (Figma) ─────────────────────────────────────────
+  &.danger-button {
+    color: var(--warning-text);
+    background-color: var(--surface-warning);
+    border: 1px solid $state-warning;
+
+    &:hover:not(.disabled) {
+      color: var(--error-text);
+      border-color: $state-error;
+      background-color: var(--surface-error);
+    }
+
+    &.disabled {
+      background-color: $surface-disabled;
+      color: $text-on-disabled;
+      border: none;
+    }
+  }
+
+  // ── Text Only (Figma) ──────────────────────────────────────
+  &.text-only-button {
+    overflow: visible;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
+    background-color: inherit;
+    border: none;
+    color: $action-primary;
+    box-shadow: none;
+    z-index: 2;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    transition: all 0.1s ease-in;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: -2px;
+      right: -2px;
+      bottom: 4px;
+      height: 1.5px;
+      background: currentColor;
+      box-shadow: 0 1px 3px currentColor;
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 0.15s ease;
+    }
+
+    &:hover::after,
+    &:focus-visible::after {
+      transform: scaleX(1);
+    }
+
+    &:disabled {
+      color: $text-on-disabled;
+      background-color: transparent;
+      &::after {
+        display: none;
+      }
+    }
+  }
+
+  // ── Cancel — kept (forms depend on it), not in Figma set ────
+  &.cancel-button {
+    background-color: transparent;
+    color: $text-secondary;
+    border: 1.5px solid $text-secondary;
+
+    &:hover:not(.disabled) {
+      color: $text-primary;
+      border-color: $action-primary;
+      background-color: transparent;
+    }
+
+    &.disabled,
+    &:disabled {
+      background-color: $surface-disabled;
+      color: $text-on-disabled;
+      border-color: transparent;
+      cursor: not-allowed;
+    }
+  }
+
+  // ── Close / Edit — kept (modals/lists depend on them) ───────
+  &.close-button,
+  &.edit-button {
+    background: transparent;
+    border: none;
+    color: $action-primary;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    box-shadow: none;
+    padding: 0;
+
+    &.small {
+      width: 20px;
+      height: 20px;
+      transform: translateY(-4px);
+    }
+
+    &::before {
+      display: block;
+      width: 100%;
+      height: 100%;
+      line-height: 1;
+      text-align: center;
+    }
+
+    &.close-button::before {
+      content: '×';
+      font-size: 30px;
+      font-weight: 500;
+      color: $action-primary;
+    }
+
+    &.edit-button::before {
+      content: '';
+      display: block;
+      width: 140%;
+      height: 140%;
+      margin: -25%;
+      background-color: $action-primary;
+      mask: url('/icons/edit.svg') no-repeat center;
+      -webkit-mask: url('/icons/edit.svg') no-repeat center;
+      mask-size: contain;
+      -webkit-mask-size: contain;
+    }
+  }
+
+  // ── Filter — kept, not in Figma set ────────────────────────
+  &.filter-button {
+    background-color: $surface-page;
+    color: $action-primary;
+    border: $border-primary;
+
+    &:hover {
+      color: $action-primary;
+      border-color: $action-primary;
+    }
+  }
+
+  // ── Plus / Minus — kept, not in Figma set ──────────────────
+  &.plus-button,
+  &.minus-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 4px 8px;
+    background-color: inherit;
+    color: $action-primary;
+    width: auto;
+    height: auto;
+    font-size: 16px;
+    font-weight: 300;
+    box-shadow: none;
+    transition: all 0.15s ease-in-out;
+
+    .mini-label {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    &:hover {
+      color: $action-primary-hover;
+    }
+
+    &:disabled {
+      color: $text-on-disabled;
+
+      &:hover {
+        color: $text-on-disabled;
+        background-color: transparent;
+      }
+    }
+
+    &.small {
+      padding: 2px 6px;
+      .icon {
+        font-size: 18px;
+      }
+      .mini-label {
+        font-size: 12px;
+      }
+    }
+  }
+
+  // ── Fingerprint — kept (login signature depends on it) ──────
+  &.fingerprint-button {
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    padding: 0;
+    cursor: pointer;
+    width: 50px;
+    height: 60px;
+    overflow: hidden;
+
+    .icon.fingerprint {
+      width: 50px;
+      height: 60px;
+      fill: inherit;
+    }
+
+    &:hover {
+      background: none;
+      border: none;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+  }
+}
+
+// ── Icon (Figma) — label left, icon right, pinned to edges ────
+// Composed as `.basic-button.icon-button`.
+.icon-button {
+  gap: 0.5rem;
+  transition: all 0.2s ease-in-out;
+  background-color: $surface-page;
+  color: $action-primary;
+  border: 2px solid $action-primary; // Figma strokeW: 2
+
+  // The label+icon row must FILL the button so the two pin to the edges
+  // (matches Figma label x:14 / icon x:215 within the 10px padding box).
+  .label-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    flex: 1 1 auto;
+  }
+
+  .label-left {
+    font-weight: 600;
+    flex: 0 0 auto;
+    text-align: left;
+  }
+
+  .icon-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+
+    // Mirror of .label-left / .icon-right for iconPosition="left".
+  // Only the icon's order flips; the wrapper axis, space-between and
+  // alignment stay identical so both positions share one layout model.
+  .label-right {
+    font-weight: 600;
+    flex: 0 0 auto;
+    text-align: right;
+  }
+
+  .icon-left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    order: -1;
+  }
+
+  &:hover:not(.disabled) {
+    background-color: $action-primary;
+    color: $text-on-action;
+    border-color: $action-primary;
+
+    .label-left,
+    .label-right,
+    .icon-right,
+    .icon-left {
+      color: $text-on-action;
+    }
+  }
+
+  &:focus {
+    background-color: $surface-page;
+  }
+
+  &:active {
+    box-shadow: none;
+    transform: scale(0.98);
+  }
+
+  // Icon (disabled) — grey outline + grey text/icon, page fill.
+  &.disabled,
+  &:disabled {
+    background-color: $surface-page;
+    color: $text-on-disabled;
+    border-color: $text-on-disabled;
+    cursor: not-allowed;
+
+    .label-left,
+    .label-right,
+    .icon-right,
+    .icon-left {
+      color: $text-on-disabled;
+    }
+
+    &:hover {
+      background-color: $surface-page;
+      color: $text-on-disabled;
+      border-color: $text-on-disabled;
+    }
+  }
+}
+
+// ── Icon Only (Figma) ─────────────────────────────────────────
+.icon-only-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: $radius-button;
+  border: 2px solid $action-primary;
+  background-color: $surface-page;
+  color: $action-primary;
+  box-shadow: none;
+  font-size: 0.9rem;
+  flex: 0 0 40px;
+  align-self: center;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+
+  &.trash-button {
+    color: var(--warning-text);
+
+    &:hover {
+      color: var(--error-text);
+    }
+  }
+
+  &.mobile {
+    width: 40px;
+    height: 40px;
+  }
+
+  + .button-tooltip {
+    position: absolute;
+    bottom: -20px;
+    font-size: 12px;
+    padding: 4px 6px;
+    border-radius: $radius-button;
+    color: whitesmoke;
+    background: $scrim;
+  }
+
+  &:hover {
+    background-color: $action-primary;
+    color: $text-on-action;
+  }
+
+  &:disabled {
+    background-color: transparent;
+    color: $text-on-disabled;
+    border-color: $text-on-disabled;
+    cursor: not-allowed;
+
+    &:hover {
+      background-color: transparent;
+      color: $text-on-disabled;
+    }
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px $action-primary;
+  }
+
+  &::-moz-focus-inner {
+    border: 0;
+  }
+
+  .required {
+    background-color: $surface-error;
+  }
+
+  .label-span {
+    display: none;
+  }
+
+  .icon,
+  svg,
+  .fa-icon {
+    width: 20px;
+    height: 20px;
+    color: inherit;
+    flex-shrink: 0;
+    pointer-events: none;
+  }
+
+  svg {
+    display: block;
+  }
+}
+
+// ── Fingerprint wrapper — minimal column layout (replaces the
+//    old .fingerprint-container). Label sits under the button.
+.fingerprint-wrapper {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  fill: $action-primary;
+  color: $action-primary;
+  transition: all 0.2s ease-in-out;
+  width: fit-content;
+
+  &:not(.disabled):not(.required):hover {
+    fill: $action-primary;
+    color: $action-primary;
+    background: none;
+    cursor: pointer;
+  }
+
+  &.disabled {
+    fill: $text-on-disabled;
+    color: $text-on-disabled;
+    cursor: not-allowed;
+  }
+
+  &.required {
+    background-color: $surface-error;
+    color: $state-error;
+  }
+
+  .fingerprint-label {
+    color: inherit;
+    user-select: none;
+
+    &.disabled {
+      color: $text-on-disabled;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+  }
+}
+
+// ── Shared bits ───────────────────────────────────────────────
+.label-span {
+  position: relative;
+}
+
+.label-span.loading {
+  color: $surface-chrome-dark;
+}
+
+.overlay-loader {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+}
+
+.basic-button.icon-button:active {
+  box-shadow: none !important;
+  transform: scale(0.98);
+}

@@ -1,0 +1,66 @@
+.hero {
+  background: linear-gradient(180deg, $surface-sunken 0%, $surface-page 100%);
+  border-bottom: $stroke-hairline solid $surface-chrome;
+
+  &__inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: $spacing-2xl $spacing-lg;
+    font-family: $font-family-ui;
+  }
+
+  &__title {
+    max-width: 18ch;
+    margin: 0 0 $spacing-lg;
+    font-family: $font-family-button;
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    font-weight: $font-weight-bold;
+    line-height: 1.1;
+    color: $text-primary;
+  }
+
+  &__lede {
+    max-width: 58ch;
+    margin: 0 0 $spacing-xl;
+    font-size: $font-size-md;
+    line-height: $line-height-relaxed;
+    color: $text-secondary;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+  }
+
+  &__cta {
+    display: inline-flex;
+    align-items: center;
+    padding: $spacing-sm $spacing-lg;
+    border-radius: $radius-button;
+    background: $action-primary;
+    color: $text-on-action;
+    font-family: $font-family-button;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    text-decoration: none;
+
+    &:hover {
+      background: $action-primary-hover;
+    }
+
+    &--ghost {
+      background: transparent;
+      color: $action-primary;
+      border: $stroke-thin solid $action-primary;
+
+      &:hover {
+        background: $surface-sunken;
+      }
+    }
+  }
+
+  &__note {
+    margin-top: $spacing-xl;
+  }
+}

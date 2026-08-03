@@ -1,0 +1,253 @@
+///////////////////////////////////////////////////////////////////////////////
+//  APTIUM DESIGN SYSTEM TOKENS  (APT-426)
+//  Source of truth: Figma "Aptium - Design System" (collection: Aptium, Light mode)
+//  Two layers: primitives (raw values) -> semantic tokens (intent).
+//
+//  THEMEABLE LAYER: the var(--xxx) tokens below are tenant-overridable. Aptium
+//  values are the defaults; TenantProvider overrides per tenant at runtime.
+//  CSS-var names renamed to the new scheme — provider maps old API keys across
+//  (see TenantProvider bridge). BE key migration tracked in APT-429.
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////// PRIMITIVES (raw) /////////////////////////////////
+// Purple — the active / selected / primary lane
+$purple-50: #ece7f3;
+$purple-300: #b295d1;
+$purple-500: #9268bc;
+$purple-700: #533178;
+$purple-800: #42275f;
+$purple-900: #341e4b;
+
+// Blue — utility highlight (dark-surface / info accent)
+$blue-400: #6ab2e2;
+$blue-500: #4a97c9;
+$blue-600: #3a7ba6;
+
+// Cream / chrome — warm light surfaces & device chrome
+$cream-50: #fbfaf7;
+$cream-100: #f4f2ee;
+$chrome-100: #eae7e1;
+$chrome-200: #e7e1d6;
+$chrome-300: #dbd8d2;
+$chrome-350: #d3d0cb;
+$chrome-grey: #e4e1db;
+$sunken: #f6f4ef;
+
+// Ink / charcoal — text & carved device surfaces
+$ink-900: #393939;
+$charcoal-800: #393939;
+$grey-500: #8c9094;
+
+// Neutrals (disabled etc.)
+$neutral-200: #dad8d3;
+$neutral-400: #6b6862;
+
+// Status primitives
+$red-600: #b23a2f;
+$green-600: #3f8a4f;
+$amber-500: #c9821f;
+// Status TEXT primitives — accessible (AA) variants for text use only.
+// Distinct from the -500 fills, which stay for surfaces + rating-star lane.
+// Green is a vivid AA green (reads clearly green, not grey) on both tint + page.
+$amber-text-light: #976217; // AA on page + warning tint
+$amber-text-dark:  #d08720; // AA on dark page + dark warning tint
+$green-text-light: #207544; // vivid green, AA on page + success tint
+$green-text-dark:  #57c06d; // vivid green, AA on dark page + dark success tint
+ $state-success-50: #e6f0e8;
+$warning-50: #fbf0de;
+$error-50: #f7e4e1;
+$info-50: #e4f0f8;
+
+// Elevation primitives (light surfaces — depth by edge, fill only on small elements)
+$elevation-0-recessed: #fcfbf9;
+$elevation-1-card: #ffffff;
+$elevation-2-page: #fbfaf7;
+$elevation-3-overlay: #ffffff;
+
+// Dark primitives — defined for APT-427 (dark mode). Unused in light; harmless.
+$neutral-950: #1f1b1d;
+$neutral-900: #2a2528;
+$neutral-850: #332e31;
+
+
+//////////////////////// THEMEABLE TOKENS (tenant) /////////////////////////////
+// Renamed to the new scheme. Aptium values are defaults; provider overrides.
+// NB: --action-primary (purple) is now the active/primary accent (was --highlight blue).
+$action-primary: var(--action-primary);
+$action-primary-hover: var(--action-primary-hover);
+$route-active: var(--route-active); // blue utility highlight (dark-surface/info)
+$state-info: var(--state-info); // derived (tinycolor) — subtle info accent
+$surface-page: var(--surface-page);
+$surface-sunken: var(--surface-sunken); // derived (tinycolor)
+$text-primary: var(--text-primary);
+$text-secondary: var(--text-secondary);
+$text-on-dark: var(--text-on-dark);
+$text-placeholder: var(--text-placeholder);
+$text-subtle: var(--text-subtle); // derived (tinycolor)
+
+
+//////////////////////// SEMANTIC TOKENS (static) //////////////////////////////
+// Surfaces
+$surface-card: $elevation-1-card;
+$surface-recessed: $elevation-0-recessed;
+$surface-raised: $elevation-1-card;
+$surface-overlay: $elevation-3-overlay;
+$surface-chrome: $chrome-grey;
+$surface-chrome-light: $chrome-100;
+$surface-chrome-dark: $chrome-300;
+$surface-dark: $ink-900;
+$surface-disabled: var(--surface-disabled);
+$surface-processing: $purple-50;
+$scrim: rgba(57, 57, 57, 0.9); // modal/overlay backdrop — not in Figma, ink-900 @ 60%
+
+// Device surface — charcoal exception (status card, radial menu, device chrome).
+// NOT general UI surface; reserved for device-representing surfaces.
+$surface-device: $charcoal-800;        // ← whatever the primitive is actually named
+$surface-device-border: $chrome-200;   // the light 3px stroke, rgb(228,225,219)
+
+// Surface tints for status banners/cards
+$surface-success:  $state-success-50;
+$surface-warning: $warning-50;
+$surface-error: $error-50;
+$surface-info: $info-50;
+
+// Text
+$text-on-action: var(--text-on-action); // label on filled accent — themed (white light / dark ink dark)
+$text-on-disabled: var(--text-on-disabled); 
+$text-hero: $purple-700; // dark-mode behaviour handled in APT-427
+$text-success: var(--success-text); // theme-aware AA text (fill lane = $state-success)
+$text-warning: var(--warning-text); // theme-aware AA text (fill lane = $state-warning)
+$text-danger: $red-600;
+$text-chrome-etched: $chrome-350;
+
+// Action / state
+$action-destructive: $red-600;
+$action-primary-pressed: $purple-900;
+$state-error: $red-600;
+$state-success: $green-600;
+$state-warning: $amber-500;
+
+
+/////////////////////////////// TYPOGRAPHY /////////////////////////////////////
+$font-family-ui: 'Nunito Sans', sans-serif;
+$font-family-input: 'Patrick Hand', cursive; // NB: handwriting font — confirm intentional
+$font-family-button: 'Montserrat', sans-serif;
+
+$font-size-xs: 12px;
+$font-size-sm: 14px;
+$font-size-base: 16px;
+$font-size-md: 18px;
+$font-size-lg: 20px; // inputs at 20px to avoid iOS Safari sub-16px auto-zoom
+$font-size-xl: 24px;
+$font-size-2xl: 32px;
+
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+$line-height-tight: 14px;
+$line-height-snug: 20px;
+$line-height-normal: 24px;
+$line-height-relaxed: 28px;
+
+// Heading sizes (kept for existing responsive headings)
+$heading-desktop: 2rem;
+$heading-tablet: 1.75rem;
+$heading-mobile: 1rem;
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+
+
+//////////////////////////////// SPACING //////////////////////////////////////
+$spacing-2xs: 4px;
+$spacing-xs: 8px;
+$spacing-sm: 12px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$spacing-2xl: 48px;
+
+// Padding / margin aliases (map onto spacing scale; note sm is now 12px not 8px)
+$padding-xs: $spacing-2xs;
+$padding-sm: $spacing-xs;
+$padding-md: $spacing-md;
+$padding-lg: $spacing-lg;
+$padding-xl: $spacing-xl;
+
+$margin-xs: $spacing-2xs;
+$margin-sm: $spacing-xs;
+$margin-md: $spacing-md;
+$margin-lg: $spacing-lg;
+$margin-xl: $spacing-xl;
+
+
+//////////////////////////////// RADIUS ////////////////////////////////////////
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-button: 6px;
+$radius-large: 10px;
+$radius-full: 999px;
+
+
+//////////////////////////////// STROKES ///////////////////////////////////////
+$stroke-hairline: 1px;
+$stroke-thin: 1.5px;
+$stroke-thick: 2px;
+
+// Common border shorthands (rebuilt on new tokens; primary accent = purple)
+$border-primary: $stroke-hairline solid $text-primary;
+$border-secondary: $stroke-thick solid $action-primary; // 2px purple secondary-button stroke
+$border-surface: $stroke-hairline solid $surface-page;
+$border-disabled: $stroke-hairline solid $surface-disabled;
+$border-subtle: $stroke-hairline solid $chrome-300;
+$border-focus: $stroke-thin solid $action-primary;
+
+
+//////////////////////////////// OPACITY ///////////////////////////////////////
+$opacity-disabled: 0.4;
+$opacity-muted: 0.6;
+$opacity-full: 1;
+
+
+//////////////////////////////// SIZING ////////////////////////////////////////
+$sizing-input-max: 400px;
+
+
+/////////////////////////// VIEWPORT BREAKPOINTS ///////////////////////////////
+$breakpoint-mobile: 480px;
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 979px;
+
+:root {
+  --breakpoint-mobile: #{$breakpoint-mobile};
+  --breakpoint-tablet: #{$breakpoint-tablet};
+  --breakpoint-desktop: #{$breakpoint-desktop};
+}
+
+
+////////////////////////////// MISC / APP //////////////////////////////////////
+$header-menu-size: 45px;
+$slide-in-time: 0.35s;
+
+
+///////////////////////////////////////////////////////////////////////////////
+//  REMOVED IN APT-426 (deliberately deleted — references will break the build;
+//  that is the migration punch-list. Restyle to Etched edge-depth as you hit them):
+//
+//  • Entire shadow/glow system: $box-shadow*, $inset-panel-shadow*, $*-shadow*,
+//    $glow-*, $focus-highlight, $focus-editing, $focus-required, $top/bottom/
+//    left/right-shadow*. Etched UI = depth by edge, no float/drop shadows.
+//  • Edu/forks residue: $PDCA-*, $cert-code, $route-active, $signature-font (Pacifico),
+//    $high/medium/low-priority (+ backgrounds), $surface-overlay* if unused.
+//  • Old colour vocab: $action-primary/$text-secondary/$action-primary/$surface-page/$text-primary/etc are
+//    renamed (see themeable layer) — old names intentionally gone so stale refs
+//    surface loudly rather than silently resolving to the old scheme.
+//  •$font-size-xl/large/medium/small/x-small -> use $text-primary-size-* scale.
+//  •$radius-button (5px) / $radius-large (8px) -> $radius-sm / $radius-md.
+//  • $disabled/$surface-chrome-dark/$subtle/$required/$critical etc -> semantic tokens above.
+///////////////////////////////////////////////////////////////////////////////

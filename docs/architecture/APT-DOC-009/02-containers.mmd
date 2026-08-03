@@ -1,0 +1,54 @@
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'Helvetica','fontSize':'13px','primaryColor':'#EDE7F6','primaryBorderColor':'#5E35B1','primaryTextColor':'#1a1a1a','lineColor':'#5E35B1'}}}%%
+flowchart TB
+    CLIN["Authenticated User<br/>(browser, desktop only)"]
+
+    subgraph FE["Front-end Container — Next.js 16 / React 19 (Software Item SI-FE)"]
+        direction TB
+        ROUTES["App Router<br/>(public) &amp; (secure) route groups"]
+        GUARDS["Security Guards<br/>LoggedIn · AccessLevel · FeatureFlag · Wip · DesktopOnly"]
+        FEAT["Feature Modules<br/>login/2FA · scans+viewer · forms · admin · tenant"]
+        SVC["Services Layer<br/>useFetchApi (fetch wrapper,<br/>credentials: include)"]
+        STATE["State — Zustand stores<br/>user · tenant · device · scan · form"]
+        PROV["Providers<br/>Tenant (subdomain theming) · Ticket"]
+        UIKIT["ui-kit + three.js viewer<br/>IndexedDB model cache (500MB LRU)"]
+    end
+
+    subgraph BE["Back-end Container — TypeScript / Express (Software Item SI-BE)"]
+        direction TB
+        API["REST API<br/>versioned service endpoints"]
+        WS["Real-time Scan Channel<br/>WebSocket topics users/{client}/scans/list<br/><i>(PLANNED — APT-439)</i>"]
+        AUTH["Auth &amp; Session<br/>HTTP-only cookies · 2FA<br/><i>2FA PLANNED</i>"]
+        TEN["Tenancy &amp; Access Control<br/>device→tenant→user ownership"]
+        FILESVC["Rust File Service<br/>signed-URL issuer · AWS SDK"]
+    end
+
+    DBS[("Per-tenant MySQL DBs<br/>data segregated by tenancy")]
+    OBJ[("Object Storage (S3)<br/>3D models · raw scan archives")]
+    EMAIL["Email / SMS Service"]
+
+    CLIN -->|HTTPS| ROUTES
+    ROUTES --> GUARDS --> FEAT
+    FEAT --> SVC
+    FEAT --> STATE
+    FE --- PROV
+    FEAT --> UIKIT
+    SVC -->|REST /api/ · cookie| API
+    UIKIT -.->|subscribe scan updates| WS
+    API --> AUTH
+    API --> TEN
+    API --> FILESVC
+    AUTH <--> EMAIL
+    TEN <-->|per-tenant| DBS
+    FILESVC <-->|store/retrieve| OBJ
+    WS --> TEN
+
+    classDef feb fill:#EDE7F6,stroke:#5E35B1,color:#1a1a1a;
+    classDef beb fill:#E1F5FE,stroke:#0277BD,color:#1a1a1a;
+    classDef store fill:#E8F5E9,stroke:#2E7D32,color:#1a1a1a;
+    classDef ext fill:#ECEFF1,stroke:#546E7A,color:#1a1a1a;
+    classDef planned fill:#FFF8E1,stroke:#F9A825,color:#1a1a1a,stroke-dasharray: 5 4;
+    class ROUTES,GUARDS,FEAT,SVC,STATE,PROV,UIKIT feb;
+    class API,AUTH,TEN,FILESVC beb;
+    class WS planned;
+    class DBS,OBJ store;
+    class EMAIL ext;

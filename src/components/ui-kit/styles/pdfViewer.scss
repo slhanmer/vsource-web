@@ -1,0 +1,169 @@
+// ============================================================================
+//  PDFViewer (kit)  —  Etched restyle + toolbar lifted out of the scroll area.
+//  Structure: .pdf-viewer > .pdf-controls (fixed chrome header)
+//                         + .pdf-scroll-container (recessed well, pages only)
+//  Depth by edge, tokens only, light + dark via data-theme.
+// ============================================================================
+
+.pdf-viewer {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  // Fixed width so the well doesn't get sized by the (content-driven) canvas.
+  // Empty/loading and loaded states are therefore the same width — no shift.
+  width: 100%;
+  border-radius: $radius-md;
+  overflow: hidden;
+  border: 1px solid var(--chrome-edge);
+
+  .pdf-controls {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-lg;
+    padding: $spacing-xs $spacing-md;
+    background: var(--surface-page);
+    border-bottom: 1px solid var(--chrome-edge);
+
+    // The two standard clusters (left: zoom+page, right: magnify/print/download)
+    // sit at opposite ends of the toolbar.
+    &__groups {
+      width: 100%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: $spacing-lg;
+    }
+
+    &__extra {
+      display: flex;
+      align-items: center;
+    }
+
+    .groups__standard {
+      display: flex;
+      align-items: flex-start;
+      gap: $spacing-lg;
+    }
+
+    .flex-container.column {
+      gap: $spacing-2xs;
+    }
+
+    .button-set {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: $spacing-2xs;
+    }
+
+    .button-set-label {
+      font-size: $font-size-xs;
+      color: var(--text-subtle);
+      text-align: center;
+    }
+
+    .input-wrapper {
+      margin-bottom: 0;
+
+      .input-field-row .input-field {
+        height: 30px;
+      }
+    }
+
+    // Icon controls sit in the chrome — small, quiet, colour on hover only.
+    .icon-only-button {
+      width: 32px !important;
+      height: 32px !important;
+      border: none;
+      color: var(--text-primary);
+      background-color: inherit;
+
+      &:hover {
+        color: var(--action-primary);
+      }
+
+      &.print,
+      &.download {
+        svg {
+          width: 20px !important;
+          height: 20px !important;
+        }
+      }
+
+      svg {
+        width: 15px !important;
+        height: 15px !important;
+      }
+    }
+
+    .basic-button {
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  // ── Scroll well: the recessed channel the document sits in. Carved edge —
+  //    dark inset up top, light-catch on the lower rim. Pages scroll here. ──
+  .pdf-scroll-container {
+    flex: 1 1 auto;
+    min-height: 0;
+    // Own the width explicitly so an empty well (loader / 0 pages) is the same
+    // width as a loaded one — the canvas no longer drives container width.
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    // Centre content while it's short (loader), top-align once it overflows.
+    justify-content: safe center;
+    gap: $spacing-sm;
+    padding: $spacing-md $spacing-lg;
+    background: var(--surface-recessed, var(--surface-sunken));
+    box-shadow:
+      inset 0 3px 8px 0 var(--carve-dark),
+      inset 0 -1px 1px 0 var(--carve-lip);
+
+    canvas.magnify {
+      cursor: zoom-in;
+    }
+  }
+
+  // ── Loading state: fills the well while the first pages render, so the well
+  //    shows an intentional state at its final size instead of collapsing
+  //    narrow then jumping wide when content arrives.
+  .pdf-loading {
+    flex: 1 1 auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // ── Pages: raised cards proud of the recessed well. Edge, not float.
+  //    Constrained to the well width so they never push the container wider. ──
+  .pdf-page {
+    position: relative;
+    max-width: 100%;
+    padding: 0;
+    border-radius: $radius-sm;
+    background: $surface-card;
+    border: 1px solid var(--chrome-edge);
+    scroll-margin-top: $spacing-md;
+
+    canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      border-radius: $radius-sm;
+    }
+
+    &:last-of-type {
+      margin-bottom: $spacing-xs;
+    }
+  }
+}

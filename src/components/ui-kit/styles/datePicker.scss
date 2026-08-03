@@ -1,0 +1,139 @@
+.date-picker-container {
+  max-width: 97%;
+  margin: 0 auto;
+
+  .icon-only-button svg {
+    font-size: 30px;
+  }
+
+  .rdp-root {
+    background: $surface-recessed !important;
+    border: $border-disabled;
+    border-radius: $radius-button;
+    
+    padding: 20px;
+  }
+
+  .rdp-day_button {
+    width: 21px !important;
+    height: 21px !important;
+    font-size: 12px !important;
+  }
+
+  .rdp-day {
+    width: 20px !important;
+    height: 20px !important;
+    color: $text-primary;
+  }
+
+  .rdp-today:not(.rdp-outside) {
+    font-weight: 600;
+    color: $action-primary;
+    border-radius: 50%;
+  }
+
+  .rdp-months {
+    gap: 5px !important;
+    row-gap: 5px !important;
+    display: grid !important;
+    grid-template-columns: repeat(6, max-content) !important;
+    justify-content: start !important;
+    padding: 0 !important;
+    overflow-x: auto;
+  }
+
+  .rdp-month {
+    border: $border-disabled;
+    border-radius: $radius-button;
+    
+    padding: 5px;
+    background: $surface-page;
+
+    &.current-month {
+      border-color: $action-primary;
+      
+
+      .rdp-month_caption {
+        color: $action-primary;
+      }
+    }
+  }
+
+  .rdp-month_caption {
+    height: fit-content !important;
+    font-size: 14px !important;
+  }
+
+  .rdp-weekday {
+    padding: 0 !important;
+  }
+
+  .rdp-selected .rdp-day_button {
+    border: none !important;
+  }
+
+  .range-middle {
+    background: $state-info !important;
+    border-radius: 0 !important;
+  }
+
+  .rdp-selected {
+    font-weight: normal !important;
+    color: $text-on-dark !important;
+    background-color: $action-primary;
+    border-radius: 50%;
+
+    &.range-start {
+      border-radius: 50% 0 0 50%;
+    }
+
+    &.range-end {
+      border-radius: 0 50% 50% 0;
+    }
+  }
+
+  .basic-button.text-only-button {
+    font-weight: 400 !important;
+    &.active {
+      font-weight: 600 !important;
+      color: $action-primary;
+    }
+  }
+
+  .selected-dates-list {
+    text-align: center;
+    overflow-x: auto;
+    font-size: 13px;
+    max-width: 100%;
+    margin: 0 10px;
+  }
+
+  .day-display-container {
+    display: flex;
+    padding-left: 5px;
+    justify-content: center;
+
+    & p {
+      position: relative;
+    }
+    & p:not(:last-child)::after {
+      content: '-';
+      margin: 0 5px;
+      color: $surface-chrome-dark;
+    }
+  }
+
+  .date-display {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    h4 {
+      text-align: left;
+
+      span {
+        font-weight: 400;
+      }
+    }
+  }
+}

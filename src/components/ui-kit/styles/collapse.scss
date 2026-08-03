@@ -1,0 +1,124 @@
+// ============================================================================
+//  Collapse — Etched depth model
+//  Header and content are ONE continuous surface — always the same colour.
+//  Closed: flat card, flush. Open: the whole surface sinks to recessed, sold
+//  by a light top-inset carve. Hover is an edge brighten, never a colour shift
+//  (that would break the single-surface rule). Depth by edge, no drop shadows.
+//  var() tokens throughout so light/dark resolves via data-theme.
+// ============================================================================
+
+.collapse {
+  width: auto;
+  margin: 1rem 0;
+  border: $border-subtle;
+  border-radius: $radius-large;
+  background: var(--surface-card);
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &.disabled {
+    background-color: var(--surface-disabled);
+    border-color: var(--text-on-disabled);
+  }
+
+  &.error {
+    border-color: $state-warning;
+  }
+
+  &.small {
+    margin: 0 0 0.5rem;
+  }
+
+  // ── Header ────────────────────────────────────────────────────────────────
+  // Transparent — inherits the collapse surface so it's always the same colour
+  // as the content. No independent fill, no raised-lid contradiction.
+  .collapse-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-radius: $radius-large;
+    padding: 0.75rem 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: border-radius 0.15s ease;
+
+    .title {
+      justify-content: flex-start;
+      flex: 1 1 auto;
+      color: $text-primary;
+      font-size: $font-size-lg;
+      transform: translateY(1px);
+      padding-left: 2px;
+      text-align: left;
+
+      &.disabled { color: $text-on-disabled; }
+      &.error { color: $state-warning; }
+    }
+
+    .icon {
+      flex: 0 0 24px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      color: $text-primary;
+      transform: translateY(2px);
+      transition: transform 0.1s ease;
+
+      &.error { color: $state-warning; }
+      &.open { transform: rotate(180deg); }
+      &.small { flex: 0 0 18px; }
+      &.disabled { color: $text-on-disabled; }
+    }
+  }
+
+  // ── Hover (closed only) = preview the press ───────────────────────────────
+  // Open = the surface sinks; hover hints at that sink beginning — a faint
+  // version of the recessed carve, at ~half the open depth. No colour shift
+  // (that would break the single-surface rule); the edge does the telegraphing.
+  // Guarded against open/disabled; touch has no hover so nothing is lost there.
+  &:not(.disabled):not(.open) .collapse-toggle:hover {
+    background-color: var(--surface-sunken);
+    box-shadow:
+      inset 0 2px 3px -2px var(--carve-dark),
+      inset 0 1px 0 0 var(--carve-lip);
+  }
+
+  // ── Content surface — same colour as header at all times ──────────────────
+  .collapse-content {
+    overflow: hidden;
+    transition: height 0.2s ease-in-out;
+    background: transparent;
+    border-radius: 0 0 $radius-large $radius-large;
+
+    &.show { overflow: visible; }
+
+    .collapse-inner {
+      padding: 20px 20px 0 20px;
+      opacity: 0;
+      transition: opacity 0.1s ease-in-out;
+      &.visible { opacity: 1; }
+      &.hidden { opacity: 0; }
+    }
+  }
+
+  // ── Open = the WHOLE surface sinks to recessed ────────────────────────────
+  // One material dropping into the page. Light top-inset carve sells the sink;
+  // header + content share the recessed colour because they're one surface.
+  &.open {
+    padding-bottom: 1rem;
+    background: var(--surface-sunken);
+    box-shadow:
+      inset 0 2px 4px -2px var(--carve-dark),
+      inset 0 1px 0 0 var(--carve-side);
+
+    .collapse-toggle {
+      border-radius: $radius-large $radius-large 0 0;
+    }
+  }
+}

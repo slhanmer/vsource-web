@@ -1,0 +1,89 @@
+// ─────────────────────────────────────────────────────────────
+// Stepper — paged navigation for stepped flows (walkthroughs,
+// wizards, multi-step modals).
+//
+// Three-state rule: this is functional content, so it stays flat
+// and high-contrast — no chrome, no carve. Depth belongs to the
+// progress track above it, not the controls.
+// ─────────────────────────────────────────────────────────────
+
+.stepper {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: $spacing-sm;
+  width: 100%;
+
+  &__control {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-2xs;
+    // Reset the global `button` box — this is text, not a button box.
+    width: auto;
+    height: auto;
+    padding: 0;
+    border: none;
+    background: none;
+    overflow: visible;
+
+    font-family: $font-family-button;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    line-height: 1;
+    color: $action-primary;
+    cursor: pointer;
+
+    transition: color 0.15s ease-in-out;
+
+    &:disabled {
+      color: $text-on-disabled;
+      cursor: not-allowed;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: none;
+      // Keyboard affordance without adding resting chrome.
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+
+  // Hover feedback is motion, not chrome: the chevron nudges in its own
+  // direction of travel. $action-primary -> $action-primary-hover is two dark
+  // purples ~10% apart — fine behind a 250px fill, invisible on 4 letters of
+  // text, so the movement carries it instead.
+  &__control--back:hover:not(:disabled) .stepper__chevron {
+    transform: translateX(-3px);
+  }
+
+  &__control--next:hover:not(:disabled) .stepper__chevron {
+    transform: translateX(3px);
+  }
+
+  &__chevron {
+    font-size: 0.8em;
+    flex: 0 0 auto;
+    transition: transform 0.15s ease-out;
+  }
+
+  &__label {
+    white-space: nowrap;
+  }
+
+  &__count {
+    flex: 0 0 auto;
+    font-family: $font-family-ui;
+    font-size: $font-size-xs;
+    color: $text-on-disabled;
+    white-space: nowrap;
+  }
+
+  // Holds the Back slot when hidden so the count/next stay put.
+  &__spacer {
+    flex: 0 0 auto;
+  }
+}

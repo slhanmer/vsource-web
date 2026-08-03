@@ -1,0 +1,25 @@
+name: SOUP relevance check
+on:
+  pull_request:
+    branches: [production]
+    paths:
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+permissions:
+  pull-requests: write
+  contents: read
+jobs:
+  flag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Label PR as SOUP-relevant
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: soup-review
+      - name: Comment reminder
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            🔍 **SOUP-relevant change detected** — this PR promotes a `package.json` / `pnpm-lock.yaml` change toward production.
+            Before merge, update the SOUP Register (APT-DOC-004): add/remove/re-assess affected dependencies, confirm §3 reflects the change, and capture the resolved-version baseline (§9).

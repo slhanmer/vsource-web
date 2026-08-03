@@ -1,0 +1,164 @@
+.file-uploader {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 0.5rem;
+
+  @media (max-width: $breakpoint-mobile) {
+    padding-top: 0.5rem;
+    overflow: hidden;
+    width: auto;
+    max-width: none;
+    border-radius: $radius-button;
+
+    .icon-only-button svg {
+      font-size: 40px;
+    }
+    .icon-only-button,
+    .button-container.icon-only-container {
+      width: 60px !important;
+      height: 60px !important;
+    }
+  }
+
+  &.required {
+    background: $surface-error;
+  }
+
+  .upload-thumbnail {
+    max-width: 120px;
+    max-height: 120px;
+    width: auto;
+    height: auto;
+    object-fit: cover; // or cover, depending on taste
+    border-radius: 6px;
+    margin-right: 10px;
+  }
+
+  .upload-box {
+    border: 2px dashed $action-primary;
+    border-radius: $radius-button;
+    padding: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 100px; // give it some presence
+
+    &.required {
+      border-color: $state-error;
+    }
+
+    &:hover {
+      border-color: $action-primary;
+      background-color: $surface-page;
+    }
+  }
+
+  .mobile-upload-box {
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    &.required {
+      border-color: $state-error;
+    }
+  }
+
+  .file-upload-button {
+    background: none;
+    border: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  .upload-icon {
+    font-size: 24px;
+
+    &.disabled {
+      color: $text-on-disabled;
+    }
+
+    &.required {
+      color: $state-error;
+    }
+  }
+
+  .upload-icon-label {
+    font-size: $font-size-base;
+    color: $text-on-disabled;
+
+    &.required {
+      color: $state-error;
+    }
+  }
+
+  .file-list {
+    margin-top: 0.75rem;
+    list-style: none;
+    padding: 0;
+
+    &.show {
+      opacity: 1;
+    }
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.25rem 0;
+      border-bottom: 1px solid $chrome-300;
+
+      .file-name {
+        flex: 1 1 auto;
+        overflow: hidden;
+
+        &__text {
+          display: block;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          max-width: 100%;
+        }
+      }
+    }
+  }
+}
+
+.file-uploader.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+
+  .upload-box {
+    border-color: $text-on-disabled;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .file-upload-button {
+    pointer-events: none;
+  }
+
+  .upload-icon,
+  .upload-icon-label {
+    color: $text-on-disabled;
+  }
+}

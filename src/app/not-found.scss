@@ -1,0 +1,96 @@
+// ─────────────────────────────────────────────────────────────────────────────
+//  404 — Etched entry shell
+//  Same carved chrome card as the login / welcome screens: recessed face
+//  (surface-chrome + inset carve), a debossed brand mark low-and-right, and the
+//  "404" numerals engraved into the surface. Depth by edge — no float shadows.
+// ─────────────────────────────────────────────────────────────────────────────
+
+.notfound-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: $spacing-lg;
+}
+
+.notfound-card {
+  position: relative;
+  overflow: hidden; // clip the embossed mark to the card's rounded face
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: $spacing-lg;
+  width: 90%;
+  max-width: 480px;
+  padding: $spacing-2xl;
+  border-radius: $radius-lg;
+  background: var(--surface-chrome);
+  border: 1px solid var(--chrome-edge);
+  box-shadow:
+    inset 0 3px 8px 0 var(--carve-dark),
+    inset 0 -1px 1px 0 var(--carve-lip);
+
+  // Brand mark carved into the chrome face, anchored low-and-right (mirrors the
+  // login / welcome cards). --logo-surface makes the mark share the card fill so
+  // only its carved edges read.
+  &__mark {
+    position: absolute;
+    right: -80px;
+    bottom: -80px;
+    width: 300px;
+    height: 290px;
+    --logo-surface: var(--surface-chrome);
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  &__body {
+    position: relative; // sit above the carved mark
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-xs;
+  }
+
+  // Large muted numerals with a light lower-rim catch so they sit into the face.
+  &__code {
+    margin: 0;
+    font-family: $font-family-button;
+    font-weight: 700;
+    font-size: 72px;
+    line-height: 1;
+    color: $text-subtle;
+    text-shadow: 0 1px 0 var(--carve-lip);
+  }
+
+  &__heading {
+    margin: 0;
+    font-size: $font-size-xl;
+    font-weight: 700;
+    color: $text-primary;
+  }
+
+  &__message {
+    margin: 0;
+    max-width: 36ch;
+    color: $text-secondary;
+  }
+
+  &__actions {
+    position: relative; // above the mark
+    display: flex;
+    gap: $spacing-md;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    @media (max-width: $breakpoint-mobile) {
+      flex-direction: column;
+      width: 100%;
+
+      .basic-button {
+        width: 100%;
+      }
+    }
+  }
+}

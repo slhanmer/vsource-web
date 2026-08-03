@@ -1,0 +1,56 @@
+.signature-pad-container {
+  display: flex;
+  justify-content: flex-start;
+
+  &:hover {
+    cursor: pointer;
+    color: $action-primary;
+    transition: all 0.2s ease-in-out;
+  }
+  .signature-preview {
+    width: auto;
+    height: 60px;
+  }
+}
+
+.signature-modal {
+  position: relative;
+  padding: 0 !important;
+  overflow: hidden !important;
+  max-width: 750px;
+
+  .modal-header-container {
+    position: absolute;
+    top: 0;
+    width: calc(100% - 30px);
+    z-index: 1;
+    margin: 20px 20px !important;
+  }
+
+  .modal-body {
+    position: relative;
+    height: 100%;
+
+    @media (min-width: $breakpoint-mobile) {
+      max-height: 350px;
+    }
+  }
+
+  .signature-canvas {
+    border: $border-disabled;
+    border-radius: $radius-button;
+    background-color: $surface-page;
+    touch-action: none; // Prevent scrolling on touch devices while drawing
+    height: auto;
+  }
+
+  .signature-buttons-container {
+    position: absolute;
+    bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    width: calc(100% - 20px);
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}

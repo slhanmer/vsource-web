@@ -1,0 +1,24 @@
+.popover-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9998;
+}
+
+.popover {
+  position: fixed;
+  z-index: 9999;
+  background: $surface-card;
+  border: 1px solid var(--chrome-edge); 
+  border-radius: $radius-button;
+  padding: 4px;
+  display: flex;           // ← add
+  flex-direction: column;  // ← add — stack items vertically
+  align-items: stretch;   // ← add — full-width items, left-aligned
+  min-width: 160px;        
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.18),
+    0 1px 3px rgba(0, 0, 0, 0.12);
+}

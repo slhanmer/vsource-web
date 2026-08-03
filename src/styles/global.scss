@@ -1,0 +1,831 @@
+/* =========================================================================
+   THEME TOKENS  (APT-427 dark mode)
+   Tenant-owned brand hues are overridden by TenantProvider at runtime.
+   Light (:root) and dark ([data-theme='dark']) blocks are kept in the SAME
+   order so they read side by side.
+   ========================================================================= */
+
+:root {
+  /* ── Brand (tenant-owned; provider overrides) ───────────────────────── */
+  --brand-accent: #533178; /* tenant primary  */
+  --brand-highlight: #6ab2e2; /* tenant highlight */
+
+  /* ── Accent lane — LIGHT: primary = accent, route = highlight ───────── */
+  --action-primary: var(--brand-accent);
+  --action-primary-hover: #42275f;
+  --route-active: var(--brand-highlight);
+  --state-info: #66ade6;
+
+  /* ── Wordmark ───────────────────────────────────────────────────────── */
+  --wordmark-ink: #cac7c0;
+  --wordmark-lip: rgba(255, 255, 255, 0.4);
+  --wordmark-carve: rgba(57, 57, 57, 0.7);
+
+  /* ── Chrome surfaces + carve/deboss (light) ─────────────────────────── */
+  --surface-chrome: #e4e1db;
+  --surface-chrome-light: #eae7e1;
+  --surface-chrome-dark: #dbd8d2;
+  --chrome-edge: #d3d0cb;
+  --nav-deboss-top: rgba(57, 57, 57, 0.22);
+  --nav-deboss-lip: rgba(255, 255, 255, 0);
+  --carve-dark: rgba(57, 57, 57, 0.28); /* top/side recess shadow */
+  --carve-side: rgba(57, 57, 57, 0.12);
+  --carve-lip: rgba(255, 255, 255, 0.5); /* lower-rim light-catch */
+  --menu-panel-edge: #b8b5b0;
+
+  /* ── Surfaces ───────────────────────────────────────────────────────── */
+  --surface-page: #fbfaf7;
+  --surface-sunken: #f6f4ef;
+  --surface-device: #393939;
+  --surface-device-border: #e7e1d6;
+  --surface-viewer: #fbfaf7;
+  --surface-action-primary: #ece7f3;
+
+  /* ── Surface tints (status banners/cards) ───────────────────────────── */
+  --surface-success: #e6f0e8;
+  --surface-warning: #fbf0de;
+  --surface-error: #f7e4e1;
+  --surface-info: #e4f0f8;
+  --surface-processing: #ece7f3;
+  --surface-active: #ece7f3;
+
+  /* ── Scrollbar ──────────────────────────────────────────────────────── */
+  --scrollbar-track: #eae7e1;
+  --scrollbar-thumb: #b8b5b0;
+
+  /* ── Slide switch ───────────────────────────────────────────────────── */
+  --switch-channel-inset: rgba(0, 0, 0, 0.28); /* dark recess up top      */
+  --switch-lip: rgba(255, 255, 255, 0.6); /* light catch, lower rim  */
+  --switch-knob: #fbfaf7; /* = surface-page          */
+  --switch-knob-shadow: rgba(0, 0, 0, 0.25);
+  --switch-knob-highlight: rgba(255, 255, 255, 0.7);
+  --switch-knob-ink: #393939; /* = text-secondary        */
+
+  /* ── Disabled ───────────────────────────────────────────────────────── */
+  --surface-disabled: #f0eee9;
+  --text-on-disabled: #6b6862;
+  --border-subtle-colour: #dbd8d2;
+
+  /* ── Text ───────────────────────────────────────────────────────────── */
+  --text-primary: #393939;
+  --text-secondary: #393939;
+  --text-on-dark: #fbfaf7;
+  --text-on-action: #fbfaf7; /* label on filled accent — white on purple (9.68 AAA) */
+  --text-placeholder: #727578;
+  --text-subtle: #7a6a8a;
+  --error-text: #{$state-error};
+  --warning-text: #{$amber-text-light}; /* #976217 — AA on page + warning tint */
+  --success-text: #{$green-text-light}; /* #207544 — vivid green, AA both */
+
+  /* ── Rating star (amber lane — not the warning lane) ─────────────────── */
+  --rating-star-top: #e0a020; /* lighter warm gold, top of fill */
+  --rating-star-bottom: #c9821f; /* $amber-500, deeper gold, bottom */
+  --rating-star-edge: #a3661a; /* darker amber edge stroke        */
+  --rating-star-hover-top: #f0b43a;
+  --rating-star-hover-bottom: #d99226;
+  --rating-star-empty: #cbc3d1;
+}
+
+[data-theme='dark'] {
+  /* ── Accent lane — DARK swap: primary = highlight, route = accent ───── */
+  --action-primary: var(--brand-highlight);
+  --action-primary-hover: #4a97c9;
+  --route-active: var(--brand-accent);
+  --state-info: #6ab2e2;
+
+  /* ── Wordmark ───────────────────────────────────────────────────────── */
+  --wordmark-ink: #2c3648;
+  --wordmark-lip: rgba(255, 255, 255, 0.14);
+  --wordmark-carve: rgba(0, 0, 0, 0.6);
+
+  /* ── Chrome surfaces + carve/deboss (dark) ──────────────────────────── */
+  --surface-chrome: #1f2a3d;
+  --surface-chrome-light: #16161a; /* device card / radial toggle */
+  --surface-chrome-dark: #182231;
+  --chrome-edge: rgba(255, 255, 255, 0.08);
+  --nav-deboss-top: rgba(0, 0, 0, 0.35);
+  --nav-deboss-lip: rgba(255, 255, 255, 0.1);
+  --carve-dark: rgba(0, 0, 0, 0.45);
+  --carve-side: rgba(0, 0, 0, 0.2);
+  --carve-lip: rgba(255, 255, 255, 0.1); /* white light-catch (dark-recess rule) */
+  --menu-panel-edge: #4a5160;
+
+  /* ── Surfaces ───────────────────────────────────────────────────────── */
+  --surface-page: #1a1f28; /* main page — deep blue-slate */
+  --surface-sunken: #14181f; /* list well — recessed        */
+  --surface-recessed: #0f1319; /* deepest carve (empty tracks)*/
+  --surface-card: #232b38; /* raised cards — proud        */
+  --surface-overlay: #2a3340;
+  --surface-device: #0d0d0f; /* device surfaces — near-black*/
+  --surface-device-border: #8a8d94;
+  --viewport-glass: rgba(38, 38, 43, 0.7);
+  --surface-viewer: #1a1a1d;
+  --surface-action-primary: #1a2e3a;
+
+  /* ── Surface tints (status banners/cards) ───────────────────────────── */
+  --surface-success: #1b3324;
+  --surface-warning: #3a2e14;
+  --surface-error: #3a1f1c;
+  --surface-info: #1a2e3a;
+  --surface-processing: #1a2e3a;
+  --surface-active: #1a2e3a;
+
+  /* ── Scrollbar ──────────────────────────────────────────────────────── */
+  --scrollbar-track: #0f1319;
+  --scrollbar-thumb: #4a5160;
+
+  /* ── Slide switch ───────────────────────────────────────────────────── */
+  --switch-channel-inset: rgba(0, 0, 0, 0.8);
+  --switch-lip: rgba(255, 255, 255, 0.22); /* stronger light-catch = the carve */
+  --switch-knob: #2a3444; /* raised slate, proud of channel   */
+  --switch-knob-shadow: transparent; /* no dark halo on dark channel     */
+  --switch-knob-highlight: rgba(255, 255, 255, 0.14);
+  --switch-knob-ink: #fbfaf7; /* = text-on-dark                   */
+
+  /* ── Disabled ───────────────────────────────────────────────────────── */
+  --surface-disabled: #232a35;
+  --text-on-disabled: #6f7378;
+  --border-subtle-colour: rgba(255, 255, 255, 0.08);
+
+  /* ── Text ───────────────────────────────────────────────────────────── */
+  --text-primary: #f4f2ee;
+  --text-secondary: #c4c0c2;
+  --text-on-dark: #fbfaf7;
+  --text-on-action: #1a1f28; /* label on filled accent — dark ink on blue (7.15 AAA) */
+  --text-placeholder: #9a9da0;
+  --text-subtle: #9a9598;
+  --error-text: #e57a6f;
+  --warning-text: #{$amber-text-dark}; /* #d08720 — AA on dark page + tint */
+  --success-text: #{$green-text-dark}; /* #57c06d — vivid green, AA both */
+
+  /* ── Rating star (amber lane) ───────────────────────────────────────── */
+  --rating-star-top: #f0b43a;
+  --rating-star-bottom: #d99226;
+  --rating-star-edge: #b3771f;
+  --rating-star-hover-top: #ffc850;
+  --rating-star-hover-bottom: #e8a030;
+  --rating-star-empty: #4a5160;
+}
+//////////////////////////////////// BASIC APP SETUP ///////////////////////////
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  overflow: hidden;
+  // scrollbar-gutter: stable;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Geist', sans-serif;
+  color: $text-primary;
+  height: 100%;
+  min-height: auto;
+  width: 100%;
+  background: var(--surface-page);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+// Target the next.js root elements for SSR compatibility
+#__next,
+#root {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  text-align: center;
+  color: $text-primary;
+  margin: 0;
+  font-family: $font-family-button;
+}
+
+@media (max-width: $breakpoint-mobile) {
+  h1 {
+    font-size: 1.75rem;
+  }
+  h2 {
+    font-size: 1.5rem;
+  }
+  h3 {
+    font-size: 1.25rem;
+  }
+  h4 {
+    font-size: 1rem;
+  }
+}
+
+div,
+li,
+p {
+  color: $text-primary;
+}
+
+p {
+  margin: 5px 0;
+}
+
+ul {
+  margin-top: 5px;
+  margin-left: 0;
+}
+
+a {
+  color: $action-primary;
+}
+
+[contenteditable='true']:focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  caret-color: inherit;
+}
+
+.page-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: safe center;
+  height: calc(100dvh - 75px); // minus the nav height to prevent unwanted overflow
+  min-width: 100%;
+  background: var(--surface-page);
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+
+  @media (max-width: $breakpoint-mobile) {
+    height: calc(100dvh - 68px); // nav is smaller on mobile
+  }
+
+  &.no-scroll {
+    overflow: hidden;
+    padding: 0;
+  }
+
+  &.no-nav {
+    height: 100dvh;
+  }
+
+  &.top-align {
+    justify-content: flex-start;
+  }
+}
+
+.search-input__icons {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-2xs;
+
+  button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: inherit;
+    display: inline-flex;
+    align-items: center;
+
+    &:disabled {
+      cursor: default;
+    }
+  }
+}
+//////////////////////////////// CUSTOM SCROLLBAR /////////////////////////
+/* ===== WebKit browsers (Chrome, Edge, Safari) ===== */
+::-webkit-scrollbar {
+  width: 14px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface-recessed);
+  border: 1px solid var(--chrome-edge);
+  border-radius: $radius-full;
+  box-shadow:
+    inset 0 2px 2px 0 var(--carve-dark),
+    0 1px 1px 0 var(--carve-lip);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  // thumb sits in the channel — muted, surface-range fill, not a grey capsule
+  background-color: var(--text-subtle);
+  border: 2px solid transparent;
+  background-clip: padding-box; // inset so it floats within the channel walls
+  // subtle raised feel so it reads as a grabbable element down in the groove
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 1px var(--carve-side);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--action-primary);
+}
+
+/* ===== (Optional) Internet Explorer / old Edge (legacy) ===== */
+body {
+  -ms-overflow-style: auto; /* shows scrollbar normally */
+}
+
+// Hide the stoopid next button => flip it with DEV_MODE
+body {
+  nextjs-portal {
+    display: none !important;
+  }
+}
+
+////////////////////////////////  UTILITY CLASSES /////////////////////////
+/// ////////////////////////////// ENTRY FLOW (shared) ///////////////////////////
+// Shared shell for the pre-app entry screens (login, register, welcome).
+// Small enough to be the depth-model exception: fill-based edge-lit recess —
+// dark inset up top, white light-catch on the lower rim.
+.entry-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  margin: 0 auto;
+  padding: $spacing-xl $spacing-2xl;
+  gap: $spacing-lg;
+  border-radius: $radius-lg;
+  background: var(--surface-chrome);
+  border: 1px solid var(--chrome-edge);
+  box-shadow:
+    inset 0 3px 8px 0 var(--carve-dark),
+    inset 0 -1px 1px 0 var(--carve-lip);
+
+  @media (max-width: $breakpoint-mobile) {
+    padding: $spacing-lg $spacing-md;
+  }
+}
+
+.entry-logo {
+  height: 100px;
+  width: auto;
+  user-select: none;
+
+  @media (max-width: $breakpoint-mobile) {
+    height: 64px;
+  }
+}
+
+.entry-tagline {
+  margin: 0;
+  font-family: $font-family-button;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-xl;
+  line-height: 1.1;
+  text-align: center;
+  color: var(--action-primary);
+}
+
+.normal-text {
+  font-weight: normal;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: $padding-sm;
+
+  &.no-gap {
+    gap: 0;
+  }
+
+  &.column {
+    flex-direction: column;
+  }
+
+  &.column-reverse {
+    flex-direction: column-reverse;
+  }
+
+  &.start {
+    justify-content: flex-start;
+  }
+
+  &.end {
+    justify-content: flex-end;
+  }
+
+  &.spread {
+    justify-content: space-between;
+  }
+
+  &.spaced {
+    justify-content: space-around;
+  }
+
+  &.full-width {
+    width: 100%;
+  }
+}
+
+.two-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: $breakpoint-mobile) {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+.three-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  align-items: center;
+  justify-items: center;
+
+  @media (max-width: $breakpoint-mobile) {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .center-column,
+  .left-column,
+  .right-column {
+    width: 100%;
+  }
+}
+
+.four-columns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-md;
+
+  > .column {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md; // 16px — matches the grid's 1rem
+    min-width: 0; // stops long values forcing the track wider
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+.two-button-container {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 1rem;
+
+  @media (max-width: $breakpoint-mobile) {
+    flex-direction: column;
+
+    .button-container {
+      width: 100%;
+    }
+
+    .basic-button.mobile {
+      width: 100%;
+    }
+  }
+}
+
+/* Mobile only: show on viewports <= 1080px */
+@media (max-width: 800px) {
+  .mobile-only {
+    display: block;
+  }
+  .desktop-only {
+    display: none;
+  }
+}
+
+/* Desktop only: show on viewports > 1080px */
+@media (min-width: 801px) and (max-width: 900px) {
+  .mobile-only,
+  .tablet-only {
+    display: block;
+  }
+  .desktop-only {
+    display: none;
+  }
+}
+
+/* Desktop only: show on viewports > 1800px */
+@media (min-width: 901px) {
+  .mobile-only,
+  .tablet-only {
+    display: none;
+  }
+  .desktop-only {
+    display: block;
+  }
+}
+////////////////////////////////// GOBAL STYLING HELPERS ////////////////////
+.modal-button-container {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+
+  @media (max-width: $breakpoint-mobile) {
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 20px;
+  }
+}
+
+.modal-subtitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-regular;
+}
+
+.mobile-hint {
+  font-size: 12px;
+  margin-top: -5px;
+
+  &.active {
+    color: $action-primary;
+  }
+}
+
+.center-text {
+  text-align: center !important;
+}
+
+.left-text {
+  text-align: left !important;
+}
+
+.right-text {
+  text-align: right !important;
+}
+
+.asterix {
+  color: $text-primary;
+  padding-left: 5px;
+
+  &.required {
+    color: var(--error-text);
+  }
+}
+
+.critical-text {
+  color: var(--error-text);
+  font-style: italic;
+  text-align: center;
+  margin: 0;
+}
+
+.error-text {
+  color: var(--error-text);
+  font-style: italic;
+  text-align: center;
+  margin: 0;
+}
+
+.warning-text {
+  color: var(--warning-text);
+  font-style: italic;
+  text-align: center;
+  margin: 0;
+}
+
+.success-text {
+  color: var(--success-text);
+  font-style: italic;
+  text-align: center;
+  margin: 0;
+}
+
+.normal-text {
+  color: $text-primary;
+  font-style: italic;
+  text-align: center;
+  margin: 0;
+}
+
+.success-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid $state-success;
+  border-radius: $radius-large;
+
+  padding: 20px;
+}
+
+.highlight-text {
+  color: $action-primary;
+  text-align: center;
+  margin: 0;
+}
+
+.subtle-text {
+  color: $text-on-disabled;
+  text-align: center;
+  margin: 0;
+}
+
+.small-text {
+  font-size: $font-size-sm;
+}
+
+.glowing-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.glowing-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.glowing-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.glowing-underline::after {
+  content: '';
+  position: absolute;
+  width: 95%;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  bottom: 5px;
+  height: 2px;
+  background: rgba($action-primary, 0.9);
+  box-shadow:
+    1px 2px 3px rgba($action-primary, 0.9),
+    2px 6px 16px rgba($action-primary, 0.4);
+}
+
+.no-margin {
+  margin: 0;
+}
+
+.no-padding {
+  padding: 0;
+}
+
+.vertical-divider {
+  width: 3px;
+  background-color: $action-primary;
+  margin: 0 10px;
+  flex-shrink: 0;
+
+  &.subtle {
+    background-color: $surface-disabled;
+    width: 1px;
+    margin: 0;
+  }
+}
+
+.horizontal-divider {
+  width: 98%;
+  height: 1px;
+  background-color: $action-primary;
+  margin: 0 auto;
+  flex-shrink: 0;
+
+  &.highlight {
+    background-color: $action-primary;
+  }
+  &.subtle {
+    background-color: $surface-disabled;
+  }
+}
+
+.card {
+  border-radius: $radius-large;
+  border: $border-primary;
+  padding: 20px;
+}
+
+.arrow {
+  display: inline-block;
+  // transition: transform 0.2s ease;
+  &.up {
+    transform: rotate(0deg);
+  }
+  &.right {
+    transform: rotate(90deg);
+  }
+  &.down {
+    transform: rotate(180deg);
+  }
+  &.left {
+    transform: rotate(-90deg);
+  }
+}
+
+.svg-icon {
+  fill: $action-primary;
+  height: 40px;
+  width: 40px;
+  transition: all 0.2s ease-in-out;
+
+  &.small {
+    height: 30px;
+    width: 30px;
+  }
+
+  &.large {
+    height: 60px;
+    width: 60px;
+  }
+
+  &.fingerprint {
+    fill: $text-on-disabled;
+    width: 100%;
+    height: 100%;
+  }
+
+  &:hover {
+    fill: $action-primary;
+  }
+
+  &.reverse {
+    border: $border-primary;
+    background-color: $action-primary;
+    fill: $surface-page;
+    border-radius: 50%;
+    margin-top: 5px;
+
+    &:hover {
+      border-color: $action-primary;
+      background-color: $action-primary;
+    }
+  }
+}
+
+////////// Loading Animations ///////
+.spark-large {
+  animation: spark-pulse 2s ease-in-out infinite;
+  transform-origin: 74.42px 77.46px;
+}
+
+.spark-medium {
+  animation: spark-pulse 2s ease-in-out infinite 0.6s;
+  transform-origin: 44.17px 49.71px;
+}
+
+.spark-small {
+  animation: spark-pulse 2s ease-in-out infinite 1.2s;
+  transform-origin: 84.82px 36.65px;
+}
+
+@keyframes spark-pulse {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.85);
+  }
+  15% {
+    opacity: 0.8;
+    transform: scale(0.95);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  85% {
+    opacity: 0.8;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 0.5;
+    transform: scale(0.85);
+  }
+}

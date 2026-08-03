@@ -1,0 +1,84 @@
+.page-loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  gap: 16px;
+
+  // Compact inline variant — for use inside panels/modals (e.g. raw-archive
+  // "preparing" state). Row layout, no full-height, smaller stage + text.
+  &--inline {
+    flex-direction: row;
+    height: auto;
+    width: auto;
+    gap: 10px;
+
+    .page-loader-scan {
+      width: 40px;
+      height: 30px;
+    }
+
+    .page-loader-grid circle {
+        r: 4;              // viewBox units — compensates for the downscale
+        opacity: 0.28;     // slightly stronger so the sparse grid still reads
+      }
+
+    .page-loader-text {
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+    }
+  }
+}
+
+// Fixed-size scan stage — line sweeps down over the point grid.
+// Everything keys off --action-primary, so it themes for free:
+// purple on light, blue on dark (the dark-mode lane swap).
+.page-loader-scan {
+  width: 160px;
+  height: 118px;
+
+  .page-loader-grid circle {
+    fill: var(--action-primary);
+    opacity: 0.17; // faint point-cloud texture, not clutter
+  }
+
+  .page-loader-sweep {
+    animation: scan-sweep 2.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  }
+
+  .page-loader-sweep-line {
+    fill: var(--action-primary);
+  }
+
+  .page-loader-sweep-trail {
+    fill: var(--action-primary);
+    opacity: 0.13; // soft trail band behind the line
+  }
+}
+
+.page-loader-text {
+  color: $action-primary;
+  font-weight: 600;
+}
+
+@keyframes scan-sweep {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(96px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+// Class A device — respect reduced-motion. Freeze the sweep at rest
+// (line parked at top over the grid) rather than animating.
+@media (prefers-reduced-motion: reduce) {
+  .page-loader-scan .page-loader-sweep {
+    animation: none;
+  }
+}

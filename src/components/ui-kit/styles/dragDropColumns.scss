@@ -1,0 +1,93 @@
+// ─────────────────────────────────────────────────────────────────────────────
+//  Drag-drop columns — Etched depth model
+//  Columns are carved wells (the surface sinks into the page, same sink recipe
+//  as the open Collapse). Items sit PROUD inside the well so they read as
+//  grabbable, and lift off with a real shadow while dragging. Depth by edge —
+//  colour is reserved for the accent (drop target / active drag).
+// ─────────────────────────────────────────────────────────────────────────────
+
+.drag-columns-container {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  align-items: flex-start;
+  transition: all 0.2s ease-in-out;
+
+  // ── Column = carved recessed well ─────────────────────────────────────────
+  .drag-column {
+    flex: 1;
+    min-width: 200px;
+    min-height: 111px; // always at least the size of 1 item
+    padding: 10px 20px 20px;
+    border-radius: $radius-large;
+    background: var(--surface-sunken);
+    border: $border-subtle;
+    box-shadow:
+      inset 0 2px 4px -2px var(--carve-dark),
+      inset 0 1px 0 0 var(--carve-side);
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+
+    h4 {
+      margin: 0 0 10px;
+    }
+  }
+
+  // Drop target — the well's edge brightens to the accent (no colour flood,
+  // depth stays; the edge does the telegraphing).
+  .drag-column.is-over {
+    border-color: var(--action-primary);
+    box-shadow:
+      inset 0 2px 4px -2px var(--carve-dark),
+      inset 0 1px 0 0 var(--carve-side),
+      inset 0 0 0 1px var(--action-primary);
+  }
+
+  .column-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .roles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  // ── Item = proud tile sitting in the well ─────────────────────────────────
+  // Raised by edge (lip on top, side shadow on the lower rim) so it reads as a
+  // grabbable chip rather than part of the well floor.
+  .drag-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: $radius-button;
+    background: var(--surface-chrome);
+    border: 1px solid var(--chrome-edge);
+    box-shadow:
+      inset 0 1px 0 0 var(--carve-lip),
+      inset 0 -1px 0 0 var(--carve-side);
+    cursor: grab;
+    user-select: none;
+    transition:
+      box-shadow 0.15s ease,
+      border-color 0.15s ease;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  // Lifted out of the well while dragging — genuine drop shadow + accent edge.
+  .drag-item.dragging {
+    border-color: var(--action-primary);
+    color: $action-primary;
+    box-shadow:
+      0 6px 14px rgba(0, 0, 0, 0.18),
+      inset 0 1px 0 0 var(--carve-lip);
+          background-color: var(--surface-action-primary);
+  }
+}

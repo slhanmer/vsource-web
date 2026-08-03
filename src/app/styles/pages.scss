@@ -1,0 +1,89 @@
+// Shared page furniture for the marketing site.
+.page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: $spacing-2xl $spacing-lg;
+  font-family: $font-family-ui;
+  color: $text-primary;
+
+  &__eyebrow {
+    margin: 0 0 $spacing-xs;
+    font-family: $font-family-button;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: $action-primary;
+  }
+
+  &__title {
+    margin: 0 0 $spacing-md;
+    font-family: $font-family-button;
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    line-height: 1.15;
+  }
+
+  &__lede {
+    max-width: 60ch;
+    margin: 0 0 $spacing-2xl;
+    font-size: $font-size-md;
+    line-height: $line-height-relaxed;
+    color: $text-secondary;
+  }
+
+  &__section {
+    margin-bottom: $spacing-2xl;
+  }
+
+  &__section-title {
+    margin: 0 0 $spacing-md;
+    font-family: $font-family-button;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+  }
+}
+
+// Marks unwritten copy. Every instance must be gone before launch —
+// grep for `placeholder-copy` to find what's left.
+.placeholder-copy {
+  padding: $spacing-md;
+  border: $stroke-thin dashed $action-primary;
+  border-radius: $radius-md;
+  background: $surface-sunken;
+  font-size: $font-size-sm;
+  color: $text-secondary;
+
+  &::before {
+    content: 'Placeholder — ';
+    font-weight: $font-weight-bold;
+    color: $action-primary;
+  }
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: $spacing-lg;
+}
+
+.card {
+  padding: $spacing-lg;
+  background: $surface-card;
+  border: $stroke-hairline solid $surface-chrome;
+  border-radius: $radius-lg;
+
+  h3 {
+    margin: 0 0 $spacing-xs;
+    font-family: $font-family-button;
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+  }
+
+  p {
+    margin: 0;
+    font-size: $font-size-sm;
+    line-height: $line-height-normal;
+    color: $text-secondary;
+  }
+}

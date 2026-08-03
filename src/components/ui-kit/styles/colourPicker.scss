@@ -1,0 +1,28 @@
+.color-picker {
+  position: relative;
+
+  .react-colorful {
+    position: absolute;
+    top: $padding-xs;
+    right: 0;
+    height: 100px;
+    width: 100px;
+    
+    border-radius: $radius-button;
+    z-index: 100;
+
+    .top {
+      top: -154px;
+    }
+  }
+
+  .react-colorful__hue {
+    height: 12px;
+  }
+
+  .react-colorful__pointer {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+  }
+}

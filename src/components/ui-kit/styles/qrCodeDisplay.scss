@@ -1,0 +1,10 @@
+.qr-code-display {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  background: $surface-page;
+  
+  transition: transform 0.15s ease;
+  border-radius: $radius-button;
+}

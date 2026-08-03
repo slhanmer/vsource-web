@@ -1,0 +1,215 @@
+// ─────────────────────────────────────────────────────────────────────────────
+//  TabbedContainer — Etched depth model
+//  The container is one proud card. The tab strip is a recessed track carved into
+//  its top; the active tab lifts out of the track onto the same surface as the
+//  content panel, so tab + panel read as one continuous proud face (folder-tab
+//  metaphor, depth by edge). Status is a semantic tint, not a colour flood.
+// ─────────────────────────────────────────────────────────────────────────────
+
+.tabbed-container {
+  width: 100%;
+  max-width: 1400px;
+  height: auto;
+  margin: 1rem auto;
+  overflow: hidden;
+  border-radius: $radius-md;
+  background: var(--surface-card, #{$surface-card});
+  border: 1px solid var(--chrome-edge);
+  box-shadow:
+    inset 0 1px 0 0 var(--carve-lip),
+    inset 0 -1px 0 0 var(--carve-side);
+
+  @media (max-width: $breakpoint-mobile) {
+    margin: 0;
+    width: 100%;
+    border: none;
+    border-radius: 0;
+    min-height: 100%;
+    box-shadow: none;
+  }
+}
+
+// ── Tab strip — recessed track ───────────────────────────────────────────────
+.tab-header-container {
+  display: flex;
+  background: var(--surface-sunken);
+  border-bottom: 1px solid var(--chrome-edge);
+  box-shadow: inset 0 2px 4px -2px var(--carve-dark);
+}
+
+.tab-header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  height: 54px;
+  padding: 0 $spacing-md;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-family: $font-family-button;
+  font-size: $font-size-md;
+  font-weight: 600;
+  color: $text-secondary;
+  background: transparent;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+
+  // Segment dividers within the recessed track.
+  &:not(:last-of-type) {
+    border-right: 1px solid var(--chrome-edge);
+  }
+
+  &:hover {
+    color: $action-primary;
+    background-color: var(--surface-action-primary);
+  }
+
+  // Active — lifts out of the track onto the content-panel surface.
+  &.active {
+    color: $action-primary;
+    background-color: var(--action-primary);
+    color: var(--text-on-dark);
+    cursor: default;
+
+    &:hover {
+      color: $action-primary;
+    }
+  }
+
+  &.disabled {
+    color: $text-on-disabled;
+    cursor: not-allowed;
+
+    &:hover {
+      color: $text-on-disabled;
+    }
+  }
+
+  // Status — semantic tint + text, only asserted on the active/proud tab.
+  &.complete {
+    color: $text-success;
+
+    &.active {
+      background: var(--surface-success);
+      box-shadow: inset 0 2px 0 0 $state-success;
+    }
+  }
+
+  &.incomplete {
+    color: $text-warning;
+
+    &.active {
+      background: var(--surface-warning);
+      box-shadow: inset 0 2px 0 0 $state-warning;
+    }
+  }
+
+  // Etched tabs use a flat segmented track — no breadcrumb chevron.
+  .arrow {
+    display: none;
+  }
+}
+
+.tab-name {
+  margin-left: 0 !important;
+}
+
+// ── Content panel — proud, continuous with the active tab ────────────────────
+.tab-content {
+  z-index: 20;
+  padding: $spacing-lg;
+  background: var(--surface-card, #{$surface-card});
+
+  &.active {
+    display: block;
+  }
+}
+
+// ── Mobile — recessed icon rail, proud active icon ───────────────────────────
+.mobile-tab-layout {
+  display: grid;
+  // minmax(0, 1fr) lets the content column shrink below its content's intrinsic
+  // width — a plain 1fr won't, so wide panel content overflows and gets clipped.
+  grid-template-columns: 56px minmax(0, 1fr);
+  height: 100vh;
+  overflow: hidden;
+
+  .mobile-tab-list {
+    position: relative;
+    height: 100%;
+    background: var(--surface-sunken);
+    border-right: 1px solid var(--chrome-edge);
+    box-shadow: inset -2px 0 4px -2px var(--carve-dark);
+
+    // Flat rail — drop the rotated chevron connectors.
+    .arrow {
+      display: none;
+    }
+
+    .mobile-tab {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 72px;
+      cursor: pointer;
+      font-size: 22px;
+      color: $text-secondary;
+      background: transparent;
+      border-bottom: 1px solid var(--chrome-edge);
+      transition:
+        color 0.15s ease,
+        background 0.15s ease;
+
+      span {
+        z-index: 10;
+      }
+
+      // Active — proud tile catching the rail's light.
+      &.active {
+        color: var(--text-on-dark);
+        background: var(--action-primary);
+        box-shadow: inset 0 1px 0 0 var(--carve-lip);
+      }
+
+      &.disabled {
+        color: $text-on-disabled;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .mobile-tab-content {
+    min-width: 0;
+    height: 100%;
+    padding: 0 $spacing-md;
+    padding-bottom: $spacing-md;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: var(--surface-card, #{$surface-card});
+
+    .mobile-tab-title {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: 0;
+      padding: $spacing-sm 0;
+      background: var(--surface-card, #{$surface-card});
+      border-bottom: 1px solid var(--chrome-edge);
+      font-family: $font-family-button;
+      font-weight: 700;
+    }
+
+    .button-container {
+      width: 100%;
+    }
+  }
+
+  .mobile-tab {
+    -webkit-tap-highlight-color: transparent;
+  }
+}

@@ -1,0 +1,72 @@
+.site-footer {
+  background: $surface-sunken;
+  border-top: $stroke-hairline solid $surface-chrome;
+  margin-top: $spacing-2xl;
+
+  &__inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-xl;
+    justify-content: space-between;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: $spacing-2xl $spacing-lg $spacing-xl;
+  }
+
+  &__wordmark {
+    font-family: $font-family-button;
+    font-size: $font-size-md;
+    font-weight: $font-weight-bold;
+    color: $action-primary;
+  }
+
+  &__tagline {
+    margin: $spacing-2xs 0 0;
+    font-family: $font-family-ui;
+    font-size: $font-size-sm;
+    color: $text-secondary;
+  }
+
+  &__nav {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+
+  &__link {
+    font-family: $font-family-ui;
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    text-decoration: none;
+
+    &:hover {
+      color: $action-primary;
+    }
+  }
+
+  &__contact {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    font-family: $font-family-ui;
+    font-size: $font-size-sm;
+
+    a {
+      color: $action-primary;
+      text-decoration: none;
+    }
+  }
+
+  &__abn {
+    color: $text-subtle;
+  }
+
+  &__legal {
+    border-top: $stroke-hairline solid $surface-chrome;
+    padding: $spacing-md $spacing-lg;
+    text-align: center;
+    font-family: $font-family-ui;
+    font-size: $font-size-xs;
+    color: $text-subtle;
+  }
+}

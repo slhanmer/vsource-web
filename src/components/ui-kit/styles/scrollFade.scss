@@ -1,0 +1,64 @@
+@use '@styles/tokens' as *;
+
+/* Registered so the gradient stop positions animate rather than snap.
+   Unregistered custom properties are treated as strings and won't transition. */
+@property --scroll-fade-top {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --scroll-fade-bottom {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+.scroll-fade {
+  --scroll-fade-size: 32px;
+  --scroll-fade-top: 0px;
+  --scroll-fade-bottom: 0px;
+
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0; // so it can shrink inside a flex parent rather than push it
+
+  transition:
+    --scroll-fade-top 0.2s ease,
+    --scroll-fade-bottom 0.2s ease;
+
+  /* Two layers, intersected: each edge's gradient is opaque across the region
+     the other one fades, so intersect leaves only the true fade at each end.
+     A single concatenated gradient can't express this. */
+  mask-image:
+    linear-gradient(to bottom, transparent 0, #000 var(--scroll-fade-top), #000 100%),
+    linear-gradient(to top, transparent 0, #000 var(--scroll-fade-bottom), #000 100%);
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  mask-composite: intersect;
+
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent 0, #000 var(--scroll-fade-top), #000 100%),
+    linear-gradient(to top, transparent 0, #000 var(--scroll-fade-bottom), #000 100%);
+  -webkit-mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-composite: source-in;
+
+  &.fade-top {
+    --scroll-fade-top: var(--scroll-fade-size);
+  }
+
+  &.fade-bottom {
+    --scroll-fade-bottom: var(--scroll-fade-size);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.scroll-fade__content {
+  // Wrapper exists purely as a ResizeObserver target for content height.
+  display: flow-root;
+}
