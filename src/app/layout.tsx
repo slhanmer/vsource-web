@@ -1,10 +1,40 @@
 import type { Metadata } from 'next'
+import { Chakra_Petch, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google'
 import { Providers } from './providers'
 import SiteHeader from '@components/layouts/SiteHeader'
 import SiteFooter from '@components/layouts/SiteFooter'
+import CursorSpark from '@components/layouts/CursorSpark'
 import '@styles/global.scss'
 import './styles/shell.scss'
-import '@fortawesome/fontawesome-free/css/all.min.css'
+import '@configs/fontawesome'
+
+/**
+ * Self-hosted at build time. Do not go back to a CSS @import — that cost four
+ * serial round trips before text could paint.
+ *
+ * DEPLOY: the build machine needs internet access to fonts.googleapis.com.
+ * Runtime does not.
+ */
+const display = Chakra_Petch({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-display',
+  display: 'swap',
+})
+
+const ui = IBM_Plex_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-ui',
+  display: 'swap',
+})
+
+const mono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-mono',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.vsource.dev'),
@@ -26,7 +56,12 @@ export const metadata: Metadata = {
  */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-AU" data-theme="dark" suppressHydrationWarning>
+    <html
+      lang="en-AU"
+      data-theme="dark"
+      className={`${display.variable} ${ui.variable} ${mono.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -37,12 +72,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body suppressHydrationWarning>
         <Providers>
           <div className="site-frame">
+            <a href="#main" className="skip-link">
+              Skip to content
+            </a>
             <SiteHeader />
             <div className="site-scroll">
-              <div className="page-container top-align site-shell">{children}</div>
+              <div id="main" tabIndex={-1} className="page-container top-align site-shell">
+                {children}
+              </div>
             </div>
             <SiteFooter />
           </div>
+          <CursorSpark />
         </Providers>
       </body>
     </html>

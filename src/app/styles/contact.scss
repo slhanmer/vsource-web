@@ -27,8 +27,9 @@
       inset 0 1px 0 0 var(--carve-lip),
       inset 0 -1px 0 0 var(--carve-dark);
 
+    // Tighter on mobile so the Turnstile row can reach its one-line width.
     @media (max-width: $breakpoint-mobile) {
-      padding: $spacing-lg;
+      padding: $spacing-md;
     }
   }
 
@@ -123,5 +124,41 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: $text-subtle;
+  }
+}
+
+// Turnstile renders into a CLOSED shadow root, and the iframe inside carries an
+// inline `height: 65px`. Nothing can cross a closed boundary — not a selector,
+// not element.shadowRoot — so the height is not ours to set. A rule like
+// `.contact__turnstile iframe { height: 72px }` matches nothing, and would lose
+// to the inline style even if it did.
+//
+// The bottom border crops because "Verify you are human" wraps to two lines once
+// the widget gets narrow, which needs ~72px inside a box Cloudflare keeps at 65.
+// So this is a WIDTH fix: give the row room for one line and the height sorts
+// itself out.
+//
+// Budget at 360px: 360 - 24 (page gutter) - 32 (form padding) + 8 (bleed) = 312.
+// If the label still wraps, widen the bleed rather than chasing height.
+$turnstile-bleed: $spacing-2xs;
+
+.contact__turnstile {
+  min-height: 65px;
+  margin-bottom: $spacing-sm;
+  overflow: visible;
+  // A flex item defaults to flex-shrink: 1, which lets the column squeeze the
+  // widget below its own height.
+  flex: 0 0 auto;
+
+  @media (max-width: $breakpoint-mobile) {
+    margin-left: -$turnstile-bleed;
+    margin-right: -$turnstile-bleed;
+  }
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .contact__actions .basic-button,
+  .contact__sent .basic-button {
+    width: 100%;
   }
 }

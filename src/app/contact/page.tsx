@@ -7,7 +7,7 @@ import '../styles/contact.scss'
 export const metadata: Metadata = {
   title: 'Contact',
   description:
-    'Tell us what you are building and we will tell you honestly whether we are the right fit.',
+    'Tell us what you are building and you will get a straight answer about what it would take, and whether we are the right people to build it.',
 }
 
 export default function ContactPage() {
@@ -16,8 +16,8 @@ export default function ContactPage() {
       <p className="page__eyebrow">Start a conversation</p>
       <h1 className="page__title">Tell us what you are trying to build.</h1>
       <p className="page__lede">
-        We will tell you honestly whether we are the right people for it. If we are not, we will
-        usually know who is.
+        You will get a straight answer about what it would take, and a realistic view of whether we
+        are the right people to build it.
       </p>
 
       <div className="contact">
@@ -26,7 +26,8 @@ export default function ContactPage() {
         <aside className="contact__aside">
           <h2 className="contact__aside-heading">Or just email us</h2>
           <p className="contact__aside-note">
-            No form, no tracking, no autoresponder. A person reads it.
+            The form lands in the same inbox as this address. Either way one of us reads it and
+            replies.
           </p>
           <ul className="contact__details">
             <li>

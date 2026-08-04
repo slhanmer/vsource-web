@@ -1,0 +1,107 @@
+///////////////////////////////////////////////////////////////////////////////
+//  THEME SWITCH — wall plate with a rocker that tilts on its centre line.
+//  Australian convention: DOWN is on, so ON has the bottom pressed in.
+///////////////////////////////////////////////////////////////////////////////
+
+$plate-w: 34px;
+$plate-h: 46px;
+$rocker-w: 26px;
+$rocker-h: 38px;
+$tilt: 9deg;
+
+.theme-switch {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  border-radius: $radius-sm;
+  flex: 0 0 auto;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: $stroke-thick solid $text-primary;
+    outline-offset: 3px;
+  }
+
+  &__plate {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: $plate-w;
+    height: $plate-h;
+    border-radius: 5px;
+    background: var(--surface-chrome-light);
+    border: $stroke-hairline solid var(--chrome-edge);
+    box-shadow:
+      inset 0 1px 0 var(--carve-lip),
+      inset 0 -1px 0 var(--carve-dark);
+    // Short focal length so the tilt reads at this size.
+    perspective: 120px;
+
+    @media (max-width: $breakpoint-mobile) {
+      width: 30px;
+      height: 40px;
+    }
+  }
+
+  &__rocker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: $rocker-w;
+    height: $rocker-h;
+    border-radius: 3px;
+    background-color: var(--switch-knob);
+    background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.34), rgba(255, 255, 255, 0.09));
+    // The rim carries the 3:1 the tilt alone cannot (WCAG 1.4.11).
+    box-shadow: inset 0 0 0 1px var(--switch-rim);
+    transform: rotateX($tilt);
+    transition:
+      transform 0.14s cubic-bezier(0.2, 0.9, 0.3, 1.4),
+      background-image 0.14s ease;
+
+    @media (max-width: $breakpoint-mobile) {
+      width: 22px;
+      height: 32px;
+    }
+  }
+
+  &.is-on &__rocker {
+    transform: rotateX(-$tilt);
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(0, 0, 0, 0.34));
+  }
+
+  &:active &__rocker {
+    transform: rotateX(0deg);
+  }
+
+  &__glyph {
+    font-size: 10px;
+    color: var(--switch-knob-ink);
+    transition: color 0.2s ease;
+  }
+
+  // faMoon's ink sits at x 0..345 of a 512 viewBox, so it renders 0.069em left
+  // of centre. faSun is centred and needs no correction.
+  &:not(.is-on) &__glyph {
+    transform: translateX(0.069em);
+  }
+
+  &:hover &__glyph {
+    color: $route-active;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &__rocker {
+      transition-duration: 0.01ms;
+    }
+  }
+}

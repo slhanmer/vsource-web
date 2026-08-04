@@ -9,7 +9,11 @@ export const metadata: Metadata = {
     'A technical director off the tools, a developer who ran kitchens, and a QA lead who reads the documentation before the auditor does.',
 }
 
-/** Initials fallback while we have no portraits. */
+/**
+ * Initials fallback, used until portraits exist. Deliberately not a grey avatar
+ * silhouette — initials in a ringed circle read as a decision rather than a
+ * missing image.
+ */
 const initials = (name: string) =>
   name
     .split(' ')
@@ -24,17 +28,16 @@ export default function CrewPage() {
       <p className="page__eyebrow">Who you get</p>
       <h1 className="page__title">A small team, and you talk to all of them.</h1>
       <p className="page__lede">
-        There is no account manager here. The people who scope the work are the people who write
-        it, and between us we have spent longer on building sites, in kitchens and under
-        regulatory audit than we have in stand-ups.
+        There is no account manager here. The people who scope the work are the people who write it,
+        and between us we have spent longer on building sites, in kitchens and under regulatory
+        audit than we have in stand-ups.
       </p>
 
       <div className="crew">
         {CREW.map((member) => (
-          <article key={member.name} className="crew__card">
+          <article key={member.id} id={member.id} className="crew__card">
             <div className="crew__portrait" aria-hidden="true">
               {member.portrait ? (
-                // eslint-disable-next-line @next/next/no-img-element
                 <img src={member.portrait} alt="" className="crew__portrait-img" />
               ) : (
                 <span className="crew__initials">{initials(member.name)}</span>
@@ -47,11 +50,6 @@ export default function CrewPage() {
             </div>
           </article>
         ))}
-      </div>
-
-      <div className="placeholder-copy">
-        DRAFT — titles are invented, Ronan&rsquo;s surname is missing, and there are no portraits
-        yet. Bios are a starting point, not final copy.
       </div>
     </main>
   )

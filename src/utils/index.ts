@@ -26,3 +26,5 @@ export { caesarCustom, forwardCaesarDayShift, reverseCaesarDayShift } from './cr
 export { debugFormData } from './logging'
 export { getDisplayFileName } from './file'
 export { sanitiseText } from './sanitiseText'
+export { recordVisitOrigin, readVisitOrigin } from './visitOrigin'
+export type { VisitOrigin } from './visitOrigin'

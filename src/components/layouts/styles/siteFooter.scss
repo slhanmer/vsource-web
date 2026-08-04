@@ -36,6 +36,16 @@
       justify-content: flex-start;
       gap: $spacing-md $spacing-lg;
     }
+
+    // Phone: one row of four icons, no labels. Four labelled links wrap to
+    // three or four rows here and the footer ends up taller than the content
+    // it sits under.
+    @media (max-width: $breakpoint-mobile) {
+      flex-wrap: nowrap;
+      justify-content: space-around;
+      gap: 0;
+      padding: $spacing-2xs $spacing-xs;
+    }
   }
 
   &__contact {
@@ -53,6 +63,35 @@
       .site-footer__icon {
         color: $route-active;
       }
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+      position: relative; // containing block for the hidden label
+      justify-content: center;
+      gap: 0;
+      // Comfortable thumb target; 2.5.8 only asks for 24.
+      min-width: 44px;
+      min-height: 44px;
+
+      .site-footer__icon {
+        font-size: $font-size-lg;
+      }
+    }
+  }
+
+  // Hidden visually, not removed: without a label these links have no
+  // accessible name at all.
+  &__contact-text {
+    @media (max-width: $breakpoint-mobile) {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+      border: 0;
     }
   }
 
@@ -93,6 +132,13 @@
     font-family: $font-family-mono;
     font-size: $font-size-xs;
     color: $text-subtle;
+
+    // Has to hold one line at 360: 11px mono runs ~318px against 336 available.
+    @media (max-width: $breakpoint-mobile) {
+      padding: $spacing-2xs $spacing-sm;
+      gap: $spacing-2xs $spacing-xs;
+      font-size: 11px;
+    }
   }
 
   &__legal-text {
@@ -104,5 +150,9 @@
 
   &__abn {
     letter-spacing: 0.04em;
+
+    @media (max-width: $breakpoint-mobile) {
+      letter-spacing: 0;
+    }
   }
 }

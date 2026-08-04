@@ -47,6 +47,15 @@
     flex: 1 0 auto;
   }
 
+  // Anchor links from the home page cards scroll THIS container, not the
+  // document, because global.scss sets `html { overflow: hidden }`. Smooth
+  // scrolling has to be declared on the scroller for the same reason.
+  scroll-behavior: smooth;
+
+  @media (prefers-reduced-motion: reduce) {
+    scroll-behavior: auto;
+  }
+
   ////////////////////////////////////////////////////////////////////////////
   //  SCROLLBAR
   //  The kit's global channel runs flush to the viewport edge and butts into
@@ -100,7 +109,66 @@
   --scrollbar-w: 20px;
   --toast-offset-top: 108px;
 
+  // Touch devices use overlay scrollbars and reserve no gutter, so the chrome
+  // bands would pad 20px that page content does not — pushing every band's
+  // content out of line with the page.
+  @media (pointer: coarse) {
+    --scrollbar-w: 0px;
+  }
+
   @media (max-width: 480px) {
     --toast-offset-top: 92px;
+  }
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//  FOCUS
+//  Every interactive element on the site needs a visible keyboard indicator
+//  (WCAG 2.2 AA, 2.4.7). One ring, declared once, rather than per component.
+//
+//  --text-primary rather than an accent colour: it flips with the theme and
+//  clears 3:1 against every surface here, which neither the green nor the cyan
+//  reliably does in light mode.
+////////////////////////////////////////////////////////////////////////////////
+.site-header__key,
+.site-header__drawer-link,
+.site-header__brand,
+.site-header__toggle,
+.site-footer__contact,
+.site-footer__brand,
+.card--link,
+.home__more a,
+.services__includes a,
+.work__status-cta {
+  &:focus-visible {
+    outline: $stroke-thick solid $text-primary;
+    outline-offset: 2px;
+    border-radius: $radius-sm;
+  }
+}
+
+// Skip link. Off-screen until focused, then lands in the top-left of the
+// chrome. WCAG 2.4.1 — without it a keyboard user walks the whole header on
+// every page.
+.skip-link {
+  position: absolute;
+  top: $spacing-xs;
+  left: $spacing-xs;
+  z-index: 100;
+  transform: translateY(-200%);
+  padding: $spacing-xs $spacing-md;
+  border-radius: $radius-sm;
+  background: $surface-card;
+  border: $stroke-hairline solid var(--chrome-edge);
+  color: $text-primary;
+  font-family: $font-family-button;
+  font-size: $font-size-sm;
+  text-decoration: none;
+
+  &:focus {
+    transform: translateY(0);
+    outline: $stroke-thick solid $text-primary;
+    outline-offset: 2px;
   }
 }

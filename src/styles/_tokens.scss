@@ -21,7 +21,7 @@ $green-900: #094414; // darkest letterform shadow in the mark
 
 // Cyan / teal — the neon V. Sings on dark, useless as text on light.
 $cyan-400: #1edcea; // 11.19 AAA on dark page, 1.60 FAIL on light
-$cyan-500: #19a5a8; // light-safe cousin
+$cyan-500: #19a5a8; // NOT text-safe on light (2.86) — see --brand-highlight
 $cyan-600: #147f82;
 $cyan-100: #d4f9ff; // hot highlight inside the stroke
 
@@ -140,11 +140,12 @@ $state-warning: $amber-500;
 // DEVELOPMENT lettering. Deliberately confined to headings, nav and buttons;
 // IBM Plex Sans carries every paragraph. That split is what keeps the site
 // reading as engineering rather than esports, so resist widening it.
-$font-family-ui: 'IBM Plex Sans', system-ui, sans-serif;
-$font-family-input: 'IBM Plex Sans', system-ui, sans-serif;
-$font-family-button: 'Chakra Petch', system-ui, sans-serif;
-$font-family-display: 'Chakra Petch', system-ui, sans-serif;
-$font-family-mono: 'IBM Plex Mono', ui-monospace, monospace;
+// --font-* come from next/font and already include its metric-matched fallback.
+$font-family-ui: var(--font-ui), system-ui, sans-serif;
+$font-family-input: var(--font-ui), system-ui, sans-serif;
+$font-family-button: var(--font-display), system-ui, sans-serif;
+$font-family-display: var(--font-display), system-ui, sans-serif;
+$font-family-mono: var(--font-mono), ui-monospace, monospace;
 
 $font-size-xs: 12px;
 $font-size-sm: 14px;
@@ -169,13 +170,9 @@ $heading-desktop: 2rem;
 $heading-tablet: 1.75rem;
 $heading-mobile: 1rem;
 
-@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap');
-
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+// Fonts load in app/layout.tsx via next/font. Do NOT add @import back: this
+// file is injected into every SCSS file by next.config.ts, and CSS @import cost
+// four serial round trips before text could paint (8s LCP when throttled).
 
 
 //////////////////////////////// SPACING //////////////////////////////////////

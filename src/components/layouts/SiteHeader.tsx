@@ -6,7 +6,8 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { SITE_STATUS } from '@constants'
+import HeaderReadout from './HeaderReadout'
+import ThemeSwitch from './ThemeSwitch'
 import { SITE_NAV } from './siteNav'
 
 import './styles/siteHeader.scss'
@@ -45,11 +46,17 @@ export default function SiteHeader() {
             aria-label="V Source home"
             onClick={closeMenu}
           >
+            {/*
+              600x200 WebP. `unoptimized` is deliberate — with output:'standalone',
+              Next image optimisation needs sharp on the deploy box, so we ship a
+              correctly sized file instead. The 1500x500 PNG source is 315KB and
+              preloads via `priority`; do not point back at it.
+            */}
             <Image
-              src="/logos/vsource-logo-full.png"
+              src="/logos/vsource-logo-full.webp"
               alt="V Source"
-              width={1500}
-              height={500}
+              width={600}
+              height={200}
               unoptimized
               priority
               className="site-header__logo"
@@ -69,32 +76,24 @@ export default function SiteHeader() {
             ))}
           </nav>
 
-          <button
-            type="button"
-            className="site-header__toggle"
-            aria-expanded={menuOpen}
-            aria-controls="site-mobile-nav"
-            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-            onClick={() => setMenuOpen((open) => !open)}
-          >
-            <FontAwesomeIcon icon={menuOpen ? faXmark : faBars} />
-          </button>
+          <div className="site-header__controls">
+            <ThemeSwitch />
+
+            <button
+              type="button"
+              className="site-header__toggle"
+              aria-expanded={menuOpen}
+              aria-controls="site-mobile-nav"
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              <FontAwesomeIcon icon={menuOpen ? faXmark : faBars} />
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="site-header__readout">
-        <dl className="site-header__readout-inner">
-          {SITE_STATUS.map((entry) => (
-            <div key={entry.label} className="site-header__stat">
-              <dt className="site-header__stat-label">{entry.label}</dt>
-              <dd className="site-header__stat-value">
-                {entry.live && <span className="site-header__dot" aria-hidden="true" />}
-                {entry.value}
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </div>
+      <HeaderReadout />
 
       <nav
         id="site-mobile-nav"

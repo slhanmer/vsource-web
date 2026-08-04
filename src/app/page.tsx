@@ -11,8 +11,9 @@ import './styles/home.scss'
  * the stack) is what stops "cheaper" reading as "worse". Everything below is
  * proof of that mechanism.
  *
- * Service cards and the work teaser map over the shared constants so the home
- * page and the detail pages cannot drift apart.
+ * Every card is a link to its own anchor on the detail page, so a card that
+ * describes something also takes you to it. Ids live on the constants, so the
+ * cards and the anchors cannot drift apart.
  */
 export default function Home() {
   return (
@@ -24,9 +25,9 @@ export default function Home() {
             Most businesses bend themselves around software that nearly fits.
           </h1>
           <p className="hero__lede">
-            We build to fit instead. Our own component library, our own ORM, our own servers —
-            which is why software built exactly for you now costs a fraction of what it used to,
-            and why nobody else&rsquo;s release schedule can break it.
+            We build to fit instead. We make our own tools and run our own hardware, which is why
+            software built exactly for you now costs a fraction of what it used to — and why no one
+            else&rsquo;s software update can break yours.
           </p>
           <div className="hero__actions">
             <Link href="/contact" className="basic-button">
@@ -44,10 +45,10 @@ export default function Home() {
           <h2 className="page__section-title">What we do</h2>
           <div className="card-grid">
             {SERVICES.map((service) => (
-              <article key={service.title} className="card">
+              <Link key={service.id} href={`/services#${service.id}`} className="card card--link">
                 <h3>{service.title}</h3>
                 <p>{service.summary}</p>
-              </article>
+              </Link>
             ))}
           </div>
           <p className="home__more">
@@ -68,11 +69,11 @@ export default function Home() {
           <h2 className="page__section-title">The crew</h2>
           <div className="card-grid">
             {CREW.map((member) => (
-              <article key={member.name} className="card">
+              <Link key={member.id} href={`/crew#${member.id}`} className="card card--link">
                 <h3>{member.name}</h3>
                 <p className="card__role">{member.role}</p>
                 <p>{member.summary}</p>
-              </article>
+              </Link>
             ))}
           </div>
           <p className="home__more">

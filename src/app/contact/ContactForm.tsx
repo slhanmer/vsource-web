@@ -1,7 +1,34 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import Script from 'next/script'
 import { Button, Input, HoneypotField, useToast } from '@components'
+import { readVisitOrigin } from '@utils'
+
+import '../styles/contact.scss'
+
+/** Optional: with no site key the widget never renders and the route skips it. */
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
+
+interface TurnstileOptions {
+  sitekey: string
+  theme?: 'light' | 'dark' | 'auto'
+  size?: 'normal' | 'flexible' | 'compact'
+  callback?: (token: string) => void
+  'expired-callback'?: () => void
+  'error-callback'?: () => void
+}
+
+interface TurnstileApi {
+  render: (el: HTMLElement, opts: TurnstileOptions) => string
+  remove: (id: string) => void
+}
+
+declare global {
+  interface Window {
+    turnstile?: TurnstileApi
+  }
+}
 
 /**
  * Contact form.
@@ -30,6 +57,13 @@ export default function ContactForm() {
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
 
+  // Tokens are single-use and expire after five minutes, so the widget is reset
+  // whenever the server actually spends one.
+  const [scriptReady, setScriptReady] = useState(false)
+  const [token, setToken] = useState<string | null>(null)
+  const widgetHost = useRef<HTMLDivElement>(null)
+  const widgetId = useRef<string | null>(null)
+
   /**
    * Required styling is held back until a submit has been attempted — an empty
    * form should not open shouting red at someone who has not typed anything
@@ -43,12 +77,66 @@ export default function ContactForm() {
     if (attempted) setAttempted(false)
   }
 
-  // Set once on first render, sent with the payload for the timing check.
-  const startedAt = useRef<number>(Date.now())
+  // Stamped on mount, not during render — Date.now() in a render pass is an
+  // impure call and the compiler rejects it. Sent with the payload for the
+  // timing check; a 0 here would simply read as "loaded long ago" and pass.
+  const startedAt = useRef(0)
   const honeypot = useRef<Record<string, string | null>>({})
+
+  useEffect(() => {
+    startedAt.current = Date.now()
+  }, [])
 
   const registerHoneypot = (fieldName: string, value: string | null) => {
     honeypot.current[fieldName] = value
+  }
+
+  /**
+   * Both render paths share this so they cannot drift. useCallback so it is a
+   * stable dependency of the render effect below.
+   *
+   * Theme is read once — Turnstile cannot restyle in place, and tearing the
+   * challenge down on a theme flip would make the visitor start again.
+   */
+  const widgetOptions = useCallback(
+    (): TurnstileOptions => ({
+      sitekey: TURNSTILE_SITE_KEY as string,
+      theme: document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark',
+      size: 'flexible',
+      callback: (value) => setToken(value),
+      'expired-callback': () => setToken(null),
+      'error-callback': () => setToken(null),
+    }),
+    []
+  )
+
+  /**
+   * Explicit render, not the implicit `.cf-turnstile` path — that orphans a
+   * widget every time the form remounts ("Send another").
+   */
+  useEffect(() => {
+    if (!TURNSTILE_SITE_KEY || !scriptReady || sent) return
+    const host = widgetHost.current
+    const api = window.turnstile
+    if (!host || !api) return
+
+    const id = api.render(host, widgetOptions())
+    widgetId.current = id
+
+    return () => {
+      api.remove(id)
+      widgetId.current = null
+    }
+  }, [scriptReady, sent, widgetOptions])
+
+  /** Burn the current token and ask for a fresh one. */
+  const resetTurnstile = () => {
+    setToken(null)
+    const api = window.turnstile
+    const host = widgetHost.current
+    if (!api || !host || !TURNSTILE_SITE_KEY) return
+    if (widgetId.current) api.remove(widgetId.current)
+    widgetId.current = api.render(host, widgetOptions())
   }
 
   const validate = (): boolean => {
@@ -79,6 +167,10 @@ export default function ContactForm() {
           message,
           honeypot: honeypot.current,
           startedAt: startedAt.current,
+          turnstileToken: token,
+          // Read at submit rather than at mount: it is the same value either
+          // way, and this keeps the storage access off the render path.
+          origin: readVisitOrigin(),
         }),
       })
 
@@ -97,8 +189,15 @@ export default function ContactForm() {
       }
 
       if (res.status === 422 && data.errors) {
+        // Verified after validation, so the token is unspent — leave it alone.
         setErrors(data.errors as FieldErrors)
         showToast('Have another look at the highlighted fields.', 'warning')
+        return
+      }
+
+      if (res.status === 403) {
+        resetTurnstile()
+        showToast('That check did not pass. Give it another go.', 'warning')
         return
       }
 
@@ -116,7 +215,7 @@ export default function ContactForm() {
         <h2 className="contact__sent-heading">Thanks — that has landed.</h2>
         <p className="contact__sent-body">
           We read everything ourselves, so it may take a day or so, but it will be a person
-          replying rather than a workflow.
+          replying.
         </p>
         <Button label="Send another" variant="secondary" handleClick={() => setSent(false)} />
       </div>
@@ -187,6 +286,17 @@ export default function ContactForm() {
           setMessage(e.target.value)
         }}
       />
+
+      {TURNSTILE_SITE_KEY && (
+        <>
+          <Script
+            src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
+            strategy="afterInteractive"
+            onReady={() => setScriptReady(true)}
+          />
+          <div className="contact__turnstile" ref={widgetHost} />
+        </>
+      )}
 
       <div className="contact__actions">
         {/*

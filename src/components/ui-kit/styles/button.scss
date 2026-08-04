@@ -68,8 +68,20 @@ button {
     }
   }
 
+  // Mouse focus stays clean; keyboard focus must be visible (WCAG 2.4.7).
+  // Previously this was `outline: none` with no replacement, which removed the
+  // indicator for every button and every anchor wearing .basic-button.
+  //
+  // The ring uses --text-primary rather than an accent: it flips with the theme
+  // and clears 3:1 against every surface in the system, which the accent
+  // colours do not reliably do in light mode.
   &:focus {
     outline: none;
+  }
+
+  &:focus-visible {
+    outline: $stroke-thick solid $text-primary;
+    outline-offset: 2px;
   }
 
   // Tooltip now anchors to the button itself (container removed)

@@ -1,16 +1,25 @@
 // ─────────────────────────────────────────────────────────────────────────────
-//  404 — Etched entry shell
-//  Same carved chrome card as the login / welcome screens: recessed face
-//  (surface-chrome + inset carve), a debossed brand mark low-and-right, and the
-//  "404" numerals engraved into the surface. Depth by edge — no float shadows.
+//  404 — carved card
+//  The same chrome face as the header and footer bands: recessed
+//  (surface-chrome + inset carve), the V carved into it low-and-right, and the
+//  numerals engraved into the surface. Depth by edge — no float shadows.
 // ─────────────────────────────────────────────────────────────────────────────
 
 .notfound-page {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: $spacing-lg;
+  // NOT 100vh: the header and footer sit outside the scroller, so 100vh
+  // overshoots it by their combined height and adds a scrollbar.
+  min-height: 100%;
+  flex: 1 1 auto;
+  padding: $spacing-2xl $spacing-lg;
+}
+
+// main is only as tall as its content by default. :has() keeps this scoped.
+.page-container.site-shell > main:has(.notfound-page) {
+  display: flex;
+  flex-direction: column;
 }
 
 .notfound-card {
@@ -31,15 +40,13 @@
     inset 0 3px 8px 0 var(--carve-dark),
     inset 0 -1px 1px 0 var(--carve-lip);
 
-  // Brand mark carved into the chrome face, anchored low-and-right (mirrors the
-  // login / welcome cards). --logo-surface makes the mark share the card fill so
-  // only its carved edges read.
+  // --logo-surface makes the mark share the card fill, so only its carve reads.
   &__mark {
     position: absolute;
     right: -80px;
     bottom: -80px;
-    width: 300px;
-    height: 290px;
+    width: 300px; // square — the viewBox is 100x100
+    height: 300px;
     --logo-surface: var(--surface-chrome);
     opacity: 0.35;
     pointer-events: none;
@@ -64,8 +71,24 @@
     text-shadow: 0 1px 0 var(--carve-lip);
   }
 
+  // Reads like the header readout: a key, then the state.
+  &__signal {
+    margin: $spacing-2xs 0 $spacing-md;
+    font-family: $font-family-mono;
+    font-size: $font-size-xs;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $route-active;
+  }
+
+  &__signal-key {
+    color: $text-subtle;
+    margin-right: $spacing-xs;
+  }
+
   &__heading {
     margin: 0;
+    font-family: $font-family-button;
     font-size: $font-size-xl;
     font-weight: 700;
     color: $text-primary;

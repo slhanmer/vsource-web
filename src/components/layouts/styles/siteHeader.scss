@@ -36,11 +36,15 @@ $band-height-mobile: 56px;
     gap: $spacing-lg;
     max-width: 1320px;
     margin: 0 auto;
+    // Matches .page, .hero__inner, the readout inner and both footer inners.
+    // Without it the logo and burger sit hard against the viewport edge while
+    // page content is inset, at every width below ~1370px.
     padding: 0 $spacing-lg;
     min-height: $band-height;
 
     @media (max-width: $breakpoint-mobile) {
       min-height: $band-height-mobile;
+      padding: 0 $spacing-sm;
     }
   }
 
@@ -118,6 +122,16 @@ $band-height-mobile: 56px;
     }
   }
 
+  // Theme switch + burger travel together at the right-hand end of the band,
+  // so the switch stays reachable at every width rather than being folded into
+  // the drawer where nobody would find it.
+  &__controls {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    flex: 0 0 auto;
+  }
+
   &__toggle {
     display: none;
     background: none;
@@ -126,6 +140,12 @@ $band-height-mobile: 56px;
     font-size: $font-size-lg;
     color: $text-primary;
     padding: $spacing-2xs;
+    // WCAG 2.2 2.5.8 asks for 24px; 44 is the AAA figure and the one that
+    // actually feels right under a thumb. This is the mobile-only control.
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
 
     @media (max-width: $breakpoint-tablet) {
       display: inline-flex;
@@ -135,7 +155,13 @@ $band-height-mobile: 56px;
   //////////////////////////////////////////////////////////////////////////
   //  TIER 2 — readout strip, cut deeper
   //////////////////////////////////////////////////////////////////////////
+  // Explicit height rather than min-height on the inner: the band must be its
+  // final size on the first frame or the whole page shifts down when the strip
+  // fills.
   &__readout {
+    display: flex;
+    align-items: center;
+    height: 26px;
     padding-right: var(--scrollbar-w, 0px);
     background: var(--surface-chrome-dark);
     box-shadow: inset 0 2px 3px -1px var(--carve-dark);
@@ -148,22 +174,63 @@ $band-height-mobile: 56px;
     }
   }
 
+  // Entries spread across the full width rather than bunching left, which lets
+  // the band sit tighter vertically. Safe to justify because HeaderReadout
+  // reserves every entry's final width from the first frame — nothing moves as
+  // the text types in.
   &__readout-inner {
     display: flex;
     align-items: center;
-    gap: $spacing-lg;
+    justify-content: space-between;
+    gap: $spacing-md;
     max-width: 1320px;
     margin: 0 auto;
-    padding: $spacing-2xs $spacing-lg;
+    padding: 0 $spacing-lg;
     font-family: $font-family-mono;
     font-size: $font-size-xs;
-    white-space: nowrap;
+    // Fixed line box. The caret is an inline-block with a height, and an
+    // inline-block taller than its line box grows it — which nudged the text
+    // every time the caret hopped to a new element. Pinning line-height here,
+    // taller than the caret, means nothing inside can change the row height.
+    line-height: 1.7;
+    // `pre`, not `nowrap`: each character is its own span and the space
+    // characters must not be collapsed away. Also prevents wrapping, so nowrap
+    // is redundant.
+    white-space: pre;
+
+    @media (max-width: $breakpoint-desktop) {
+      justify-content: flex-start;
+      gap: $spacing-lg;
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+      padding: 0 $spacing-md;
+      gap: $spacing-md;
+    }
+  }
+
+  // The strip is horizontally scrollable with the scrollbar hidden, so anything
+  // that overflows on a phone is effectively unreachable. Drop the two least
+  // useful entries rather than hide them behind a drag. The visually-hidden
+  // <dl> in HeaderReadout still carries all four for assistive tech.
+  &__stat:nth-child(n + 4) {
+    @media (max-width: 900px) {
+      display: none;
+    }
+  }
+
+  &__stat:nth-child(n + 3) {
+    @media (max-width: $breakpoint-tablet) {
+      display: none;
+    }
   }
 
   &__stat {
     display: flex;
     align-items: center;
     gap: $spacing-xs;
+    // Fixed height so a taller descendant cannot shift the row.
+    height: 1.7em;
   }
 
   &__stat-label {
@@ -175,18 +242,52 @@ $band-height-mobile: 56px;
 
   &__stat-value {
     margin: 0;
-    display: inline-flex;
-    align-items: center;
     color: $text-secondary;
   }
 
+  // Needs its own display: the value is plain inline now, and width/height are
+  // ignored on an inline element.
   &__dot {
+    display: inline-block;
+    vertical-align: middle;
     width: 6px;
     height: 6px;
     border-radius: $radius-full;
     background: $action-primary;
     margin-right: $spacing-xs;
-    flex: 0 0 auto;
+    transition: opacity 0.2s ease;
+
+    // Holds its space before its reading has been typed.
+    &.is-pending {
+      opacity: 0;
+    }
+
+    // Starts pulsing only once the whole strip has finished typing, so it reads
+    // as an indicator coming online rather than as decoration.
+    &.is-live {
+      animation: site-header-pulse 2.4s ease-in-out infinite;
+    }
+  }
+
+  // Not-yet-typed characters. `visibility: hidden` rather than `opacity: 0` —
+  // both reserve width, but visibility also takes them out of the accessibility
+  // tree and stops any text selection picking up phantom characters.
+  &__ghost {
+    visibility: hidden;
+  }
+
+  // Terminal caret. Zero net width — it overlays the next ghost character
+  // rather than pushing anything along.
+  // Zero net width, and shorter than the pinned line box so it can never
+  // change the row height.
+  &__caret {
+    display: inline-block;
+    width: 0.5em;
+    margin-right: -0.5em;
+    height: 1em;
+    vertical-align: middle;
+    background: $route-active;
+    animation: site-header-caret 1s steps(2, start) infinite;
   }
 
   //////////////////////////////////////////////////////////////////////////
@@ -222,5 +323,41 @@ $band-height-mobile: 56px;
       color: $route-active;
       font-weight: $font-weight-semibold;
     }
+  }
+}
+
+@keyframes site-header-caret {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+// Respect a reduced-motion preference: the strip renders complete (handled in
+// HeaderReadout) and the caret should not blink either.
+@media (prefers-reduced-motion: reduce) {
+  .site-header__caret {
+    animation: none;
+  }
+}
+
+@keyframes site-header-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 transparent;
+  }
+  50% {
+    opacity: 0.55;
+    box-shadow: 0 0 6px 1px var(--action-primary);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header__dot.is-live {
+    animation: none;
   }
 }

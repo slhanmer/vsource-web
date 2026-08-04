@@ -20,10 +20,12 @@ const desktopBP = getCssVarPx('--breakpoint-desktop')
  * if (isMobile) return <MobileLayout />
  */
 export const useViewport = (breakpoint = desktopBP, debounceDelay = 20) => {
-  const [isMobile, setIsMobile] = useState<boolean | null>(() => {
-    if (typeof window === 'undefined') return null
-    return window.innerWidth < breakpoint || 'ontouchstart' in window
-  })
+  // MUST start null, matching the server. Measuring the window in this
+  // initialiser makes the first client render disagree with the server-rendered
+  // HTML, and React 19 reports that as a hydration mismatch rather than
+  // silently patching it. The effect below measures immediately on mount, so
+  // nothing is lost but the frame before hydration.
+  const [isMobile, setIsMobile] = useState<boolean | null>(null)
 
   useEffect(() => {
     if (typeof window === 'undefined') return

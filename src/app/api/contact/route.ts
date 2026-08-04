@@ -12,9 +12,13 @@ import { NextRequest, NextResponse } from 'next/server'
  *   RESEND_API_KEY     - from resend.com
  *   CONTACT_TO_EMAIL   - where enquiries land (simon@ while testing)
  *   CONTACT_FROM_EMAIL - must sit on a domain verified in Resend
+ *
+ * Optional:
+ *   TURNSTILE_SECRET_KEY - Cloudflare Turnstile. Absent = the check is skipped.
  */
 
 const RESEND_ENDPOINT = 'https://api.resend.com/emails'
+const TURNSTILE_ENDPOINT = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
 
 /** Minimum time a human plausibly takes to fill this in. Faster is a bot. */
 const MIN_FILL_MS = 2500
@@ -69,12 +73,52 @@ const hasNewline = (value: string): boolean => /[\r\n]/.test(value)
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
+/**
+ * Turnstile verification. Skipped entirely without TURNSTILE_SECRET_KEY.
+ *
+ * Asymmetric on purpose: a REJECTED token is a hard no, an UNVERIFIABLE one
+ * (Cloudflare unreachable) fails open — losing a real enquiry during someone
+ * else's outage is worse here than letting one spam through.
+ */
+const verifyTurnstile = async (token: unknown, ip: string): Promise<boolean> => {
+  const secret = process.env.TURNSTILE_SECRET_KEY
+  if (!secret) return true
+
+  if (typeof token !== 'string' || token.length === 0) {
+    console.warn('[contact] turnstile is configured but no token was sent')
+    return false
+  }
+
+  try {
+    const res = await fetch(TURNSTILE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        secret,
+        response: token,
+        ...(ip === 'unknown' ? {} : { remoteip: ip }),
+      }),
+    })
+
+    if (!res.ok) {
+      console.error('[contact] turnstile siteverify returned', res.status, '- failing open')
+      return true
+    }
+
+    const data = (await res.json()) as { success?: boolean; 'error-codes'?: string[] }
+    if (data.success !== true) {
+      console.warn('[contact] turnstile rejected the token', data['error-codes'])
+      return false
+    }
+    return true
+  } catch (err) {
+    console.error('[contact] could not reach turnstile - failing open', err)
+    return true
+  }
+}
+
 const escapeHtml = (value: string): string =>
-  value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
+  value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
 export async function POST(req: NextRequest) {
   const ip = clientIp(req)
@@ -124,6 +168,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, errors }, { status: 422 })
   }
 
+  // --- challenge -----------------------------------------------------------
+  // After validation on purpose: tokens are single-use, so a 422 must not spend
+  // one and make the visitor re-solve to fix a typo.
+  if (!(await verifyTurnstile(payload.turnstileToken, ip))) {
+    return NextResponse.json(
+      { ok: false, error: 'That check did not pass. Please try again.' },
+      { status: 403 }
+    )
+  }
+
   // --- config --------------------------------------------------------------
   const apiKey = process.env.RESEND_API_KEY
   const to = process.env.CONTACT_TO_EMAIL
@@ -137,6 +191,11 @@ export async function POST(req: NextRequest) {
     )
   }
 
+  // --- attribution ---------------------------------------------------------
+  const origin = (payload.origin ?? {}) as Record<string, unknown>
+  const referrer = clean(origin.referrer, 120) || 'unknown'
+  const landing = clean(origin.landing, 200) || 'unknown'
+
   // --- send ----------------------------------------------------------------
   const subject = `Website enquiry - ${name}${company ? ` (${company})` : ''}`
   const text = [
@@ -146,6 +205,8 @@ export async function POST(req: NextRequest) {
     '',
     message,
     '',
+    `Came from: ${referrer}`,
+    `Landed on: ${landing}`,
     `- sent from vsource.dev at ${new Date().toISOString()}`,
   ]
     .filter(Boolean)
@@ -159,6 +220,11 @@ export async function POST(req: NextRequest) {
     </table>
     <hr style="border:none;border-top:1px solid #ddd;margin:16px 0">
     <div style="font-family:system-ui,sans-serif;font-size:14px;line-height:1.6;white-space:pre-wrap">${escapeHtml(message)}</div>
+    <hr style="border:none;border-top:1px solid #ddd;margin:16px 0">
+    <table style="font-family:system-ui,sans-serif;font-size:12px;color:#666;line-height:1.5">
+      <tr><td style="padding:1px 12px 1px 0">Came from</td><td>${escapeHtml(referrer)}</td></tr>
+      <tr><td style="padding:1px 12px 1px 0">Landed on</td><td>${escapeHtml(landing)}</td></tr>
+    </table>
   `
 
   try {

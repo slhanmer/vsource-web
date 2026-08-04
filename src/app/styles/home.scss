@@ -11,14 +11,15 @@
     margin: 0 auto;
     padding: $spacing-2xl $spacing-lg $spacing-lg;
     font-family: $font-family-ui;
+
+    @media (max-width: $breakpoint-mobile) {
+      padding: $spacing-xl $spacing-sm $spacing-md;
+    }
   }
 
   &__title {
     text-align: left;
-    text-shadow:
-      0 1px 0 var(--carve-lip),
-      0 -2px 1px var(--carve-dark);
-    max-width: 18ch;
+    max-width: 30ch;
     margin: 0 0 $spacing-lg;
     font-family: $font-family-button;
     font-size: clamp(2rem, 5vw, 3.25rem);
@@ -28,7 +29,7 @@
   }
 
   &__lede {
-    max-width: 58ch;
+    max-width: 85ch;
     margin: 0 0 $spacing-xl;
     font-size: $font-size-md;
     line-height: $line-height-relaxed;
@@ -61,6 +62,12 @@
     min-width: 200px;
     padding: 0 $spacing-lg;
     text-decoration: none;
+
+    // Full width on a phone — 200px side by side strands a gutter.
+    @media (max-width: $breakpoint-mobile) {
+      width: 100%;
+      min-width: 0;
+    }
   }
 
   // Secondary action takes the cyan outline: it points, it does not act.

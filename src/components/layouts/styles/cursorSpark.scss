@@ -1,0 +1,52 @@
+///////////////////////////////////////////////////////////////////////////////
+//  CURSOR SPARK — shake the pointer and you pick up the mark.
+///////////////////////////////////////////////////////////////////////////////
+
+.cursor-spark {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 400; // above the sticky header (50) and the toasts
+  overflow: hidden;
+  contain: layout style;
+}
+
+// Restored on click, Escape, idle, tab change and blur, so the cursor cannot be
+// left hidden.
+body.has-cursor-spark,
+body.has-cursor-spark * {
+  cursor: none !important;
+}
+
+.cursor-spark__node {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 26px;
+  height: 26px;
+  margin: -13px 0 0 -13px; // centres on the hotspot the real cursor had
+  --logo-surface: var(--route-active);
+  transition: opacity 0.28s ease;
+  will-change: transform, opacity;
+
+  &.is-leader {
+    filter: drop-shadow(0 0 6px var(--route-active));
+  }
+}
+
+.cursor-spark__mark {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-spark {
+    display: none;
+  }
+
+  body.has-cursor-spark,
+  body.has-cursor-spark * {
+    cursor: auto !important;
+  }
+}

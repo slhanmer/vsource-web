@@ -21,9 +21,7 @@ export const client = NAME_CLIENT ? CLIENT_NAMED : CLIENT_ANON
  * their side rather than ours. Its only job is to earn the click.
  */
 export const CASE_STUDY_TEASER = {
-  title: NAME_CLIENT
-    ? 'Aptium — Class A medical device portal'
-    : 'A Class A medical device portal',
+  title: NAME_CLIENT ? 'Aptium — Class A medical device portal' : 'A Class A medical device portal',
   summary:
     'When software is part of a medical device, "it works" is not enough — you have to be able to prove you knew it worked before you shipped it. That is what we are building right now, front end to hardware.',
   cta: 'Read how it is built',
@@ -43,14 +41,15 @@ export const CASE_STUDY = {
       heading: 'The constraint that shapes everything',
       body: [
         'A Class A medical device is regulated by the TGA, and regulation is mostly an evidence problem. It is not enough for the software to work — you have to be able to demonstrate that it works, that you knew it worked before you shipped it, and that you would find out if it stopped.',
-        'That changes how you build. Documentation is not written up afterwards; it is the artefact the auditor reads, so it has to be true at every commit. Testing is not a quality nice-to-have; it is the evidence. Version history has to survive scrutiny years later. Most studios our size cannot take this work on, and most agencies price it as if it were a compliance tax rather than an engineering discipline.',
+        'In practice that means building compliant with IEC 62304, the standard governing the software lifecycle for medical devices: how the work is planned, how it is documented, how changes are traced, and how you demonstrate any of it later.',
+        'It changes how you build. Documentation is not written up afterwards; it is the artefact the auditor reads, so it has to be true at every commit. Testing is not a quality nice-to-have; it is the evidence. Version history has to survive scrutiny years later. Most studios our size cannot take this work on, and most agencies price it as if it were a compliance tax rather than an engineering discipline.',
       ],
     },
     {
       heading: 'What we are building',
       body: [
         'A multi-tenant client portal in Next.js, React and TypeScript, where clinics manage scanners, review scan results and handle their own users. Behind it, a Node API handling device communication, scan processing, document generation and notifications. Alongside it, the infrastructure the whole thing runs on.',
-        'Front end, back end, infrastructure and the design system underneath all three, by the same small team. Nothing is subcontracted and nothing is handed over at a boundary where the context gets lost.',
+        'Front end, back end, infrastructure and the design system underneath all three, by the same small team. Nothing is handed over at a boundary where the context gets lost.',
       ],
     },
     {

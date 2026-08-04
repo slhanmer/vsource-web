@@ -15,6 +15,12 @@
     @media (max-width: 1100px) {
       grid-template-columns: 3rem minmax(0, 1fr);
       gap: $spacing-md $spacing-lg;
+
+      // Three children, two columns: without this the body auto-places into the
+      // 3rem index gutter and renders one word per line.
+      .work__content {
+        grid-column: 2;
+      }
     }
 
     @media (max-width: $breakpoint-tablet) {

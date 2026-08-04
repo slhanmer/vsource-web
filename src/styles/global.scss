@@ -17,13 +17,22 @@
 :root {
   /* ── Brand ──────────────────────────────────────────────────────────── */
   --brand-accent: #215c30; /* forest green — the "source" wordmark */
-  --brand-highlight: #19a5a8; /* teal — light-safe cousin of the neon */
+  /* Teal — light-safe cousin of the neon. Measured, not picked: the old
+     #19a5a8 was 2.86:1 as text on the light page, a WCAG 1.4.3 failure.
+     The binding surface is --surface-chrome-dark, because the ACTIVE nav key
+     is pressed into it and wears this colour as its text — anything that
+     passes there passes on every lighter surface. #13696b reads 6.13 on
+     --surface-page, 6.44 on card, 5.78 on sunken, 5.11 on chrome and 4.66 on
+     chrome-dark, and 6.46 against white when it is a button fill. */
+  --brand-highlight: #13696b;
 
   /* ── Accent lane — LIGHT: primary = accent, route = highlight ───────── */
   --action-primary: var(--brand-accent);
   --action-primary-hover: #194723;
   --route-active: var(--brand-highlight);
-  --state-info: #2f8f92;
+  /* Was #2f8f92 — 3.32:1 on its own --surface-info tint. Sharing the highlight
+     keeps one teal in the light theme instead of two that nearly match. */
+  --state-info: var(--brand-highlight);
 
   /* ── Wordmark ───────────────────────────────────────────────────────── */
   --wordmark-ink: #c3d0c8;
@@ -76,6 +85,10 @@
   --switch-knob-shadow: rgba(0, 0, 0, 0.25);
   --switch-knob-highlight: rgba(255, 255, 255, 0.7);
   --switch-knob-ink: #2f3a34; /* = text-primary          */
+  /* The knob is only 1.31:1 against its channel — the bevel does the work for
+     sighted-in-good-light, but WCAG 1.4.11 wants the control's state readable
+     at 3:1. This rim gives the knob a hard edge: 3.14 against the channel. */
+  --switch-rim: #6d7d74;
 
   /* ── Disabled ───────────────────────────────────────────────────────── */
   --surface-disabled: #edf1ee;
@@ -87,8 +100,10 @@
   --text-secondary: #4a574f; /* 7.4  AAA on page */
   --text-on-dark: #f7faf8;
   --text-on-action: #ffffff; /* white on forest green (7.96 AAA) */
-  --text-placeholder: #6b7872;
-  --text-subtle: #5c6b62; /* 5.35 AA on page */
+  --text-placeholder: #646d68; /* 5.09 on page, 4.79 on the sunken input well */
+  /* Readout stat labels sit on --surface-chrome-dark, where the old #5c6b62
+     measured 4.07. #526158 is 4.74 there and 6.23 on the page. */
+  --text-subtle: #526158;
   --error-text: #{$state-error};
   --warning-text: #{$amber-text-light}; /* #976217 — AA on page + warning tint */
   --success-text: #{$green-text-light}; /* #207544 — vivid green, AA both */
@@ -166,6 +181,7 @@
   --switch-knob-shadow: transparent; /* no dark halo on dark channel     */
   --switch-knob-highlight: rgba(255, 255, 255, 0.14);
   --switch-knob-ink: #e8f0ea; /* = text-on-dark                   */
+  --switch-rim: #607268; /* 3.94 against the channel — see :root */
 
   /* ── Disabled ───────────────────────────────────────────────────────── */
   --surface-disabled: #1a231e;
@@ -853,4 +869,37 @@ body {
     opacity: 0.5;
     transform: scale(0.85);
   }
+}
+
+///////////////////////////// LIGHTS ON / OFF ///////////////////////////////
+// Driven by ThemeSwitch.tsx. `data-lights` is set on <html> for the duration of
+// the transition and decides which snapshot sits on top: the incoming page when
+// the lights come on, the outgoing one when they go off. The default cross-fade
+// fights the mask, so it is stripped.
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+html[data-lights='on']::view-transition-old(root) {
+  z-index: 0;
+}
+
+html[data-lights='off']::view-transition-new(root) {
+  z-index: 0;
+}
+
+// The feather is what stops this flashing — a hard edge moves a large area of
+// screen in one frame. The 70% stop is load-bearing: ThemeSwitch reads it back
+// as MASK_OPAQUE_STOP to size the box. Change one, change the other.
+// 400vmax resting, so a browser that will not animate mask-size degrades to a
+// plain cut rather than a permanent vignette.
+html[data-lights='on']::view-transition-new(root),
+html[data-lights='off']::view-transition-old(root) {
+  z-index: 1;
+  mask-image: radial-gradient(circle closest-side, #000 70%, rgba(0, 0, 0, 0) 100%);
+  mask-repeat: no-repeat;
+  mask-position: center center;
+  mask-size: 400vmax 400vmax;
 }

@@ -9,6 +9,8 @@
  * than a gap, so there is no rush. Add a `portrait` path when photos exist.
  */
 export interface CrewMember {
+  /** Anchor id. Explicit, so a name or title edit cannot break inbound links. */
+  id: string
   /** Full name as it should appear. */
   name: string
   /** Job title. */
@@ -23,21 +25,24 @@ export interface CrewMember {
 
 export const CREW: CrewMember[] = [
   {
+    id: 'craig-schneider',
     name: 'Craig Schneider',
     role: 'Founder & Technical Director',
-    summary: 'Twenty years on the tools before the degrees. Runs the shop.',
-    bio: 'Craig spent two decades in residential construction, communications infrastructure and site supervision before formalising any of it — then went and got a computer science degree from QUT and is finishing an electro-mechanical engineering degree on top. That combination is genuinely rare: he can read a wiring diagram and a stack trace, and he has been the person responsible when a site does not pass inspection. It is why we can talk sensibly about the thing the software is attached to.',
+    summary: 'Computer science, engineering, and two decades on site. Runs the shop.',
+    bio: 'Craig runs V Source. He holds a computer science degree from QUT and is completing an engineering degree in computer and software systems, alongside two decades in residential construction, communications infrastructure and site supervision. That range is why we can talk about the hardware a system runs on and the site it is installed on, not only the code — and why, when an install has to pass inspection, someone here has already been the person accountable for that.',
   },
   {
+    id: 'simon-hanmer',
     name: 'Simon Hanmer',
     role: 'Lead Developer & UX',
-    summary: 'Computer science, and twenty years of dinner service before it.',
-    bio: 'Simon builds the front ends and the APIs underneath them. Before computer science at QUT, he spent twenty-odd years running kitchens — launching restaurants, and running services where a hundred covers arrive inside ninety minutes and nothing is permitted to fail quietly. Consistency under load, working to a deadline that does not move, and knowing precisely how much can go wrong at once: that turns out to be most of what shipping software actually is.',
+    summary: 'Designs it and builds it. Twenty years in kitchens before the degree.',
+    bio: 'Simon designs and builds the part clients actually use — the interface, the system behind it, and often the brand around it. He holds a computer science degree from QUT, and before it spent twenty-odd years running kitchens — launching restaurants, and running services where a hundred covers arrive inside ninety minutes and nothing is permitted to fail quietly. Consistency under load, working to a deadline that does not move, and knowing precisely how much can go wrong at once: that turns out to be most of what shipping software actually is.',
   },
   {
+    id: 'ronan-donahoe',
     name: 'Ronan Donahoe',
     role: 'Quality & Documentation',
     summary: 'Finds it before the auditor does.',
-    bio: 'Ronan owns testing and documentation, and is halfway through an engineering degree. On a regulated product neither of those is paperwork — the documentation is the evidence that the thing is safe, and the testing is what makes the evidence true. If a build does not behave the way its documentation claims, Ronan finds it first. That is the whole job, and it is the reason we can take on work most studios our size cannot.',
+    bio: 'Ronan owns testing and documentation, and is midway through an engineering degree in mechatronics and mathematics. On a regulated product neither of those is paperwork — the documentation is the evidence that the thing is safe, and the testing is what makes the evidence true. If a build does not behave the way its documentation claims, Ronan finds it first. That is the whole job, and it is the reason we can take on work most studios our size cannot.',
   },
 ]

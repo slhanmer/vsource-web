@@ -6,6 +6,10 @@
   font-family: $font-family-ui;
   color: $text-primary;
 
+  @media (max-width: $breakpoint-mobile) {
+    padding: $spacing-xl $spacing-sm;
+  }
+
   // ACCENT POLICY (see also hero, crew): cyan points, green acts.
   // The logo works the same way — the neon V draws the eye, the green wordmark
   // carries the substance. Cyan marks eyebrows and links; green is reserved for
@@ -81,10 +85,22 @@
   }
 }
 
+// Fixed column count, not auto-fit. auto-fit sizes columns to the available
+// space, so a five-card row became 4 + 1 while the three-card row below it was
+// 3 across — cards at two different widths on the same page. A fixed three-up
+// gives 3 + 2 and, more importantly, one card width everywhere.
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: $spacing-lg;
+
+  @media (max-width: 1000px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    grid-template-columns: 1fr;
+  }
 }
 
 // Raised card: light catches the top inner edge, the underside carries the

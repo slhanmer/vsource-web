@@ -1,15 +1,16 @@
 'use client'
 
+import { useEffect } from 'react'
 import { ToastProvider } from '@components'
+import { recordVisitOrigin } from '@utils'
+import '@configs/fontawesome'
 
-/**
- * Client-side provider tree for the marketing site.
- *
- * Deliberately thin. The portal wraps its tree in TenantProvider (runtime
- * per-tenant theming) and TicketProvider (support widget); neither applies to a
- * single-brand marketing site, so the palette comes straight from the `:root`
- * block in `global.scss` and there is nothing to fetch before first paint.
- */
+/** Client provider tree. Deliberately thin — nothing to fetch before paint. */
 export function Providers({ children }: { children: React.ReactNode }) {
+  // Wraps every page, so whichever one the visitor lands on gets recorded.
+  useEffect(() => {
+    recordVisitOrigin()
+  }, [])
+
   return <ToastProvider>{children}</ToastProvider>
 }

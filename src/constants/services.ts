@@ -16,6 +16,8 @@
  * instead, where it is evidenced rather than asserted.
  */
 export interface Service {
+  /** Anchor id. Explicit, so editing a title cannot silently break inbound links. */
+  id: string
   /** Short label, used as the heading. */
   title: string
   /** One line under the heading. */
@@ -28,10 +30,12 @@ export interface Service {
 
 export const SERVICES: Service[] = [
   {
+    id: 'custom-software',
     title: 'Custom software',
-    summary: 'The thing your business actually does, instead of the nearest platform that almost does it.',
+    summary:
+      'The thing your business actually does, instead of the nearest platform that almost does it.',
     body: [
-      'We build the thing your business actually needs, rather than adapting your business to whatever platform you could afford. Next.js, React and TypeScript on the front, Node and MySQL behind it, and a design system built for your industry instead of assembled from a component shop.',
+      'We build the thing your business actually needs, rather than reshaping how you work to fit a platform that almost does it. Next.js, React and TypeScript on the front, Node and MySQL behind it, and a design system built for your industry instead of assembled from a component shop.',
       'Most software work fails at the boundaries — between front end and back end, between build and handover, between the people who designed it and the people who maintain it. We do not have those boundaries, because the same small team does all of it.',
     ],
     includes: [
@@ -42,10 +46,29 @@ export const SERVICES: Service[] = [
     ],
   },
   {
-    title: 'Hosting on our own hardware',
-    summary: 'Australian-hosted, on hardware we own, with no cloud bill that grows every time you do.',
+    id: 'design',
+    title: 'Design and accessibility',
+    summary:
+      'Software people can actually use, meeting standards most organisations do not know they are held to.',
     body: [
-      'Most agencies rent from a hyperscaler and pass the bill on with a margin. We own the metal. That keeps running costs low and predictable, keeps your data where it should be, and means when something needs looking at we look at it rather than raising a ticket with someone who has never seen your product.',
+      'Design is a separate discipline from building, and on most projects it quietly gets absorbed into the build. We design the thing before we build it — how it is laid out, what happens in what order, and what someone sees at the moment it goes wrong. That work is usually the difference between software people tolerate and software they trust.',
+      'Accessibility is part of the same job, not a box at the end. WCAG 2.2 AA is the level most organisations are expected to meet, and it covers considerably more than people expect. We build to it as a minimum, from the start, because retrofitting accessibility afterwards costs several times what designing for it does.',
+      'We do the visual side too — identity, design systems, the way the thing actually looks. A product that works well but looks unconsidered still gets judged on the second one, and for a small company the software is often the most public thing they own.',
+    ],
+    includes: [
+      'Interaction and interface design before code',
+      'WCAG 2.2 AA as a minimum, built in from the start',
+      'A design system specific to your product',
+      'Brand and visual identity where you need it',
+    ],
+  },
+  {
+    id: 'hosting',
+    title: 'Hosting on our own hardware',
+    summary:
+      'Australian-hosted, on hardware we own, with no cloud bill that grows every time you do.',
+    body: [
+      'We own the metal rather than renting it from a hyperscaler. That keeps running costs low and predictable, keeps your data in Australia, and means when something needs looking at, the people looking at it already know your product.',
       'The practical difference is that your costs do not scale with your success. No per-seat licence quietly compounding, no invoice that doubles because you grew.',
     ],
     includes: [
@@ -56,11 +79,12 @@ export const SERVICES: Service[] = [
     ],
   },
   {
+    id: 'regulated',
     title: 'Regulated and safety-critical work',
     summary: 'When an auditor asks how you know it works, there is an answer.',
     body: [
       'We are currently building a TGA-regulated Class A medical device portal for Aptium. Regulation is mostly an evidence problem: it is not enough that the software works, you have to be able to demonstrate you knew it worked before you shipped, and that you would find out if it stopped.',
-      'That means documentation the auditor can read, testing that constitutes evidence rather than reassurance, and a version history that survives scrutiny years later. We have someone whose whole job is that discipline.',
+      'That means documentation the auditor can read, testing that constitutes evidence rather than reassurance, and a version history that survives scrutiny years later. We work compliant with whichever standard your product is held to, and we have someone whose whole job is that discipline.',
     ],
     includes: [
       'Documentation maintained as a deliverable',
@@ -70,6 +94,7 @@ export const SERVICES: Service[] = [
     ],
   },
   {
+    id: 'ongoing-support',
     title: 'Ongoing support',
     summary: 'Still here in three years, when it needs to change.',
     body: [
