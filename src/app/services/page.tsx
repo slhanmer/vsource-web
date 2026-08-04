@@ -5,14 +5,33 @@ import '../styles/pages.scss'
 import '../styles/services.scss'
 
 export const metadata: Metadata = {
-  title: 'Services',
+  title: 'Services — Custom Software Development, Brisbane',
   description:
-    'Custom software, design and accessibility, Australian hosting on our own hardware, regulated and safety-critical work, and ongoing support — built in house, top to bottom.',
+    'Custom software, design and accessibility to WCAG 2.2 AA, Australian hosting on our own hardware, regulated and safety-critical work, and ongoing support. Built in house, top to bottom, from Brisbane.',
+  alternates: { canonical: '/services' },
+  openGraph: { url: '/services', title: 'Services — Custom Software Development, Brisbane' },
+}
+
+/** One Service node per offering, all provided by the organisation in layout.tsx. */
+const SERVICE_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@graph': SERVICES.map((service) => ({
+    '@type': 'Service',
+    '@id': `https://www.vsource.dev/services#${service.id}`,
+    name: service.title,
+    description: service.summary,
+    provider: { '@id': 'https://www.vsource.dev/#organisation' },
+    areaServed: 'AU',
+  })),
 }
 
 export default function ServicesPage() {
   return (
     <main className="page">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(SERVICE_SCHEMA) }}
+      />
       <p className="page__eyebrow">What we do</p>
       <h1 className="page__title">Custom software, built and run by the people who wrote it.</h1>
       <p className="page__lede">

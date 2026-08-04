@@ -5,9 +5,11 @@ import '../styles/pages.scss'
 import '../styles/contact.scss'
 
 export const metadata: Metadata = {
-  title: 'Contact',
+  title: 'Contact — Software Developers in Brisbane',
   description:
-    'Tell us what you are building and you will get a straight answer about what it would take, and whether we are the right people to build it.',
+    'Tell us what you are building and you will get a straight answer about what it would take, and whether we are the right people to build it. Brisbane, Australia.',
+  alternates: { canonical: '/contact' },
+  openGraph: { url: '/contact', title: 'Contact — Software Developers in Brisbane' },
 }
 
 export default function ContactPage() {

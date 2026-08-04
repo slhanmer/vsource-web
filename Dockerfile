@@ -16,7 +16,15 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 COPY . .
 # APP_ENV selects the app config; override per Coolify environment via build arg
 ARG APP_ENV=prod
+# NEXT_PUBLIC_* is INLINED AT BUILD, not read at runtime. Without this ARG the
+# bundle is compiled with `undefined` and the Turnstile widget silently never
+# renders, no matter what is set in Coolify's runtime environment. Mark it as a
+# build variable in Coolify so it is passed as a build arg.
+# Server-only secrets (RESEND_*, CONTACT_*, TURNSTILE_SECRET_KEY) are read per
+# request and belong in the runtime environment only — do not add them here.
+ARG NEXT_PUBLIC_TURNSTILE_SITE_KEY=""
 ENV APP_ENV=${APP_ENV} \
+    NEXT_PUBLIC_TURNSTILE_SITE_KEY=${NEXT_PUBLIC_TURNSTILE_SITE_KEY} \
     NEXT_TELEMETRY_DISABLED=1
 RUN --mount=type=cache,id=next-cache,target=/app/.next/cache \
     pnpm build

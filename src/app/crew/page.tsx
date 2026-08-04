@@ -4,9 +4,11 @@ import '../styles/pages.scss'
 import '../styles/crew.scss'
 
 export const metadata: Metadata = {
-  title: 'Crew',
+  title: 'Crew — The People Who Build It',
   description:
-    'A technical director off the tools, a developer who ran kitchens, and a QA lead who reads the documentation before the auditor does.',
+    'A technical director off the tools, a developer who ran kitchens, and a QA lead who reads the documentation before the auditor does. A small team in Brisbane.',
+  alternates: { canonical: '/crew' },
+  openGraph: { url: '/crew', title: 'Crew — The People Who Build It' },
 }
 
 /**
@@ -22,9 +24,24 @@ const initials = (name: string) =>
     .slice(0, 2)
     .toUpperCase()
 
+const CREW_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@graph': CREW.map((person) => ({
+    '@type': 'Person',
+    '@id': `https://www.vsource.dev/crew#${person.id}`,
+    name: person.name,
+    jobTitle: person.role,
+    worksFor: { '@id': 'https://www.vsource.dev/#organisation' },
+  })),
+}
+
 export default function CrewPage() {
   return (
     <main className="page">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(CREW_SCHEMA) }}
+      />
       <p className="page__eyebrow">Who you get</p>
       <h1 className="page__title">A small team, and you talk to all of them.</h1>
       <p className="page__lede">

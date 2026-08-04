@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Chakra_Petch, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google'
+import { CONTACT } from '@constants'
 import { Providers } from './providers'
 import SiteHeader from '@components/layouts/SiteHeader'
 import SiteFooter from '@components/layouts/SiteFooter'
@@ -36,14 +37,77 @@ const mono = IBM_Plex_Mono({
   display: 'swap',
 })
 
+const SITE = 'https://www.vsource.dev'
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.vsource.dev'),
+  metadataBase: new URL(SITE),
   title: {
-    default: 'V Source — Software & Engineering',
+    default: 'V Source — Custom Software Development, Brisbane',
     template: '%s · V Source',
   },
   description:
-    'V Source builds software and engineering solutions for regulated and technical industries.',
+    'Custom software built and run by the people who wrote it. A small Brisbane team covering design, build, accessibility and hosting on our own Australian hardware.',
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'website',
+    locale: 'en_AU',
+    siteName: 'V Source Development',
+    url: SITE,
+    title: 'V Source — Custom Software Development, Brisbane',
+    description:
+      'Custom software built and run by the people who wrote it. Design, build, accessibility and Australian hosting, from one small Brisbane team.',
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'V Source Development, Brisbane' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'V Source — Custom Software Development, Brisbane',
+    description: 'Custom software built and run by the people who wrote it. Brisbane, Australia.',
+    images: ['/og.png'],
+  },
+}
+
+/**
+ * Structured data. Tells a crawler — and an LLM answering "who builds custom
+ * software in Brisbane" — that this is one organisation, in one place, doing
+ * these things. Cheapest high-value SEO on the site.
+ */
+const ORGANISATION = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  '@id': `${SITE}/#organisation`,
+  name: 'V Source Development',
+  url: SITE,
+  description:
+    'Custom software development, design, accessibility and Australian hosting for regulated and technical industries.',
+  areaServed: 'AU',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Brisbane',
+    addressRegion: 'QLD',
+    addressCountry: 'AU',
+  },
+  email: CONTACT.email,
+  telephone: CONTACT.phoneHref.replace('tel:', ''),
+  identifier: { '@type': 'PropertyValue', name: 'ABN', value: CONTACT.abn },
+  sameAs: [CONTACT.linkedin],
+  knowsAbout: [
+    'Custom software development',
+    'Web accessibility',
+    'WCAG 2.2 AA',
+    'IEC 62304',
+    'Medical device software',
+    'Design systems',
+  ],
+}
+
+const WEBSITE = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${SITE}/#website`,
+  url: SITE,
+  name: 'V Source Development',
+  publisher: { '@id': `${SITE}/#organisation` },
+  inLanguage: 'en-AU',
 }
 
 /**
@@ -70,6 +134,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body suppressHydrationWarning>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify([ORGANISATION, WEBSITE]) }}
+        />
         <Providers>
           <div className="site-frame">
             <a href="#main" className="skip-link">

@@ -5,9 +5,11 @@ import '../styles/pages.scss'
 import '../styles/work.scss'
 
 export const metadata: Metadata = {
-  title: 'Work',
+  title: 'Work — Medical Device Software, Built in Australia',
   description:
-    'Building a TGA-regulated Class A medical device portal — front end, API, design system and hosting, in house.',
+    'Building a TGA-regulated Class A medical device portal to IEC 62304 — front end, API, design system and hosting, in house, from Brisbane.',
+  alternates: { canonical: '/work' },
+  openGraph: { url: '/work', title: 'Work — Medical Device Software, Built in Australia' },
 }
 
 export default function WorkPage() {
