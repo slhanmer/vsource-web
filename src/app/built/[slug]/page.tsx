@@ -87,6 +87,14 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               {project.url && (
                 <a href={project.url} target="_blank" rel="noopener noreferrer">
                   Visit the site →
+                  {/*
+                    A link that moves someone to a new tab without saying so is
+                    disorienting if you cannot see it happen (WCAG G201).
+                    `.visually-hidden` is in global.scss, which every page gets
+                    — not the copy in home.scss, which only the home page
+                    imports.
+                  */}
+                  <span className="visually-hidden"> (opens in a new tab)</span>
                 </a>
               )}
             </p>

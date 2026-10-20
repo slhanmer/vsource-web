@@ -472,3 +472,77 @@ Then I rendered the pages in Chromium:
   pushed anywhere else. Merging is Simon's.
 
 STATUS: done
+
+## Run 5 — 2026-10-20 — development
+
+This run follows up Run 4's open items. Simon corrected
+`src/constants/built.ts` and `src/app/built/[slug]/page.tsx`. I reviewed
+both, ran lint and build, then committed and pushed.
+
+**Stage 1 — build**
+- `pnpm lint`: **pass**, exit 0.
+- `pnpm build`: **pass**, exit 0, 27 pages (unchanged from Run 4).
+- `pnpm tsc --noEmit`: fail, the same two pre-existing ui-kit test errors
+  (Run 1). Nothing new.
+- What I fixed: nothing. Both files were already corrected when this run
+  started.
+
+**Stage 2 — what changed in built.ts and the project page**
+
+I checked each of these against the Run 4 screenshots in `public/built/`:
+- **Alt text rewritten for all five.** Each one now describes what is
+  actually in the capture: NUG.'s wordmark, dining room and sage panel;
+  Snug's olive bar and night photograph; Jane's badge, iced drinks and
+  olive panel; Bar Cooper's brick-red name and oven; Don Gino's yellow name
+  and three tile motifs. All five match.
+- **The live / "In testing" contradiction is removed.** The `Status` fact is
+  gone from all five, including Don Gino's `Live`. It is replaced by
+  `Open` (NUG.) or `Kind` (the other four). `status: 'live'` stays, as the
+  cutover note expects.
+- **Addresses tightened from the sites themselves:** NUG. is now "Bakery
+  Lane, Fortitude Valley", Bar Cooper's is "Shop 4, 321 Chatsworth Rd,
+  Coorparoo" and Don Gino is "65 Hardgrave Rd, West End". All three match
+  what the screenshots show. NUG.'s `Open: Wed – Sat, 5pm` matches its
+  header.
+- **Jane's "on Chatsworth Rd" is gone** from its `line`. The line and lede
+  now describe what the fold shows.
+- **Snug and Don Gino `line`/`lede` reworded** ("Korean-inspired all-day
+  dining…", "An Italian trattoria on Hardgrave Rd…"). Both match the sites'
+  own taglines.
+- **The visit link now has `<span className="visually-hidden"> (opens in a
+  new tab)</span>`.** I confirmed it is in the built HTML for
+  `/built/nug`.
+
+**Correction to Run 4**
+- **Run 4 was wrong** to say `.visually-hidden` exists only in `home.scss`.
+  It is defined in `src/styles/global.scss:443`, and has been since the seed
+  commit `37b82d5`. `src/app/layout.tsx:8` imports it on every page. My Run 4
+  search piped through `head -5`, which cut the output off before
+  `global.scss` appeared. So:
+  - there was never a latent bug in `ProjectMedia`'s `long` link;
+  - nothing needs moving.
+  
+  `home.scss:40` holds a second, slightly different copy (it adds
+  `clip-path: inset(50%)` and `!important`). On the home page that copy
+  overrides the global one. It is harmless, but it is a duplicate that could
+  be folded into `global.scss`.
+
+**Verification**
+- Lint and build are as above.
+- I did not repeat the by-eye pass on `pnpm dev`. This run changed only
+  strings and one hidden span, not routes, slugs or structure, and the
+  build still generates the same 27 pages, including all five
+  `/built/<slug>` paths.
+
+**Open / blocked**
+- These details are still unconfirmed against the venues' own folds, and are
+  covered by `placeholder: true`:
+  - "Coorparoo, Brisbane" for Snug and Jane's (neither address is in the
+    screenshot);
+  - "one of three venues on the same block" in Snug's lede.
+- The cutover note and the five preview URLs are unchanged. Check them before
+  any deploy.
+- Pre-existing: the two ui-kit test type errors; the storybook peer mismatch.
+- Everything is on `development`, pushed. Merging is Simon's.
+
+STATUS: done
