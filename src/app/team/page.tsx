@@ -16,8 +16,8 @@ export const metadata: Metadata = {
  * The team.
  *
  * Moved from /crew — Craig dislikes "crew", the nav label was changed in August
- * and the route was not. /crew now 301s here (next.config.ts), and the old
- * app/crew/ folder is dead code that wants deleting by hand.
+ * and the route was not. /crew now 301s here (next.config.ts); the old
+ * app/crew/ folder has been deleted.
  *
  * Initials fallback, used where a portrait does not exist. Deliberately not a
  * grey avatar silhouette: the box keeps its 4:5 shape and takes a tinted,
