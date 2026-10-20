@@ -32,6 +32,22 @@
  * Vimeo or YouTube behind a click, so no third-party script and no cookie
  * consent surface loads on our own page unless somebody asks for it.
  */
+/*
+ * ⚠ PREVIEW URLS — SWAP AT CUTOVER
+ *
+ * All five websites entries point at Vercel preview deployments because the
+ * sites are in testing, and each carries status: 'live' on the assumption that
+ * it cuts over before this site redeploys.
+ *
+ *   nug          nug-preview.vercel.app    → nuggeneralstore.com
+ *   snug         snug-preview.vercel.app   → (domain TBC)
+ *   janes-deli   janes-preview.vercel.app  → (domain TBC)
+ *   bar-coopers  coops-preview.vercel.app  → (domain TBC)
+ *   don-gino     don-gino.vercel.app       → (domain TBC)
+ *
+ * If this site ships before a venue cuts over, that card claims "live" against
+ * a preview URL. Check this list before any deploy.
+ */
 import type { Stream } from './streams'
 
 export type MediaKind = 'video' | 'image' | 'mark'
@@ -78,6 +94,9 @@ export interface Project {
   /** What it touched — standards, hardware, scale. Two columns on the page. */
   facts: Array<{ label: string; value: string }>
   status: ProjectStatus
+  /** The live site, where there is one to visit. Rendered as a link on the
+   *  project page. Absent for work that cannot be shown. */
+  url?: string
   media: ProjectMedia
   /** The one that leads the page, full width. Exactly one should have it. */
   featured?: boolean
@@ -312,6 +331,146 @@ export const BUILT: Project[] = [
     },
     placeholder: true,
   },
+  {
+    slug: 'nug',
+    title: 'NUG.',
+    client: 'NUG.',
+    stream: 'websites',
+    year: '2026',
+    status: 'live',
+    url: 'https://nug-preview.vercel.app',
+    line: 'Handmade pasta in Bakery Lane, four nights a week.',
+    lede: 'A small dining room that changes what it serves often, and needed a site that could keep up without a developer in the loop.',
+    body: [
+      'Placeholder. The menu changes, the hours change, and a site that needs a quote and a fortnight for either is a site that quietly goes out of date. This one is edited by the people who run the room.',
+      'Placeholder. Worth writing up properly: what the brand work was, and what carried over from the room itself.',
+    ],
+    facts: [
+      { label: 'Stream', value: 'Websites' },
+      { label: 'Where', value: 'Bakery Lane, Brisbane' },
+      { label: 'Status', value: 'In testing' },
+    ],
+    media: {
+      kind: 'image',
+      src: '/built/nug.jpg',
+      alt: 'The NUG. site: a dark room, ochre lighting, and the menu for the week.',
+      width: 1440,
+      height: 900,
+    },
+    placeholder: true,
+  },
+  {
+    slug: 'snug',
+    title: 'Snug',
+    client: 'Snug',
+    stream: 'websites',
+    year: '2026',
+    status: 'live',
+    url: 'https://snug-preview.vercel.app',
+    line: 'Olive and cream on a near-black room in Coorparoo.',
+    lede: 'One of three venues on the same block, each with its own brand, each needing to look like nobody else.',
+    body: [
+      'Placeholder. The palette comes out of the room — olive from the bar, cream from the light the menu sits in — rather than off a swatch.',
+      'Placeholder. Needs the real write-up.',
+    ],
+    facts: [
+      { label: 'Stream', value: 'Websites' },
+      { label: 'Where', value: 'Coorparoo, Brisbane' },
+      { label: 'Status', value: 'In testing' },
+    ],
+    media: {
+      kind: 'image',
+      src: '/built/snug.jpg',
+      alt: 'The Snug site: olive and cream type on a near-black ground.',
+      width: 1440,
+      height: 900,
+    },
+    placeholder: true,
+  },
+  {
+    slug: 'janes-deli',
+    title: 'Jane’s Deli',
+    client: 'Jane’s Deli',
+    stream: 'websites',
+    year: '2026',
+    status: 'live',
+    url: 'https://janes-preview.vercel.app',
+    line: 'A deli on Chatsworth Rd, in sage and kraft off their own signage.',
+    lede: 'The light one of the three. Sage ink on warm paper, with the kraft of the price tags as the band.',
+    body: [
+      'Placeholder. Colour taken from the signage and the tags rather than described, which is why it looks like the shop.',
+      'Placeholder. Needs the real write-up.',
+    ],
+    facts: [
+      { label: 'Stream', value: 'Websites' },
+      { label: 'Where', value: 'Coorparoo, Brisbane' },
+      { label: 'Status', value: 'In testing' },
+    ],
+    media: {
+      kind: 'image',
+      src: '/built/janes-deli.jpg',
+      alt: 'The Jane’s Deli site: sage type on warm paper with a kraft band.',
+      width: 1440,
+      height: 900,
+    },
+    placeholder: true,
+  },
+  {
+    slug: 'bar-coopers',
+    title: 'Bar Cooper’s',
+    client: 'Bar Cooper’s',
+    stream: 'websites',
+    year: '2026',
+    status: 'live',
+    url: 'https://coops-preview.vercel.app',
+    line: 'A near-black bar with the brick of the oven as its only colour.',
+    lede: 'A warm near-black room whose one colour is the brick of the oven, carried onto the page as the only thing that is not type.',
+    body: [
+      'Placeholder. One colour, used for the button and the rule over a menu section, and nothing else competing with it.',
+      'Placeholder. Needs the real write-up.',
+    ],
+    facts: [
+      { label: 'Stream', value: 'Websites' },
+      { label: 'Where', value: 'Coorparoo, Brisbane' },
+      { label: 'Status', value: 'In testing' },
+    ],
+    media: {
+      kind: 'image',
+      src: '/built/bar-coopers.jpg',
+      alt: 'The Bar Cooper’s site: pale type on near-black, with brick-red as the only colour.',
+      width: 1440,
+      height: 900,
+    },
+    placeholder: true,
+  },
+  {
+    slug: 'don-gino',
+    title: 'Don Gino',
+    client: 'Don Gino',
+    stream: 'websites',
+    year: '2026',
+    status: 'live',
+    url: 'https://don-gino.vercel.app',
+    line: 'West End. Black fascia, gold script, a row of yellow chairs.',
+    lede: 'What a stranger walks past on Hardgrave Rd, which is what the page had to be.',
+    body: [
+      'Placeholder. An earlier draft was built from a verbal description and looked like nobody in particular; this one is sampled off the shopfront.',
+      'Placeholder. Needs the real write-up.',
+    ],
+    facts: [
+      { label: 'Stream', value: 'Websites' },
+      { label: 'Where', value: 'West End, Brisbane' },
+      { label: 'Status', value: 'Live' },
+    ],
+    media: {
+      kind: 'image',
+      src: '/built/don-gino.jpg',
+      alt: 'The Don Gino site: gold script on black, with the yellow of the chairs.',
+      width: 1440,
+      height: 900,
+    },
+    placeholder: true,
+  },
 ]
 
 /**
@@ -331,8 +490,4 @@ export interface Upcoming {
 export const COMING_SOON: Upcoming[] = [
   { name: 'Remy', stream: 'software' },
   { name: 'Paw Connect', stream: 'software' },
-  { name: 'Nug', stream: 'websites' },
-  { name: 'Snug', stream: 'websites' },
-  { name: 'Jane\u2019s', stream: 'websites' },
-  { name: 'Bar Coopers', stream: 'websites' },
 ]

@@ -313,3 +313,162 @@ made no commit.
 - The Stage 2 decisions from Run 1 are still unanswered.
 
 STATUS: blocked
+
+## Run 4 — 2026-10-20 — development
+
+The brief's Stage 2 was rewritten for this run (13919 bytes, was 7435), and it
+answers every mismatch raised in Runs 1–3. `StreamMoves.tsx` was changed again
+before this run: all of the first-measure arming now happens in one
+`requestAnimationFrame`, and the frame is cancelled on cleanup.
+
+**Stage 1 — build**
+- `pnpm install`: up to date.
+- `pnpm lint`: before the commit there were 26 errors, **all**
+  `prettier/prettier`. No `react-hooks/set-state-in-effect` remained. I
+  reviewed the new StreamMoves fix and it reads correctly. The pre-commit
+  hook's `eslint --fix` applied the prettier fixes, and `pnpm lint` has
+  been clean (exit 0) since that commit.
+- `pnpm tsc --noEmit`: **fail**, exit 2. The same two pre-existing ui-kit
+  test errors as Runs 1–3 (`ButtonLoader.test.tsx(32,50)`,
+  `DropDown.test.tsx(180,77)`, verbatim in Run 2). Nothing else.
+- `pnpm build`: **pass**, exit 0, 25 pages.
+- `pnpm test:ci`: pass, 41 suites, 593 tests.
+- **Commit `b475b4893010204e4e349fe377685c67241baa39`**, "three streams,
+  /built and /team — Sept work, first build". It has 62 files. It includes
+  the two set-state-in-effect fixes and the hook's prettier formatting, so
+  it is "as-is" plus exactly what the hook required (option (b) from Run 2).
+  - Excluded from it: `_to_delete/` (not deleted), `.claude/` (modified
+    `settings.json`, untracked `__probe` and `settings.json.aptium-backup`)
+    and `.env.local`. `.gitignore:35` `.env*` covers `.env.local`.
+  - It does include the deletion of the tracked
+    `docs/architecture/APT-DOC-009/*`. Those files are still in history
+    before this commit.
+- Dead routes: **commit `9bd732acbec3237e1f279e31cc89555363190208`**. It
+  `git rm`s `src/app/{work,services,crew}` and
+  `src/app/styles/{work,services}.scss`. I kept `src/constants/work.ts`. I
+  also updated the comment in `src/app/team/page.tsx`, which still said
+  `app/crew/` "wants deleting by hand".
+  - **The first build after the `git rm` failed.** Verbatim:
+    `.next/dev/types/validator.ts:89:39 Type error: Cannot find module
+    '../../../src/app/crew/page.js' or its corresponding type declarations.`
+    That file is generated (gitignored under `/.next/`), dated 2 October,
+    left by an old `next dev`. `tsconfig.json` includes
+    `.next/dev/types/**/*.ts`, so the build type-checks stale route
+    validators. I deleted `.next/dev/types/`. That was unambiguous: it is a
+    generated cache, not source, and Next regenerates it. The build then
+    passed with 22 pages (the three dead routes gone).
+  - Expect the same thing whenever a route is deleted while an old dev
+    cache is lying around.
+- Pushed: `git push -u origin development`. The new branch was created on
+  origin.
+
+**Stage 2 — built.ts**
+- 2.1 Screenshots: `pnpm add -D playwright` (1.64.1, devDependency; it was not
+  present) and `npx playwright install chromium`. A one-off script captured a
+  1440×900 viewport JPEG at quality 82 after `networkidle` for each venue. All
+  five loaded with HTTP 200. They are written to
+  `public/built/{nug,snug,janes-deli,bar-coopers,don-gino}.jpg` (66–149 KB).
+  I deleted the script afterwards.
+- 2.2 `url?: string` is added to `Project`, with the doc comment as given.
+  `src/app/built/[slug]/page.tsx` renders "Visit the site →"
+  (`target="_blank"`, `rel="noopener noreferrer"`) inside the
+  `built-project__stream` paragraph, after the stream link with a ` · `
+  separator. No new SCSS. It is not on the index cards. One structural note:
+  the paragraph used to render only when `stream` exists. It now renders when
+  `stream || project.url`, so a URL is never hidden behind a missing stream.
+  All five have a stream, so on today's data this makes no difference.
+- 2.3 These entries are appended to `BUILT`, in this order, all with
+  `stream: 'websites'`, `year: '2026'` and `placeholder: true`:
+  - `nug`: status `live`
+  - `snug`: status `live`
+  - `janes-deli`: status `live`
+  - `bar-coopers`: status `live`
+  - `don-gino`: status `live`
+  
+  The copy is verbatim from the brief. Typographic apostrophes and dashes are
+  written as `’` / `—`, to match the rest of the file.
+  `COMING_SOON` is now `Remy` and `Paw Connect` only.
+- 2.4 The cutover note is in its own block comment directly below the header
+  comment, text as given.
+- 2.5 `simon-hanmer-studio` and every other entry are untouched. No
+  attribution lines.
+- Brief vs code: no mismatches this time. Every field, path and class the brief
+  names exists as described.
+
+**Verification**
+
+`pnpm tsc --noEmit` shows only the two old test errors. `pnpm lint` exit 0.
+`pnpm build` pass, **27 pages** (22 + 5 new project pages). `pnpm test:ci`
+593/593.
+
+I could not use port 3000 for `pnpm dev`. It is held by the **YouHire
+portal's** dev server. Port 3100 is the **simonhanmer-site** dev server. I
+left both running and ran this site's dev server on **:3417** (same command
+as `pnpm dev`, different port), then stopped it. The first route check
+accidentally hit those other servers and returned 404s, so I discarded those
+results.
+
+Then I rendered the pages in Chromium:
+1. `/built`: **13 cards** (`a.built-card`). The Coming rail shows exactly
+   **Remy** and **Paw Connect**.
+2. All five new cards show a visible `[placeholder]` marker, and their
+   screenshot loaded (`naturalWidth > 0`, `src /built/<slug>.jpg`).
+3. `/built/nug`, `/built/snug`, `/built/janes-deli`, `/built/bar-coopers` and
+   `/built/don-gino` all return 200, with the right h1 on each.
+   `/built/not-a-slug` returns 404, as it should.
+4. Each of the five has "Visit the site →" with `target=_blank`,
+   `rel="noopener noreferrer"`, pointing at its preview URL. All five URLs
+   returned 200.
+5. `/sitemap.xml` lists all 13 `/built/*` URLs, including the five new ones.
+6. `/websites` links its proof projects: `vsource-site`, `simon-hanmer-studio`,
+   `nug`, `snug`, `janes-deli`, `bar-coopers`, `don-gino`. The two originals
+   are still there, and the five are added because the page filters `BUILT` by
+   stream.
+
+**Open / blocked**
+- **The alt text does not match the screenshots for two venues.** I wrote the
+  brief's text in verbatim, and I have not "fixed" it, because it is
+  unconfirmed copy under `placeholder: true`. But alt text is what a screen
+  reader hears instead of the image, and the `[placeholder]` marker is not
+  attached to it. So this is a WCAG 1.1.1 problem the moment it ships:
+  - `nug`: the alt says "a dark room, ochre lighting, and the menu for the
+    week". The capture is a cream page with a large NUG. wordmark, a photo of
+    a busy dining room, and a sage panel with "Ben makes everything himself.
+    Ruxi looks after everyone." There is no menu. The site's header says
+    **Fortitude Valley**, but the facts say "Bakery Lane, Brisbane".
+  - `janes-deli`: the alt says "sage type on warm paper with a kraft band". The
+    capture is a warm off-white header, an olive panel with *white*
+    "brunch. sandwiches. filter & matcha." type, and a photo of three drinks.
+    There is no kraft band.
+  - `snug`: roughly right. The header bar is olive with cream type, and the
+    hero is a dark photo of the room.
+  - `bar-coopers` and `don-gino`: accurate. (Don Gino's yellow chairs are not
+    in the fold, but the yellow is everywhere.)
+- **Jane's Deli's `line` says "on Chatsworth Rd".** The screenshot shows
+  that address on *Bar Cooper's* site ("Shop 4, 321 Chatsworth Road,
+  Coorparoo"). Jane's may be on the same road (the brief calls them "three
+  venues on the same block"), but nothing in Jane's own fold confirms it.
+  Worth checking.
+- **Card says LIVE, facts say "In testing".** For nug, snug, janes-deli and
+  bar-coopers, the project page shows a `live` status on the card *and* the
+  fact "Status: In testing". Both values come from the brief. They will
+  contradict each other on the page until cutover. At cutover the fact needs
+  flipping along with the URL. I have not added that to the cutover note,
+  because the brief gives the note's text verbatim.
+- **"Opens in a new tab" is not announced.** The visit link opens a new tab
+  with no warning to assistive tech (advisory, WCAG G201, not an AA fail).
+  The obvious fix is `<span className="visually-hidden"> (opens in a new
+  tab)</span>`, which `ProjectMedia.tsx` already uses. But
+  **`.visually-hidden` is only defined in `src/app/styles/home.scss`, which
+  only the home page imports.** On a direct load of any `/built/*` page that
+  span would render as visible text. That is also a latent bug in
+  ProjectMedia's `long` link today (no entry uses `long` yet). Fix: move
+  `.visually-hidden` to `global.scss`. That is outside this brief, so I
+  have not done it.
+- `pnpm peers check` reports an unmet storybook peer (10.4.6 installed,
+  addons want ^10.5.0). This is pre-existing and not related to playwright.
+- Pre-existing, still open: the two ui-kit test type errors (Run 1).
+- Branches: everything is on `development`, pushed. Nothing is merged or
+  pushed anywhere else. Merging is Simon's.
+
+STATUS: done

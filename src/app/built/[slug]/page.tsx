@@ -75,10 +75,20 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             </p>
           ))}
 
-          {stream && (
+          {(stream || project.url) && (
             <p className="built-project__stream">
-              This is {stream.name.toLowerCase()} work.{' '}
-              <Link href={stream.href}>See how {stream.name.toLowerCase()} works</Link>
+              {stream && (
+                <>
+                  This is {stream.name.toLowerCase()} work.{' '}
+                  <Link href={stream.href}>See how {stream.name.toLowerCase()} works</Link>
+                </>
+              )}
+              {stream && project.url && ' · '}
+              {project.url && (
+                <a href={project.url} target="_blank" rel="noopener noreferrer">
+                  Visit the site →
+                </a>
+              )}
             </p>
           )}
         </div>
