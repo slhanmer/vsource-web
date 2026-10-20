@@ -1,86 +1,269 @@
+import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
-import { CASE_STUDY_TEASER, CREW, SERVICES } from '@constants'
+import { CONTACT, CREW, PARTNERS, STREAMS } from '@constants'
+import FitCut from '@/components/home/FitCut'
+import Reveal from '@/components/home/Reveal'
+import RotatingHeadline from '@/components/home/RotatingHeadline'
+import StreamMark from '@/components/home/StreamMark'
+import StreamMoves from '@/components/home/StreamMoves'
 import './styles/pages.scss'
 import './styles/home.scss'
+
+export const metadata: Metadata = {
+  title: 'Software, websites and engineering — Brisbane',
+  description:
+    'Custom software, websites and systems work, built in Brisbane on hardware we own. We work out what is actually wrong, build the thing that fixes it, and stay on to run it.',
+}
 
 /**
  * Home page.
  *
- * Framed from the visitor's problem rather than from our capabilities: the
- * hero opens on a situation most readers recognise, and the mechanism (owning
- * the stack) is what stops "cheaper" reading as "worse". Everything below is
- * proof of that mechanism.
+ * Three streams means three different buyers landing on the same URL, so this
+ * page routes before it argues: logo, the promise, then the three doors, all
+ * inside the first screen. The detail bands follow, and the argument that ties
+ * the three together sits *after* them — it is supporting material for someone
+ * who is already interested, not a gate in front of the thing they came for.
  *
- * Every card is a link to its own anchor on the detail page, so a card that
- * describes something also takes you to it. Ids live on the constants, so the
- * cards and the anchors cannot drift apart.
+ * The header is the masthead. There was a full lockup at the top of this plate
+ * and it was costing about 120px of the scarcest space on the site to say a
+ * name nobody has heard yet — the headline does that job better. So the mark
+ * stays in the header, the header is present here exactly as it is on every
+ * other page, and the plate opens straight onto the argument.
+ *
+ * Everything below the fold is a server component. The only client boundaries
+ * are the rotating headline, the cut animation and the Reveal wrappers, and the
+ * copy inside a Reveal is still rendered on the server.
  */
 export default function Home() {
   return (
-    <main>
-      <section className="hero">
-        <div className="hero__inner">
-          <p className="page__eyebrow">Custom software</p>
-          <h1 className="hero__title">
-            Most businesses bend themselves around software that nearly fits.
-          </h1>
-          <p className="hero__lede">
-            We build to fit instead. We make our own tools and run our own hardware, which is why
-            software built exactly for you now costs a fraction of what it used to — and why no one
-            else&rsquo;s software update can break yours.
-          </p>
-          <div className="hero__actions">
-            <Link href="/contact" className="basic-button">
-              Start a conversation
-            </Link>
-            <Link href="/work" className="basic-button secondary-button">
-              See our work
-            </Link>
+    <main className="home">
+      {/*
+        The fold is one machined plate. The streams are openings cut through
+        it, not cards resting on a page — same material and the same mechanic
+        as the cut illustration further down, at page scale, so the thing the
+        animation is about is the thing the page is made of.
+
+        The door names are spans, not headings: the band for each stream below
+        carries the real h2, and two h2s with the same text would put every
+        stream in the document outline twice.
+      */}
+      <section className="home-hero">
+        <div className="home-plate">
+          <div className="home-hero__inner">
+            <div className="home-hero__say">
+              <RotatingHeadline />
+
+              <p className="home-hero__lede">
+                Most businesses bend themselves around tools that nearly fit.
+              </p>
+              <p className="home-hero__sub">
+                It starts with a conversation about what is actually going wrong. Then we build the
+                thing that fixes it, and stay on to run it.
+              </p>
+
+              {/*
+                The doors are for someone who already knows which stream they
+                want. This is for everyone else — and since the copy above
+                promises a conversation, the fold has to offer one.
+              */}
+              <p className="home-hero__cta">
+                <Link href="/contact" className="basic-button">
+                  Start a conversation
+                </Link>
+              </p>
+            </div>
+
+            <Reveal as="div" className="home-doors">
+              {STREAMS.map((stream) => (
+                <a key={stream.id} className="home-door" href={stream.href}>
+                  <div className="home-door__cut">
+                    <div className="home-door__media">
+                      <StreamMark id={stream.id} className="home-door__mark" />
+                      <span className="home-door__go">Learn more</span>
+                    </div>
+                    <div className="home-door__body">
+                      <span className="home-door__name">{stream.name}</span>
+                      <span className="home-door__lede">{stream.door}</span>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </Reveal>
+          </div>
+
+          {/*
+            The plate's bottom edge. Two jobs: it stops a short content block
+            floating in a tall viewport, and it puts proof in the fold — until
+            now the first evidence that anyone has ever paid us was three
+            sections down the page.
+          */}
+          <div className="home-plate__foot">
+            <p className="home-plate__trust">
+              <span className="home-plate__trust-label">Working with</span>
+              {PARTNERS.map((partner) => (
+                <span key={partner.id} className="home-plate__trust-name">
+                  {partner.name}
+                </span>
+              ))}
+            </p>
+            <a className="home-plate__cue" href="#software">
+              <span className="home-plate__cue-label">More on each</span>
+              <span className="home-plate__cue-knob" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path
+                    d="M6 10 L12 16 L18 10"
+                    fill="none"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+            </a>
           </div>
         </div>
       </section>
 
-      <div className="page">
-        <section className="page__section">
-          <h2 className="page__section-title">What we do</h2>
-          <div className="card-grid">
-            {SERVICES.map((service) => (
-              <Link key={service.id} href={`/services#${service.id}`} className="card card--link">
-                <h3>{service.title}</h3>
-                <p>{service.summary}</p>
-              </Link>
-            ))}
-          </div>
-          <p className="home__more">
-            <Link href="/services">How we work &rarr;</Link>
-          </p>
-        </section>
+      <StreamMoves />
 
-        <section className="page__section">
-          <h2 className="page__section-title">Selected work</h2>
-          <Link href="/work" className="card card--link home__work">
-            <h3>{CASE_STUDY_TEASER.title}</h3>
-            <p>{CASE_STUDY_TEASER.summary}</p>
-            <span className="home__work-cta">{CASE_STUDY_TEASER.cta} &rarr;</span>
+      <Reveal id="why" className="home-why">
+        <div className="home-why__grid">
+          <div>
+            <p className="home-eyebrow">Why we work this way</p>
+            <h2 className="home-why__title home-line">
+              Different work, the same complaint underneath it.
+            </h2>
+            <p className="home-why__body home-line">
+              A platform that does eighty per cent of the job. A template site that fights you every
+              time you edit it. A system specified by someone who had never had to run the place.
+              Every one of them ends with the organisation bending to fit the tool.
+            </p>
+            <p className="home-why__body home-line">
+              Between us we have spent years running operations, not only building software for them
+              — which is most of why we notice when a system has been specified by someone who has
+              not. We make our own tools and run our own hardware, and the same small team does the
+              whole job. That is why the answer is the same in all three: work out what is actually
+              wrong, build to that, and stay on to run it.
+            </p>
+          </div>
+          <FitCut />
+        </div>
+      </Reveal>
+
+      <Reveal id="partners" className="home-sec">
+        <div className="home-sec__head">
+          <h2>Who we work with</h2>
+          <p className="home-eyebrow">Clients &amp; partners</p>
+        </div>
+        <div className="home-orgs">
+          {PARTNERS.map((partner) => (
+            <div key={partner.id} className="home-org">
+              <div className="home-org__plate">
+                <Image
+                  src={partner.logo}
+                  alt={partner.name}
+                  width={partner.width}
+                  height={partner.height}
+                  unoptimized
+                  className="home-org__logo"
+                />
+              </div>
+              <div>
+                <p className="home-org__kind">{partner.kind}</p>
+                <p className="home-org__body">
+                  {partner.body}
+                  {partner.pending && (
+                    <span className="home-pending" title="Wording still to come from Craig">
+                      {' '}
+                      [wording needed]
+                    </span>
+                  )}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Reveal>
+
+      <Reveal id="team" className="home-sec">
+        <div className="home-sec__head">
+          <h2>The team</h2>
+          <p className="home-eyebrow">Everyone you will actually deal with</p>
+        </div>
+        <div className="home-people">
+          {CREW.map((member) => (
+            <figure key={member.id} className="home-person">
+              <div className={`home-face ${member.portrait ? '' : 'home-face--empty'}`.trim()}>
+                {member.portrait ? (
+                  <>
+                    {/*
+                      The source stays greyscale and the duotone is applied in
+                      CSS, so a straight export from the shoot drops in and
+                      picks up the treatment without being re-edited — and the
+                      look stays tunable without going back to the originals.
+                    */}
+                    <Image
+                      src={member.portrait}
+                      alt=""
+                      width={880}
+                      height={1100}
+                      unoptimized
+                      className="home-face__img"
+                    />
+                    <span className="home-face__tone" aria-hidden="true" />
+                  </>
+                ) : (
+                  <span className="home-face__initials" aria-hidden="true">
+                    {member.name
+                      .split(' ')
+                      .map((part) => part[0])
+                      .join('')}
+                  </span>
+                )}
+              </div>
+              <figcaption>
+                <h3 className="home-person__name">{member.name}</h3>
+                <p className="home-person__role">{member.role}</p>
+                <p className="home-person__bio">
+                  {member.summary}
+                  {member.pending && (
+                    <span className="home-pending" title="Entry not written by this person yet">
+                      {' '}
+                      [pending]
+                    </span>
+                  )}
+                </p>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+        <p className="home-sec__more">
+          <Link href="/team">Read the longer version &rarr;</Link>
+        </p>
+      </Reveal>
+
+      <Reveal id="start" className="home-close">
+        <h2 className="home-close__title home-line">Tell us what you are trying to build.</h2>
+        <div className="home-close__row home-line">
+          <span>
+            <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+          </span>
+          {/*
+            No phone here. It is in the header contacts and on /contact, which
+            is where someone who wants to ring looks — repeating it at the foot
+            of the home page was the third time the same number appeared on one
+            screen.
+          */}
+          <span>{CONTACT.location}</span>
+          <span>ABN {CONTACT.abn}</span>
+        </div>
+        <p className="home-close__cta">
+          <Link href="/contact" className="basic-button">
+            Start a conversation
           </Link>
-        </section>
-
-        <section className="page__section">
-          <h2 className="page__section-title">The crew</h2>
-          <div className="card-grid">
-            {CREW.map((member) => (
-              <Link key={member.id} href={`/crew#${member.id}`} className="card card--link">
-                <h3>{member.name}</h3>
-                <p className="card__role">{member.role}</p>
-                <p>{member.summary}</p>
-              </Link>
-            ))}
-          </div>
-          <p className="home__more">
-            <Link href="/crew">Read the longer version &rarr;</Link>
-          </p>
-        </section>
-      </div>
+        </p>
+      </Reveal>
     </main>
   )
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Chakra_Petch, IBM_Plex_Sans, IBM_Plex_Mono } from 'next/font/google'
+import { Chakra_Petch, IBM_Plex_Sans, IBM_Plex_Mono, Newsreader } from 'next/font/google'
 import { CONTACT } from '@constants'
 import { Providers } from './providers'
 import SiteHeader from '@components/layouts/SiteHeader'
@@ -34,6 +34,20 @@ const mono = IBM_Plex_Mono({
   subsets: ['latin'],
   weight: ['400', '500'],
   variable: '--font-mono',
+  display: 'swap',
+})
+
+/**
+ * The reading face. Everything else here is an engineered sans, which is a
+ * large part of why the marketing pages read cold — a serif at a comfortable
+ * measure is the single cheapest thing that makes them feel written rather
+ * than specified. Optical sizing is variable, so this is one file.
+ */
+const read = Newsreader({
+  subsets: ['latin'],
+  weight: ['300', '400'],
+  style: ['normal', 'italic'],
+  variable: '--font-read',
   display: 'swap',
 })
 
@@ -123,7 +137,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="en-AU"
       data-theme="dark"
-      className={`${display.variable} ${ui.variable} ${mono.variable}`}
+      className={`${display.variable} ${ui.variable} ${mono.variable} ${read.variable}`}
       suppressHydrationWarning
     >
       <head>
@@ -145,11 +159,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </a>
             <SiteHeader />
             <div className="site-scroll">
+              {/*
+                The footer is INSIDE the scroller now. It used to be pinned
+                below it, which meant a band of chrome on screen at all times
+                and out of the fold on every page — and once the contacts moved
+                up into the readout strip there was nothing left in it but a
+                line of small print, which does not earn being permanently
+                visible. It sits at the end of the page and scrolls away.
+              */}
               <div id="main" tabIndex={-1} className="page-container top-align site-shell">
                 {children}
+                <SiteFooter />
               </div>
             </div>
-            <SiteFooter />
           </div>
           <CursorSpark />
         </Providers>

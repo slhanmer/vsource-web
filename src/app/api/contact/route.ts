@@ -137,20 +137,34 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: 'Malformed request.' }, { status: 400 })
   }
 
-  // --- bot checks ----------------------------------------------------------
-  // Both fail silently with a 200. Telling a bot why it was rejected only helps
-  // it try again more convincingly.
+  // --- bot signals ---------------------------------------------------------
+  // THESE FLAG. THEY DO NOT DROP. Both of them used to return a 200 and bin the
+  // message, which is the worst failure this form is capable of: a real enquiry
+  // disappears AND the sender is told it arrived, so nobody ever finds out.
+  //
+  // Both fire on real people:
+  //   - `autocomplete="off"` is advisory and password managers ignore it, so
+  //     1Password, LastPass and friends happily fill the hidden honeypot.
+  //   - autofill completes a form instantly, so the same visitor then submits
+  //     inside MIN_FILL_MS and trips the timer as well.
+  //
+  // Cloudflare Turnstile below is the actual bot gate and it is a real one.
+  // These two are corroborating signals, so they now ride along in the subject
+  // line instead of deciding anything. A false positive costs one flagged
+  // email; the old behaviour cost a client.
+  const suspicions: string[] = []
+
   const honeypot = payload.honeypot
   if (honeypot && typeof honeypot === 'object') {
     const filled = Object.values(honeypot as Record<string, unknown>).some(
       (v) => typeof v === 'string' && v.trim() !== ''
     )
-    if (filled) return NextResponse.json({ ok: true })
+    if (filled) suspicions.push('honeypot')
   }
 
   const startedAt = Number(payload.startedAt)
   if (Number.isFinite(startedAt) && Date.now() - startedAt < MIN_FILL_MS) {
-    return NextResponse.json({ ok: true })
+    suspicions.push('fast')
   }
 
   // --- validation ----------------------------------------------------------
@@ -197,8 +211,21 @@ export async function POST(req: NextRequest) {
   const landing = clean(origin.landing, 200) || 'unknown'
 
   // --- send ----------------------------------------------------------------
-  const subject = `Website enquiry - ${name}${company ? ` (${company})` : ''}`
+  // The flag is in the subject so it is visible in the inbox list without
+  // opening anything, and it is a prefix so a mail rule can match on it. It is
+  // deliberately not called "spam": Turnstile already passed, so this is a
+  // message to glance at, not one to bin.
+  if (suspicions.length) {
+    console.warn('[contact] delivered with signals', suspicions.join(','), ip)
+  }
+  const flag = suspicions.length ? `[check: ${suspicions.join(' ')}] ` : ''
+
+  const subject = `${flag}Website enquiry - ${name}${company ? ` (${company})` : ''}`
   const text = [
+    suspicions.length
+      ? `⚠ Bot signals: ${suspicions.join(', ')} — passed Turnstile, delivered anyway.`
+      : null,
+    suspicions.length ? '' : null,
     `Name:    ${name}`,
     `Email:   ${email}`,
     company ? `Company: ${company}` : null,
@@ -213,6 +240,15 @@ export async function POST(req: NextRequest) {
     .join('\n')
 
   const html = `
+    ${
+      suspicions.length
+        ? `<p style="font-family:system-ui,sans-serif;font-size:13px;line-height:1.5;padding:8px 12px;margin:0 0 14px;background:#fdf3e3;border-left:3px solid #c9821f">
+             <strong>Bot signals:</strong> ${escapeHtml(suspicions.join(', '))}.
+             This passed the Turnstile challenge and was delivered anyway &mdash;
+             browser autofill trips both of these on real people.
+           </p>`
+        : ''
+    }
     <table style="font-family:system-ui,sans-serif;font-size:14px;line-height:1.5">
       <tr><td style="padding:2px 12px 2px 0"><strong>Name</strong></td><td>${escapeHtml(name)}</td></tr>
       <tr><td style="padding:2px 12px 2px 0"><strong>Email</strong></td><td><a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></td></tr>

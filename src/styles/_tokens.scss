@@ -1,12 +1,14 @@
 ///////////////////////////////////////////////////////////////////////////////
-//  APTIUM DESIGN SYSTEM TOKENS  (APT-426)
-//  Source of truth: Figma "Aptium - Design System" (collection: Aptium, Light mode)
+//  V SOURCE DESIGN TOKENS
 //  Two layers: primitives (raw values) -> semantic tokens (intent).
 //
-//  THEMEABLE LAYER: the var(--xxx) tokens below are tenant-overridable. Aptium
-//  values are the defaults; TenantProvider overrides per tenant at runtime.
-//  CSS-var names renamed to the new scheme — provider maps old API keys across
-//  (see TenantProvider bridge). BE key migration tracked in APT-429.
+//  The var(--xxx) tokens resolve against the light/dark blocks in global.scss.
+//  This file is injected at the top of every SCSS file by next.config.ts, so
+//  keep it to declarations — no @import, no rules that emit CSS.
+//
+//  Inherited from the Aptium portal, where the same layer was tenant-overridable
+//  at runtime. There is one brand here, so that machinery is gone; what remains
+//  is the light/dark swap.
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -146,6 +148,7 @@ $font-family-input: var(--font-ui), system-ui, sans-serif;
 $font-family-button: var(--font-display), system-ui, sans-serif;
 $font-family-display: var(--font-display), system-ui, sans-serif;
 $font-family-mono: var(--font-mono), ui-monospace, monospace;
+$font-family-read: var(--font-read), Georgia, 'Times New Roman', serif;
 
 $font-size-xs: 12px;
 $font-size-sm: 14px;

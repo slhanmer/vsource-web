@@ -1,9 +1,9 @@
 /**
- * Contact details.
+ * Contact details. Email and phone confirmed by Simon; the ABN matches the one
+ * published in the footer of the current vsource.dev.
  *
- * DRAFT — lifted from the current vsource.dev and needs confirming before
- * launch. The old site also printed the visitor's IP address in the footer;
- * that is deliberately not carried over.
+ * The old site also printed the visitor's IP address in the footer; that is
+ * deliberately not carried over.
  */
 export const CONTACT = {
   email: 'craig@vsource.dev',

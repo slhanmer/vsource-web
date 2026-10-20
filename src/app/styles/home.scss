@@ -1,128 +1,2056 @@
-// Deliberately NOT full-bleed: every page sits in the same column, and a hero
-// that ignores it leaves no continuous left and right edge to frame against.
-//
-// It also carries no background or bottom rule. Inside the wide-screen frame,
-// a hero with its own fill reads as a separate block stacked in the panel
-// rather than as the top of one continuous page — the chrome bands are the
-// only divisions that should be visible.
-.hero {
-  &__inner {
-    max-width: 1320px;
-    margin: 0 auto;
-    padding: $spacing-2xl $spacing-lg $spacing-lg;
-    font-family: $font-family-ui;
+/* =========================================================================
+   HOME — three streams
+   ------------------------------------------------------------------------
+   Every colour here comes from a theme token. The mockup was dark-only and
+   hardcoded #4fb56c / #1edcea, which turn out to BE --brand-accent and
+   --brand-highlight in dark, so the port was mostly mechanical — but the light
+   theme swaps the neon for the teal, and that swap is the whole reason none of
+   these values are literals.
 
-    @media (max-width: $breakpoint-mobile) {
-      padding: $spacing-xl $spacing-sm $spacing-md;
+   The one exception is the plate in the cut illustration. There is no existing
+   surface token for "a slab that presses down on you": it has to read as an
+   object sitting proud of the page in dark, and as a solid grey object on a
+   pale page in light, and no single --surface-* does both. Those four are
+   declared locally, per theme, rather than pushed into global.scss where they
+   would be a page-specific token pretending to be a system one.
+   ========================================================================= */
+
+.home {
+  --home-plate-top: #dfe7e2;
+  --home-plate-bottom: #c6d3cb;
+  --home-plate-edge: rgba(47, 58, 52, 0.22);
+  --home-plate-lip: rgba(255, 255, 255, 0.85);
+  --home-hatch-line: rgba(47, 58, 52, 0.18);
+  --home-well: #c0cec6;
+  --home-mill: rgba(47, 58, 52, 0.02);
+  --home-engrave: rgba(47, 58, 52, 0.3);
+}
+
+[data-theme='dark'] .home {
+  --home-plate-top: #22342c;
+  --home-plate-bottom: #0d1712;
+  --home-plate-edge: rgba(255, 255, 255, 0.12);
+  --home-plate-lip: rgba(255, 255, 255, 0.22);
+  --home-hatch-line: rgba(255, 255, 255, 0.08);
+  --home-well: #070f0c;
+  --home-mill: rgba(255, 255, 255, 0.014);
+  --home-engrave: rgba(0, 0, 0, 0.55);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.home {
+  --home-gutter: clamp(20px, 4.5vw, 64px);
+  /* The header is the only chrome outside the scroller now, so the fold is the
+     viewport less the header — not 100dvh. Band plus readout, known from
+     siteHeader.scss: 68 + 28. The footer used to be in this sum; it moved
+     inside the scroller, where it sits at the end of the page and costs the
+     fold nothing. If the plate overshoots or leaves a gap, this is the dial. */
+  --home-header-h: 96px;
+  --home-fold-trim: var(--home-header-h);
+}
+
+.home-eyebrow {
+  font-family: $font-family-mono;
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  margin: 0;
+}
+
+/* A placeholder that reads as a question during review, not as finished copy. */
+.home-pending {
+  border-bottom: 1px dashed var(--brand-highlight);
+  color: var(--text-secondary);
+  cursor: help;
+}
+
+/* ── the fold is one plate ──────────────────────────────────────────────────
+   The three streams are openings cut through a machined surface rather than
+   cards resting on a page — the same material and the same mechanic as the cut
+   illustration further down, at page scale. The headline's slot is a fourth
+   cut in the same plate.
+
+   Depth is by edge only. No drop shadows anywhere in this file, matching the
+   header: a raised surface catches light on its TOP edge, a recess catches it
+   on its LOWER inner rim, and getting that backwards turns the plate inside
+   out. The mill lines are a whisper — brushed metal, not texture. */
+.home-plate {
+  position: relative;
+  /* One screen, always: the fold sits between the plate and everything else,
+     at every viewport. align-content centres the content within it rather than
+     stretching the grid rows. */
+  min-height: calc(100svh - var(--home-fold-trim));
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  /* Less at the top than before: the masthead row that needed the room is gone,
+     and the header above the plate is now doing that job. */
+  padding-block: clamp(24px, 3vw, 56px) clamp(18px, 2vw, 28px);
+  padding-inline: var(--home-gutter);
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 3px,
+      var(--home-mill) 3px 4px
+    ),
+    linear-gradient(180deg, var(--home-plate-top), var(--home-plate-bottom));
+  border-bottom: 1px solid var(--home-plate-edge);
+  box-shadow: inset 0 1px 0 var(--home-plate-lip);
+}
+
+
+/* ── the plate's bottom edge ────────────────────────────────────────────────
+   A hairline, the names of people who have actually paid us, and the way down.
+   Hidden on short viewports, where the fold matters more than the flourish. */
+.home-plate__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  max-width: 1240px;
+  width: 100%;
+  margin: 0 auto;
+  padding-top: clamp(12px, 1.5vw, 20px);
+  border-top: 1px solid var(--home-plate-edge);
+  box-shadow: inset 0 1px 0 var(--home-plate-lip);
+}
+
+.home-plate__trust {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 0;
+  font-family: $font-family-mono;
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+
+  &-label {
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+  }
+
+  /* A middot between names, drawn rather than typed, so it never gets read
+     aloud as punctuation between three proper nouns. */
+  &-name + &-name::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 3px;
+    margin-right: 14px;
+    border-radius: 50%;
+    background: var(--text-subtle);
+    vertical-align: middle;
+  }
+}
+
+.home-plate__cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: var(--text-subtle);
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: var(--route-active);
+  }
+
+  &-label {
+    font-family: $font-family-mono;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  /* A round cut in the plate with a chevron in it — the same opening treatment
+     as the doors, at control size. A hairline and a caption was not reading as
+     something you could press. */
+  &-knob {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--surface-page);
+    box-shadow:
+      inset 0 3px 6px -2px var(--carve-dark),
+      inset 0 -1px 0 var(--home-plate-lip);
+    transition: box-shadow 0.3s ease;
+
+    svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--route-active);
+      animation: home-cue 2.1s ease-in-out infinite;
+    }
+  }
+
+  &:hover &-knob,
+  &:focus-visible &-knob {
+    box-shadow:
+      inset 0 3px 6px -2px var(--carve-dark),
+      inset 0 -1px 0 var(--home-plate-lip),
+      inset 0 0 0 1.5px var(--route-active);
+  }
+}
+
+@keyframes home-cue {
+  0%,
+  100% {
+    transform: translateY(-2px);
+  }
+  50% {
+    transform: translateY(2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-plate__cue-knob svg {
+    animation: none;
+  }
+}
+
+/* The foot is the first thing to go when the fold is under pressure: on a
+   narrow or short screen the three doors are the job, and the trust strip is
+   the flourish. It reappears in the partners section either way. */
+@media (max-height: 820px), (max-width: 720px) {
+  .home-plate__foot {
+    display: none;
+  }
+}
+
+/* ── hero ───────────────────────────────────────────────────────────────── */
+.home-hero {
+  overflow-x: clip;
+
+  /* Said on the left, offered on the right. Centred text also meant the
+     headline had to be perfectly symmetrical to look right, which a slot that
+     changes width can never be. */
+  &__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(32px, 6vw, 96px);
+    /* Both columns start at the same line. Centring them meant the shorter
+       column floated and read as two unrelated blocks rather than as two
+       columns of one thing. Note this is the columns against each other —
+       align-self below is the whole block against the plate. */
+    /* stretch, not start: the two columns start level either way, because the
+       content inside each begins at its top — but stretch makes them the same
+       HEIGHT, which is what lets the call to action drop to the bottom of the
+       left column and finish level with the last door. */
+    align-items: stretch;
+    /* Vertically centred in the plate. With the masthead gone there is nothing
+       to hang the block from the top edge for, and on a tall viewport pinning
+       it there left the bottom third as bare plate. */
+    align-self: center;
+    max-width: 1240px;
+    margin: 0 auto;
+
+    @media (max-width: $breakpoint-desktop) {
+      grid-template-columns: 1fr;
+      gap: clamp(22px, 4vw, 36px);
+    }
+  }
+
+  @media (max-width: $breakpoint-desktop) {
+    &__lede {
+      margin-top: 16px;
+    }
+
+    &__sub {
+      margin-top: 10px;
+    }
+  }
+
+  /* The hook, then the method. The first line is the one that makes someone
+     recognise themselves; the second tells them what happens next. Two sizes,
+     because giving them equal weight makes neither land. */
+  &__lede {
+    font-family: $font-family-read;
+    font-size: clamp(19px, 1.7vw, 25px);
+    line-height: 1.34;
+    color: var(--text-primary);
+    max-width: 31ch;
+    margin: clamp(22px, 2.4vw, 32px) 0 0;
+  }
+
+  /* A flex column purely so the call to action can take the slack. Everything
+     above it sits at the top as it always did; `margin-top: auto` on the CTA
+     puts whatever height is left over between the paragraph and the button,
+     which lands the button level with the bottom of the last door. */
+  &__say {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* The plate had no way off it. Three doors are navigation — they take someone
+     who already knows which stream they want; this is for the larger group who
+     have a problem and no idea which of the three it is, which is the whole
+     premise of the copy above it.
+     Green, not cyan: this commits, so it is in the action lane. Raised rather
+     than cut — the doors are openings through the plate, this sits on top of
+     it, so the light catches its top edge and a hard line seats it underneath.
+     No blur: depth on this site is edges. */
+  &__cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: clamp(14px, 1.8vw, 24px);
+    /* auto, not a fixed gap: the column is stretched to the height of the doors
+       beside it, and this is where that extra height goes. The minimum keeps a
+       sane gap when there is no slack to take — a short viewport, or stacked on
+       a phone where the column is content-sized and auto resolves to zero. */
+    margin: clamp(20px, 2.2vw, 30px) 0 0;
+    margin-top: auto;
+    padding-top: clamp(20px, 2.2vw, 30px);
+
+    .basic-button {
+      /* The kit centres its label with flex — on the `button` ELEMENT rule.
+         This is an anchor, so it never got it: the label was sitting on the
+         first line box of a 44px tall box instead of in the middle of it. */
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: auto;
+      height: 44px;
+      padding: 0 clamp(20px, 2vw, 30px);
+      font-family: $font-family-ui;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        0 1px 0 var(--home-plate-edge);
+    }
+  }
+
+  &__sub {
+    font-family: $font-family-read;
+    font-size: clamp(15.5px, 1.2vw, 17.5px);
+    /* Tighter than the body default. $line-height-relaxed is set for a long
+       column; on three lines under a headline it opened the paragraph up until
+       the three lines stopped reading as one thought. */
+    line-height: 1.45;
+    color: var(--text-secondary);
+    max-width: 46ch;
+    margin: clamp(12px, 1.2vw, 18px) 0 0;
+  }
+}
+
+/* ── the rotating headline ──────────────────────────────────────────────── */
+.rotator {
+  /* One headline set as two lines, but only the first is in the h1. The second
+     line is its own element so the pause control can sit INSIDE it, where the
+     full stop used to be, without a button ending up inside a heading — which
+     would put "Pause the rotating words" into the h1's accessible name. The
+     complete sentence is in the visually-hidden span, so nothing is lost. */
+  &__h1,
+  &__tailline {
+    font-family: $font-family-read;
+    text-align: left;
+    font-weight: 300;
+    line-height: 1.1;
+    font-size: clamp(32px, 5vw, 68px);
+    /* No top margin. The header above sets the gap, and a margin here pushed
+       the headline below the top of the doors beside it. */
+    margin: 0;
+    color: var(--text-primary);
+  }
+
+  /* The cut line is the only thing that changes width, and it is alone on its
+     line, so it grows and shrinks about its own centre without moving anything
+     else on the page. */
+  &__cutline {
+    display: block;
+  }
+
+  &__tailline {
+    display: flex;
+    align-items: flex-end;
+    /* The air a full stop gets, not the air a button gets. */
+    gap: 0.03em;
+    margin-top: 0.12em;
+  }
+
+  &__slot {
+    display: inline-block;
+    vertical-align: baseline;
+    position: relative;
+    border-radius: 4px;
+    /* Centred on the CAP BAND — cap height down to the baseline — because that
+       is the band the eye reads as "the word". Descenders hang below it and are
+       not counted; a box that centres the full ink box, descender included,
+       reads high, which is exactly what this one kept doing.
+
+       Getting there by hand is a losing game. The gap a line box leaves above
+       the cap is ascent-minus-cap plus half-leading, and the gap it leaves
+       below the baseline is the whole descent plus half-leading — an asymmetry
+       of about a quarter of an em in Newsreader, which also moves with the
+       optical size axis. Every value I calibrated held for one size and one
+       instance of the font and drifted everywhere else.
+
+       text-box-trim does it structurally instead: the content box is trimmed to
+       the cap top and the baseline, so equal padding IS equal space, on any
+       font at any size. The descender then hangs into the bottom padding, which
+       is why that padding has to clear it — 0.4em against a 0.256em descender
+       leaves about a seventh of an em under the tail of the g.
+
+       The fallback below it is the same geometry calibrated by hand against a
+       screenshot of the real thing, for engines without text-box-trim. It lands
+       close; it is not exact, and it does not need to be. */
+    padding: 0.348em 0.26em 0.101em;
+
+    @supports (text-box-edge: cap alphabetic) {
+      text-box-trim: trim-both;
+      text-box-edge: cap alphabetic;
+      padding-block: 0.4em;
+    }
+    /* An opening, so what shows through it is the page behind the plate. */
+    background: var(--surface-page);
+    box-shadow:
+      inset 0 3px 6px -2px var(--carve-dark),
+      inset 0 -1px 0 var(--home-plate-lip);
+    text-align: center;
+    /* NOT overflow: hidden. An inline-block whose overflow is anything but
+       visible takes its baseline from the bottom margin edge rather than its
+       last line box (CSS 2.1 10.8.1), which lifted the word clear of the rest
+       of the line by the descender plus the bottom padding. clip-path clips
+       without touching layout, so the baseline stays the text's. */
+    clip-path: inset(0 round 4px);
+    transition: width 0.5s cubic-bezier(0.3, 0.85, 0.2, 1);
+  }
+
+  /* Every character is in the DOM from the first frame; untyped ones only
+     lose their ink. The word therefore always measures its finished width, so
+     the slot is recut once and the letters fill an opening that is already the
+     right size — rather than the slot chasing the text a character at a time. */
+  &__inner {
+    display: inline-block;
+    white-space: pre;
+    text-align: left;
+    font-weight: 400;
+  }
+
+  /* display:none, not visibility:hidden. Holding the untyped characters'
+     width would pin the typed ones to the left of an already full-width
+     opening, which is what made a half-typed word look off-centre. The slot is
+     still recut to the finished width first, from a measured clone, so nothing
+     reflows. */
+  &__ghost {
+    display: none;
+  }
+
+  /* The readout's caret, at headline size. Zero net width AND zero height:
+     the ink is drawn by an absolutely positioned pseudo-element instead.
+
+     Height matters here in a way it does not in the header. An inline-block
+     0.82em tall sits higher above the baseline than the text's own ascent, so
+     at 56px it was growing the line box every time typing started — and the
+     lede below stepped down and back up on every word. A zero-height box
+     contributes nothing above the baseline, so the line never moves. */
+  &__caret {
+    position: relative;
+    display: inline-block;
+    width: 0.45em;
+    margin-right: -0.45em;
+    height: 0;
+    vertical-align: baseline;
+    animation: rotator-caret 1s steps(2, start) infinite;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -0.06em;
+      width: 100%;
+      height: 0.78em;
+      background: var(--route-active);
+    }
+  }
+
+  /* WCAG 2.2.2. The words start typing on their own and loop for a good deal
+     longer than five seconds, so a pause control is not optional — but it being
+     a line of text in the middle of the composition was. It used to read
+     "\25AE\25AE PAUSE" in the gap between the headline and the lede and it was the
+     first thing the eye landed on.
+
+     Same control, same keyboard behaviour, no label: a knob cut into the plate,
+     in the same language as the cue at the foot, sitting where the headline's
+     full stop was — so the page gains a control and loses a mark rather than
+     gaining an object.
+
+     It is sized and spaced as punctuation, in em, so it scales with the
+     headline and reads as the last mark of the sentence rather than as a
+     button that happens to be nearby. That takes it under the 24px target
+     minimum at small sizes, which WCAG 2.5.8 allows explicitly: the inline
+     exception covers a target sitting in a line of text. The accessible name
+     lives on aria-label, which is what a screen reader reads either way. Under
+     reduced motion there is no animation and no knob, so the sentence gets its
+     full stop back (see RotatingHeadline). */
+  &__pause {
+    --knob: clamp(13px, 0.27em, 22px);
+    display: grid;
+    place-items: center;
+    flex: none;
+    /* Load-bearing. A button does not inherit its font, so every `em` here
+       would resolve against the browser's 13.3px default — or the kit's 20px
+       button rule — instead of the headline, and both the size and the baseline
+       offset below would come out a fifth of what they should be. */
+    font-size: inherit;
+    width: var(--knob);
+    height: var(--knob);
+    /* A full stop's bottom IS the baseline. flex-end puts this on the bottom of
+       the line box instead, which is the baseline plus the descent, so it gets
+       lifted back by that much. Measured, because Newsreader's optical size
+       axis moves it: the descent is 0.218em of the font size at 68px, 0.225em
+       at 40px and 0.254em at 26px. 0.225em lands within three quarters of a
+       pixel of the baseline at all three. */
+    margin-bottom: 0.225em;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    /* Ink, not a cut. A full stop is made of the same stuff as the letters, so
+       this takes the text colour and the glyph inside it takes the page — which
+       is white with a black pause in dark, and reads as the mark it is standing
+       in for rather than as a control that happens to be nearby. It flips with
+       the theme for the same reason: on the light theme a full stop is dark. */
+    background: var(--text-primary);
+    color: var(--surface-page);
+    cursor: pointer;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--route-active);
+      color: var(--surface-page);
+    }
+
+    &[aria-pressed='true'] .rotator__icon {
+      border: 0;
+      width: 0;
+      height: 0;
+      border-left: calc(var(--knob) * 0.3) solid currentColor;
+      border-top: calc(var(--knob) * 0.19) solid transparent;
+      border-bottom: calc(var(--knob) * 0.19) solid transparent;
+      /* An optical nudge: a triangle centred on its bounding box reads left. */
+      margin-left: calc(var(--knob) * 0.07);
+    }
+  }
+
+  /* Proportioned off the knob rather than in pixels, so the glyph stays a glyph
+     at 22px and at 13px instead of filling one and vanishing in the other. */
+  &__icon {
+    width: calc(var(--knob) * 0.24);
+    height: calc(var(--knob) * 0.38);
+    border-left: max(1px, calc(var(--knob) * 0.09)) solid currentColor;
+    border-right: max(1px, calc(var(--knob) * 0.09)) solid currentColor;
+  }
+}
+
+@keyframes rotator-caret {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ── the three doors ────────────────────────────────────────────────────── */
+.home-doors {
+  display: grid;
+  gap: clamp(12px, 1.6vw, 20px);
+}
+
+/* The stamped 01/02/03 that used to sit beside each cut are gone. They were
+   the third numbering of the same three things on one screen — the doors, the
+   bands below and the stamps — and a number only earns its place when
+   something refers to it. Nothing did. */
+.home-door {
+  display: grid;
+  text-decoration: none;
+  color: inherit;
+
+  /* The opening. What shows through it is the page behind the plate. */
+  &__cut {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: clamp(14px, 1.8vw, 24px);
+    align-items: center;
+    padding: clamp(18px, 2.3vw, 30px) clamp(20px, 2.4vw, 32px);
+    border-radius: $radius-md;
+    background: var(--surface-page);
+    box-shadow:
+      inset 0 3px 7px -2px var(--carve-dark),
+      inset 0 -1px 0 var(--home-plate-lip);
+    transition: box-shadow 0.35s ease;
+  }
+
+  /* A hole cannot lift, so hover lights the kerf instead of raising a card —
+     the same cyan cut edge the illustration ends on. */
+  &:hover &__cut,
+  &:focus-visible &__cut {
+    box-shadow:
+      inset 0 3px 7px -2px var(--carve-dark),
+      inset 0 -1px 0 var(--home-plate-lip),
+      inset 0 0 0 1.5px var(--brand-highlight);
+  }
+
+  /* Mark and call to action stacked: the label sits under the drawing rather
+     than trailing the copy, so the whole left column reads as one target. */
+  &__media {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+  }
+
+  &__body {
+    display: grid;
+    gap: 4px;
+  }
+
+  &__name {
+    font-family: $font-family-display;
+    font-size: clamp(20px, 2.1vw, 26px);
+    font-weight: $font-weight-semibold;
+    line-height: 1.1;
+    color: var(--text-primary);
+  }
+
+  &__lede {
+    font-family: $font-family-read;
+    font-size: 17px;
+    line-height: $line-height-normal;
+    color: var(--text-secondary);
+  }
+
+  /* --route-active, not --action-primary. The convention on this site is that
+     cyan points and green acts: this navigates to a stream, it does not commit
+     anything, so it belongs in the route lane. It also resolves to the light
+     theme's teal, which is readable on a pale ground where the neon is not. */
+  &__go {
+    font-family: $font-family-mono;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--route-active);
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    transition: border-color 0.3s ease;
+  }
+
+  &:hover &__go,
+  &:focus-visible &__go {
+    border-bottom-color: var(--route-active);
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    &__cut {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+    }
+
+    &__media {
+      order: 2;
+    }
+
+    &__lede {
+      display: none;
+    }
+  }
+}
+
+/* A door is a routing device, not an exhibit: the mark sits straight in the
+   opening with no panel of its own, and small. */
+.home-door .markwrap {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  width: clamp(76px, 7.6vw, 108px);
+
+  .mark {
+    max-height: 76px;
+  }
+
+  /* Two classes, so this beats .markwrap's own display regardless of where
+     either rule sits in the file. */
+  @media (max-width: $breakpoint-mobile) {
+    display: none;
+  }
+}
+
+
+/* The single-column band. Between the mobile tier and the desktop breakpoint
+   the hero stacks but still gets desktop-sized type, which is what pushed a
+   600x800 viewport past the fold. */
+
+
+/* ── keeping the fold on small and short screens ────────────────────────────
+   The promise is one screen at EVERY viewport, so this has to hold on a short
+   laptop as well as a small phone — hence max-height alongside max-width. It
+   compresses type and padding rather than scrolling the hero, because a fold
+   that only works on a 900px-tall desktop is not a fold. */
+@media (max-width: $breakpoint-mobile), (max-height: 820px) {
+  .home-plate {
+    padding-block: clamp(20px, 3.4vh, 40px);
+  }
+
+  .home-hero__lede {
+    font-size: 17px;
+    margin-top: 14px;
+  }
+
+  .home-hero__sub {
+    font-size: 14.5px;
+    margin-top: 9px;
+  }
+
+  .rotator__h1,
+  .rotator__tailline {
+    font-size: clamp(26px, 5.6vw, 40px);
+  }
+
+  .home-hero__cta {
+    padding-top: 14px;
+    gap: 14px;
+
+    .basic-button {
+      height: 40px;
+    }
+  }
+
+  .home-doors {
+    gap: 10px;
+  }
+
+  .home-door {
+    &__cut {
+      padding: 13px 15px;
+    }
+
+    &__name {
+      font-size: 18px;
+    }
+
+    &__lede {
+      font-size: 14.5px;
+    }
+  }
+}
+
+/* The shell's own heights, and the only thing in this file keyed on the
+   header's breakpoint rather than the hero's. They change on WIDTH alone —
+   putting them in the compact tier above, which fires on width OR height,
+   made a 1440x700 viewport budget for a 56px band it does not have. */
+@media (max-width: $breakpoint-mobile) {
+  .home {
+    --home-header-h: 84px;
+  }
+}
+
+/* Declared AFTER the compact tier on purpose: a 600x800 viewport matches
+   both, and the one that stacks the hero has to win. */
+@media (min-width: 481px) and (max-width: $breakpoint-desktop) {
+  .rotator__h1,
+  .rotator__tailline {
+    font-size: clamp(26px, 4.4vw, 36px);
+  }
+
+  .home-hero__lede {
+    font-size: 19px;
+    margin-top: 14px;
+  }
+
+  .home-hero__sub {
+    font-size: 15.5px;
+    margin-top: 8px;
+  }
+
+  .home-hero__cta {
+    padding-top: 11px;
+
+    .basic-button {
+      height: 38px;
+      font-size: 14px;
+    }
+  }
+
+  .home-plate {
+    padding-block: 14px 10px;
+  }
+
+  .home-doors {
+    gap: 6px;
+  }
+
+  .home-door__cut {
+    padding: 9px 16px;
+  }
+
+  .home-door__media {
+    gap: 5px;
+  }
+
+  .home-door__media {
+    gap: 6px;
+  }
+
+  .home-door .markwrap .mark {
+    max-height: 44px;
+  }
+}
+
+/* A wide-but-short viewport — a small laptop, a tablet in landscape — has the
+   width for two columns even though it is under the desktop breakpoint, and
+   stacking there is exactly what pushes the doors past the fold. Width is not
+   the only thing that decides a layout. */
+@media (min-width: 640px) and (max-height: 820px) {
+  .home-hero__inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(24px, 4vw, 48px);
+  }
+}
+
+/* The last tier. Below this the hero simply will not hold a headline, a
+   sentence, a call to action and three doors without shrinking type past
+   readable, so it is allowed to scroll rather than be crushed. */
+@media (max-height: 680px) {
+  .home-plate {
+    padding-block: 14px;
+  }
+
+  .home-hero__lede {
+    font-size: 16px;
+    margin-top: 10px;
+  }
+
+  .home-hero__sub {
+    display: none;
+  }
+
+  .rotator__h1,
+  .rotator__tailline {
+    font-size: clamp(24px, 4.6vw, 34px);
+  }
+
+  .home-hero__cta {
+    padding-top: 10px;
+    gap: 12px;
+
+    .basic-button {
+      height: 36px;
+      font-size: 13.5px;
+    }
+  }
+
+  .home-doors {
+    gap: 8px;
+  }
+
+  .home-door__cut {
+    padding: 10px 14px;
+  }
+}
+
+/* Small AND short — an older phone. Twenty pixels short of the fold without
+   this, which is the difference between a promise kept and a promise nearly
+   kept. */
+@media (max-width: 420px) and (max-height: 680px) {
+  .rotator__h1,
+  .rotator__tailline {
+    font-size: 23px;
+  }
+
+  .home-doors {
+    gap: 7px;
+  }
+
+  .home-door__cut {
+    padding: 9px 13px;
+  }
+
+  .home-door__lede {
+    font-size: 14px;
+  }
+}
+
+/* ── the stream marks ───────────────────────────────────────────────────── */
+.markwrap {
+  display: grid;
+  place-items: center;
+  padding: clamp(14px, 2.4vw, 28px);
+  border-radius: $radius-md;
+  border: 1px solid var(--border-subtle-colour);
+  background: var(--surface-recessed);
+  box-shadow: inset 0 1px 0 var(--carve-lip);
+}
+
+.mark {
+  width: 100%;
+  height: auto;
+  max-width: 420px;
+
+  &__base {
+    stroke: var(--brand-accent);
+  }
+
+  &__hi {
+    stroke: var(--brand-highlight);
+  }
+
+  &__d--faint {
+    opacity: 0.55;
+  }
+
+  &__dot {
+    fill: var(--brand-accent);
+  }
+
+  &__dot--hi {
+    fill: var(--brand-highlight);
+  }
+
+  &__t {
+    font-family: $font-family-mono;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    fill: var(--text-subtle);
+  }
+
+  &__layer2 {
+    opacity: 0.55;
+  }
+
+  &__layer3 {
+    opacity: 0.3;
+  }
+
+  &__layer2,
+  &__layer3 {
+    transition: transform 0.5s cubic-bezier(0.3, 0.9, 0.2, 1);
+  }
+}
+
+.markwrap:hover {
+  .mark__layer2 {
+    transform: translate(4px, -4px);
+  }
+
+  .mark__layer3 {
+    transform: translate(8px, -8px);
+  }
+
+  .mark__spoke {
+    transform: rotate(30deg);
+    transform-origin: 66px 70px;
+    transition: transform 1.2s cubic-bezier(0.3, 0.9, 0.2, 1);
+  }
+}
+
+/* The strokes draw themselves in when the section arrives. The elements carry
+   pathLength="100" (an SVG attribute — it does nothing from CSS), so one
+   dasharray draws every shape and nothing is measured at runtime. */
+.mark__d {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 0;
+}
+
+.is-out .mark__d {
+  stroke-dashoffset: 100;
+}
+
+.is-in .mark__d {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1.15s cubic-bezier(0.3, 0.8, 0.2, 1);
+}
+
+.is-in .mark__hi .mark__d {
+  transition-delay: 0.45s;
+}
+
+.is-out .mark__dots,
+.is-out .mark__t {
+  opacity: 0;
+}
+
+.is-in .mark__dots,
+.is-in .mark__t {
+  opacity: 1;
+  transition: opacity 0.6s ease 0.95s;
+}
+
+/* ── the move ───────────────────────────────────────────────────────────────
+   Three streams, one at a time, arriving as the page scrolls. Nothing pins and
+   nothing leaves: each part appears once, in order, and stays, so the whole
+   argument is still behind you when you get to the bottom of it.
+
+   No panels anywhere in here. The problem is set at headline size with nothing
+   around it and the mark draws itself beside it; boxing either half turned the
+   section into a comparison table, which is the opposite of what it is for. */
+.home-moves {
+  /* The same machined surface as the fold, and the only other section that
+     gets it. The fold's plate is where the argument starts; this is where it is
+     made, so it happens on the same material. Everything after it is back on
+     the page — the texture is the argument's, not the site's.
+
+     Mill lines over a slab gradient, a hairline at the top and a light catch
+     just under it: raised surfaces take the light on their top edge, and that
+     rule is what keeps the plate from reading inside out. */
+  background:
+    repeating-linear-gradient(180deg, transparent 0 3px, var(--home-mill) 3px 4px),
+    linear-gradient(180deg, var(--home-plate-top), var(--home-plate-bottom));
+  border-block: 1px solid var(--home-plate-edge);
+  box-shadow: inset 0 1px 0 var(--home-plate-lip);
+  padding-block: clamp(44px, 6vw, 90px) clamp(60px, 9vw, 130px);
+  padding-inline: var(--home-gutter);
+
+  &__head {
+    max-width: 1240px;
+    margin: 0 auto clamp(26px, 3.2vw, 48px);
+  }
+
+  &__title {
+    font-family: $font-family-display;
+    font-size: clamp(26px, 3.4vw, 42px);
+    text-align: left;
+    /* A ratio, NOT $line-height-tight. That token is 14px — the scale in
+       _tokens.scss is absolute, not relative — which sets a 42px heading on a
+       14px line and laps the second line over the first. */
+    line-height: 1.1;
+    color: var(--text-primary);
+    margin: 12px 0 0;
+    max-width: 30ch;
+  }
+
+  /* Broken at the comma rather than wherever the measure happens to run out —
+     "and" was ending up stranded at the end of the first line. Only above the
+     desktop breakpoint: below it there is not the width to honour a break we
+     chose, and forcing one there is how you get a single orphaned word. */
+  &__line {
+    @media (min-width: ($breakpoint-desktop + 1px)) {
+      display: block;
+    }
+  }
+}
+
+/* One step. No panels, no rules, no rail — the problem is set at headline size
+   with nothing around it, the mark draws itself beside it, and the sentence
+   that answers it arrives underneath once it has. Boxing either half turned
+   the page into a comparison table; this is meant to read as a statement and
+   then a reply. */
+.home-step {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 80px);
+  /* start, not center: the situation begins at the top of its own section and
+     stays there. `align-items: start` is also what lets the sticky below work —
+     a stretched grid item fills its area and has nowhere to travel. */
+  align-items: start;
+  /* Roughly a screenful each, which is what puts real scroll distance between
+     stating the problem and answering it, and gives the sticky column somewhere
+     to go. Not a fixed height: a step whose copy needs more room takes it. */
+  min-height: min(68svh, 680px);
+  padding-block: clamp(24px, 5vh, 64px) 0;
+  max-width: 1240px;
+  margin: 0 auto;
+  color: inherit;
+  /* Cleared by the header, which is sticky. */
+  scroll-margin-top: 110px;
+
+  /* One mono line, so the sentence beside it reads as the situation rather
+     than as something we are claiming about ourselves. */
+  &__now {
+    display: block;
+    font-family: $font-family-mono;
+    font-size: 10.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    margin-bottom: clamp(12px, 1.4vw, 18px);
+  }
+
+  /* Headline scale, same face as the hero. Deliberately not as large as the
+     hero itself — this answers to it, it does not compete with it. */
+  &__problem {
+    font-family: $font-family-read;
+    font-weight: 300;
+    font-size: clamp(27px, 3.6vw, 50px);
+    line-height: 1.15;
+    color: var(--text-primary);
+    margin: 0;
+    max-width: 18ch;
+  }
+
+  /* The situation holds while its own answer scrolls up past it, and lets go
+     when the next step arrives — the sticky is scoped to this grid area, so the
+     step boundary releases it without anything having to measure it.
+
+     `top` is measured from the top of the scroller, and the header is outside
+     the scroller, so this is a gap under the chrome rather than a clearance
+     for it. */
+  &__say {
+    position: sticky;
+    top: clamp(24px, 7vh, 72px);
+  }
+
+  /* The answer sits directly under the mark it belongs to. Pushing them to
+     opposite ends of the section to fill the height read as two unrelated
+     things with a fault between them — the distance the second beat needs is
+     the section's, not a hole inside the pair. */
+  &__reply {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(18px, 2.6vh, 34px);
+  }
+
+  &__answer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  &__name {
+    font-family: $font-family-display;
+    font-size: clamp(22px, 2.3vw, 32px);
+    font-weight: $font-weight-semibold;
+    text-align: left;
+    line-height: 1.1;
+    color: var(--text-primary);
+    margin: clamp(10px, 1.4vw, 20px) 0 0;
+  }
+
+  &__solution {
+    font-family: $font-family-read;
+    font-size: clamp(16px, 1.25vw, 19px);
+    line-height: 1.45;
+    color: var(--text-secondary);
+    max-width: 40ch;
+    margin: 0;
+  }
+
+  /* The question does the work the layout cannot: it names what just happened
+     — you read the situation, you recognised it — and then offers the way
+     through. Asking it is what makes the link an answer rather than a label. */
+  &__go {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+    margin: 4px 0 0;
+    font-family: $font-family-mono;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  &__ask {
+    color: var(--text-subtle);
+  }
+
+  &__dot {
+    color: var(--text-subtle);
+    opacity: 0.6;
+  }
+
+  /* Cyan points, green acts: this navigates to a stream page, it does not
+     commit anything. */
+  &__link {
+    color: var(--route-active);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    transition: border-color 0.3s ease;
+
+    &:hover,
+    &:focus-visible {
+      border-bottom-color: currentColor;
+    }
+  }
+
+  /* Stacked, there is no second column for the situation to hold beside, and a
+     headline pinned over its own answer on a phone screen is just a lid. */
+  @media (max-width: $breakpoint-desktop) {
+    grid-template-columns: 1fr;
+    gap: clamp(20px, 4vw, 34px);
+    min-height: 0;
+
+    &__say {
+      position: static;
+    }
+
+    &__reply {
+      gap: clamp(18px, 3vh, 30px);
+    }
+  }
+}
+
+/* The mark, at the size something gets when it is the only object on its half
+   of the screen. No plate under it — that was the box. */
+.home-step .markwrap {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  /* This is the only object on its half of the screen and it is the thing that
+     moves, so it is sized to be watched rather than to be noticed. */
+  width: clamp(210px, 27vw, 400px);
+
+  .mark {
+    max-height: 230px;
+  }
+}
+
+/* Inside a step, the order is the argument: the problem is already there, the
+   mark draws, and only then does the answer arrive. The mark's own strokes are
+   handled by the shared .is-in / .is-out rules above, which is why each step
+   carries those classes rather than a name of its own. */
+/* Beat one — is-in. The situation states itself and the mark starts drawing;
+   the mark's own strokes are handled by the shared .is-in / .is-out rules
+   above, which is why the step carries those classes rather than a name of its
+   own. The answer is still waiting. */
+.home-step.is-out .home-step__say {
+  opacity: 0.001;
+  transform: translateY(16px);
+}
+
+.home-step.is-in .home-step__say {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.5s ease,
+    transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Beat two — is-told, a scroll later. No transition-delay doing the waiting:
+   the gap between these is scroll distance, so it is the reader's pace rather
+   than a number we picked. */
+.home-step:not(.is-told) .home-step__answer {
+  opacity: 0.001;
+  transform: translateY(18px);
+}
+
+.home-step.is-told .home-step__answer {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.55s ease,
+    transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ── why we work this way ───────────────────────────────────────────────── */
+.home-why {
+  border-top: 1px solid var(--border-subtle-colour);
+  padding-block: clamp(44px, 6vw, 90px);
+  padding-inline: var(--home-gutter);
+  overflow-x: clip;
+
+  &__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.86fr);
+    gap: clamp(26px, 4.5vw, 64px);
+    align-items: center;
+    max-width: 1240px;
+    margin: 0 auto;
+
+    @media (max-width: $breakpoint-desktop) {
+      grid-template-columns: 1fr;
     }
   }
 
   &__title {
+    font-family: $font-family-read;
+    font-weight: 300;
+    font-size: clamp(25px, 3.2vw, 40px);
     text-align: left;
-    max-width: 30ch;
-    margin: 0 0 $spacing-lg;
-    font-family: $font-family-button;
-    font-size: clamp(2rem, 5vw, 3.25rem);
-    font-weight: $font-weight-bold;
-    line-height: 1.1;
-    color: $text-primary;
+    line-height: 1.2;
+    max-width: 20ch;
+    margin: 16px 0 0;
+    color: var(--text-primary);
   }
 
-  &__lede {
-    max-width: 85ch;
-    margin: 0 0 $spacing-xl;
-    font-size: $font-size-md;
+  &__body {
+    font-family: $font-family-read;
+    font-size: clamp(18px, 1.5vw, 21px);
     line-height: $line-height-relaxed;
-    color: $text-secondary;
+    color: var(--text-secondary);
+    max-width: 56ch;
+    margin: 20px 0 0;
+  }
+}
+
+/* ── the cut illustration ───────────────────────────────────────────────── */
+.fitcut {
+  position: relative;
+
+  &__svg {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 
-  &__actions {
+  &__form-a {
+    stop-color: var(--brand-highlight);
+  }
+
+  &__form-b {
+    stop-color: var(--brand-accent);
+  }
+
+  &__form-fill {
+    fill-opacity: 0.17;
+  }
+
+  &__plate-a {
+    stop-color: var(--home-plate-top);
+  }
+
+  &__plate-b {
+    stop-color: var(--home-plate-bottom);
+  }
+
+  &__plate-edge {
+    stroke: var(--home-plate-edge);
+  }
+
+  &__plate-lip {
+    stroke: var(--home-plate-lip);
+  }
+
+  &__hatch-bg {
+    fill: var(--home-well);
+  }
+
+  &__hatch-line {
+    stroke: var(--home-hatch-line);
+  }
+
+  &__ghost {
+    stroke: var(--text-subtle);
+    opacity: 0;
+  }
+
+  &__kerf {
+    stroke: var(--brand-highlight);
+    opacity: 0;
+  }
+
+  &__slotline {
+    stroke: var(--home-plate-edge);
+  }
+
+  &__well {
+    opacity: 0;
+  }
+
+  &__label {
+    font-family: $font-family-mono;
+    font-size: 11.5px;
+    letter-spacing: 0.2em;
+
+    &--a {
+      fill: var(--text-subtle);
+    }
+
+    &--b {
+      fill: var(--brand-highlight);
+      opacity: 0;
+    }
+  }
+
+  &__plate {
+    transform: translateY(-340px);
+  }
+
+  &__captions {
+    position: relative;
+    min-height: 3.4em;
+    margin-top: 6px;
+  }
+
+  &__caption {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    font-family: $font-family-read;
+    font-size: clamp(17px, 1.35vw, 19.5px);
+    line-height: $line-height-normal;
+    color: var(--text-secondary);
+    opacity: 0;
+
+    em {
+      font-style: normal;
+      color: var(--brand-highlight);
+    }
+  }
+
+  &__replay {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 5px 9px;
+    border-radius: $radius-sm;
+    border: 1px solid var(--border-subtle-colour);
+    background: none;
+    cursor: pointer;
+    font-family: $font-family-mono;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    opacity: 0;
+    transition:
+      opacity 0.3s,
+      color 0.3s,
+      border-color 0.3s;
+
+    &:hover {
+      color: var(--brand-highlight);
+    }
+  }
+
+  &:hover &__replay,
+  &__replay:focus-visible {
+    opacity: 1;
+  }
+}
+
+/* The morph. Both paths carry twelve points in the same winding order so the
+   browser interpolates cleanly. The SLOT is the generic opening; the SHAPE is
+   the business. A browser without CSS `d` support ignores all of this and
+   keeps the static attribute, which is already the finished state. */
+$fc-slot: "path('M190 130 L250 130 L255 130 L325 130 L370 130 L370 175 L370 270 L345 270 L330 270 L235 270 L190 270 L190 245 Z')";
+$fc-shape: "path('M170 140 L250 140 L250 110 L330 110 L330 175 L390 175 L390 250 L340 250 L340 290 L230 290 L230 245 L170 245 Z')";
+
+.fitcut__slot {
+  d: #{$fc-shape};
+}
+
+.fitcut.is-playing {
+  .fitcut__plate {
+    animation: fc-plate 6.6s cubic-bezier(0.5, 0, 0.15, 1) 1 forwards;
+  }
+
+  .fitcut__slot {
+    animation: fc-morph 6.6s cubic-bezier(0.3, 0.8, 0.2, 1) 1 forwards;
+  }
+
+  .fitcut__well {
+    animation:
+      fc-morph 6.6s cubic-bezier(0.3, 0.8, 0.2, 1) 1 forwards,
+      fc-well 6.6s linear 1 forwards;
+  }
+
+  .fitcut__kerf {
+    animation:
+      fc-morph 6.6s cubic-bezier(0.3, 0.8, 0.2, 1) 1 forwards,
+      fc-kerf 6.6s linear 1 forwards;
+  }
+
+  .fitcut__ghost {
+    animation: fc-ghost 6.6s linear 1 forwards;
+  }
+
+  .fitcut__label--a {
+    animation: fc-label-out 6.6s linear 1 forwards;
+  }
+
+  .fitcut__label--b {
+    animation: fc-label-in 6.6s linear 1 forwards;
+  }
+
+  .fitcut__form-fill {
+    animation: fc-lift 6.6s linear 1 forwards;
+  }
+
+  .fitcut__caption--1 {
+    animation: fc-cap-a 6.6s linear 1 forwards;
+  }
+
+  .fitcut__caption--2 {
+    animation: fc-cap-b 6.6s linear 1 forwards;
+  }
+
+  .fitcut__caption--3 {
+    animation: fc-cap-c 6.6s linear 1 forwards;
+  }
+}
+
+@keyframes fc-plate {
+  0%,
+  13.6% {
+    transform: translateY(-340px);
+  }
+  28.8%,
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes fc-morph {
+  0%,
+  59.1% {
+    d: #{$fc-slot};
+  }
+  78.8%,
+  100% {
+    d: #{$fc-shape};
+  }
+}
+
+@keyframes fc-well {
+  0%,
+  13.6% {
+    opacity: 0;
+  }
+  28.8%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fc-ghost {
+  0%,
+  29% {
+    opacity: 0;
+  }
+  33.3%,
+  62% {
+    opacity: 0.85;
+  }
+  76%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fc-kerf {
+  0%,
+  62% {
+    opacity: 0;
+  }
+  80%,
+  100% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes fc-label-out {
+  0%,
+  58% {
+    opacity: 1;
+  }
+  66%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fc-label-in {
+  0%,
+  72% {
+    opacity: 0;
+  }
+  82%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fc-lift {
+  0%,
+  72% {
+    fill-opacity: 0.17;
+  }
+  88%,
+  100% {
+    fill-opacity: 0.3;
+  }
+}
+
+@keyframes fc-cap-a {
+  0%,
+  2.3% {
+    opacity: 0;
+  }
+  5%,
+  12% {
+    opacity: 1;
+  }
+  15%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fc-cap-b {
+  0%,
+  29% {
+    opacity: 0;
+  }
+  32%,
+  55% {
+    opacity: 1;
+  }
+  58%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fc-cap-c {
+  0%,
+  76% {
+    opacity: 0;
+  }
+  82%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ── partners and team ──────────────────────────────────────────────────── */
+.home-sec {
+  border-top: 1px solid var(--border-subtle-colour);
+  padding-block: clamp(44px, 6vw, 88px);
+  padding-inline: var(--home-gutter);
+  overflow-x: clip;
+  scroll-margin-top: 90px;
+
+  &__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    max-width: 1240px;
+    margin: 0 auto clamp(22px, 3vw, 38px);
+
+    h2 {
+      font-family: $font-family-display;
+      font-size: clamp(24px, 3vw, 36px);
+      margin: 0;
+      text-align: left;
+      color: var(--text-primary);
+    }
+  }
+
+  &__more {
+    max-width: 1240px;
+    margin: 26px auto 0;
+    font-family: $font-family-mono;
+    font-size: 12.5px;
+
+    a {
+      color: var(--brand-highlight);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.home-orgs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 1.6vw, 20px);
+  max-width: 1240px;
+  margin: 0 auto;
+
+  @media (max-width: $breakpoint-tablet) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.home-org {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border-radius: $radius-md;
+  background: var(--surface-card);
+  /* Raised, and raised properly: light on the top edge, a hairline under the
+     bottom one to seat it. Same pair as the price block on the stream pages.
+     The 1px border all the way round was fighting the lip — an outline and an
+     edge treatment doing the same job, which is what made these read as boxes
+     on a page rather than things standing proud of it. */
+  box-shadow:
+    inset 0 1px 0 var(--carve-lip),
+    0 1px 0 var(--border-subtle-colour);
+
+  &__plate {
+    /* Supplied artwork, drawn for white. Recolouring someone else's mark to
+       suit our palette is not ours to do, so the plate stays light in both
+       themes and the logo sits on the ground it was designed for. */
+    display: grid;
+    place-items: center;
+    height: 88px;
+    padding: 14px;
+    border-radius: $radius-sm;
+    background: #f4f7f5;
+  }
+
+  &__logo {
+    max-height: 100%;
+    width: auto;
+    object-fit: contain;
+  }
+
+  &__kind {
+    font-family: $font-family-mono;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brand-highlight);
+    margin: 0;
+  }
+
+  &__body {
+    font-family: $font-family-read;
+    font-size: 16px;
+    line-height: $line-height-normal;
+    color: var(--text-secondary);
+    margin: 6px 0 0;
+  }
+}
+
+.is-out .home-org {
+  opacity: 0.001;
+  transform: perspective(900px) rotateX(-24deg);
+  transform-origin: 50% 100%;
+}
+
+.is-in .home-org {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.6s ease,
+    transform 0.85s cubic-bezier(0.2, 0.8, 0.25, 1);
+
+  &:nth-child(2) {
+    transition-delay: 0.12s;
+  }
+
+  &:nth-child(3) {
+    transition-delay: 0.24s;
+  }
+}
+
+.home-people {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(12px, 1.8vw, 22px);
+  max-width: 1240px;
+  margin: 0 auto;
+
+  /* 5 → 3 → 1. The rule is "a row the team divides into", so nobody is left
+     alone on a second row. Five people makes that 5, 3 or 1 — never 2 or 4,
+     both of which orphan one person. See the longer note in crew.scss.
+
+     Five fits here because each card carries a one-line summary: at the
+     1240px container that is about 230px a card, and a 4:5 portrait at 230px
+     is 288px tall, which is a portrait rather than a thumbnail. The team page
+     holds the full bios and goes to 3 for that reason.
+
+     The 1-column step is also a fix: this grid used to stop at two columns and
+     stay there, so on a phone each portrait was about 150px wide. */
+  @media (max-width: $breakpoint-desktop) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.home-person {
+  margin: 0;
+
+  &__name {
+    font-family: $font-family-display;
+    font-size: 17px;
+    text-align: left;
+    font-weight: $font-weight-semibold;
+    margin: 14px 0 0;
+    color: var(--text-primary);
+  }
+
+  &__role {
+    font-family: $font-family-mono;
+    font-size: 11.5px;
+    color: var(--text-subtle);
+    margin: 3px 0 0;
+  }
+
+  &__bio {
+    font-family: $font-family-read;
+    font-size: 16px;
+    line-height: $line-height-normal;
+    color: var(--text-secondary);
+    margin: 9px 0 0;
+  }
+}
+
+/* A real image slot. The source stays greyscale and the duotone is applied
+   here, so a straight export from the shoot drops in and picks up the
+   treatment without being re-edited. No photo yet: the initials plate is a
+   deliberate look rather than a gap, same as the crew page. */
+.home-face {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: $radius-md;
+  background: var(--surface-recessed);
+  /* An opening with a face in it, so it is CUT IN: dark at the top inner rim,
+     light catching the bottom one. It had the raised treatment — a light top
+     edge — over a recessed background, which is the surface lit from below and
+     from above at the same time. The border was doing the separating that the
+     carve should do; depth here is by edge only. */
+  box-shadow:
+    inset 0 3px 8px -3px var(--carve-dark),
+    inset 0 -1px 0 var(--carve-lip);
+
+  &__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 22%;
+    filter: grayscale(1) contrast(1.06) brightness(0.94);
+  }
+
+  &__tone {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(158deg, var(--brand-highlight), var(--brand-accent));
+    mix-blend-mode: color;
+    opacity: 0.72;
+  }
+
+  /* NO PHOTOGRAPH — and this is the case that actually has to be designed.
+     The all-or-nothing cases were easy and were already handled: four plates
+     reads as a style, four photographs reads as a team. What was never
+     designed is the mixed row, and from the shoot on 26 October that is
+     exactly what this is — three portraits and Tom, who was not there.
+
+     A flat grey box beside three duotone portraits does not read as a
+     decision. It reads as an image that failed to load, and the eye goes
+     straight to it.
+
+     So the empty plate is made of the same two things everything else here is
+     made of: the duotone, pulled right back so it sits quietly under the
+     photographs instead of competing with them, and the mill texture the rest
+     of the site is cut from. Same box, same colour family, different
+     material — a blank in a set, which is what it is. */
+  &--empty {
+    background-image:
+      repeating-linear-gradient(116deg, transparent 0 6px, var(--home-hatch-line) 6px 7px),
+      linear-gradient(
+        158deg,
+        color-mix(in oklab, var(--brand-highlight) 24%, var(--surface-recessed)),
+        color-mix(in oklab, var(--brand-accent) 24%, var(--surface-recessed))
+      );
+    /* No box-shadow here: the base .home-face is already the carve, and this
+       only swaps what is inside it. */
+  }
+
+  /* Only ever rendered when there is no portrait, and aria-hidden, so this is
+     ornament rather than text — it carries no contrast duty and is meant to be
+     read as material, not words.
+
+     Cut in rather than printed on: the glyph is the plate's own ground colour
+     and the two edges do all the work — dark above, light below, light from
+     above like everything else on this site. The old treatment was
+     text-primary at 0.14, which is a watermark on a grey box. */
+  &__initials {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: $font-family-display;
+    font-weight: $font-weight-bold;
+    font-size: clamp(34px, 4vw, 54px);
+    letter-spacing: 0.05em;
+    color: var(--surface-recessed);
+    opacity: 0.9;
+    text-shadow:
+      0 -1px 0 var(--carve-dark),
+      0 1px 0 var(--carve-lip);
+  }
+}
+
+.is-out .home-face__img {
+  filter: grayscale(1) blur(14px) saturate(0.2);
+  transform: scale(1.06);
+}
+
+.is-in .home-face__img {
+  transform: none;
+  transition:
+    filter 1.1s ease,
+    transform 1.1s ease;
+}
+
+/* ── close ──────────────────────────────────────────────────────────────── */
+.home-close {
+  border-top: 1px solid var(--border-subtle-colour);
+  padding-block: clamp(46px, 6vw, 96px);
+  padding-inline: var(--home-gutter);
+  max-width: 1240px;
+  margin: 0 auto;
+  scroll-margin-top: 90px;
+
+  &__title {
+    font-family: $font-family-read;
+    font-weight: 300;
+    font-size: clamp(25px, 3.3vw, 42px);
+    text-align: left;
+    line-height: 1.18;
+    max-width: 22ch;
+    margin: 0;
+    color: var(--text-primary);
+  }
+
+  &__row {
     display: flex;
     flex-wrap: wrap;
-    gap: $spacing-md;
-  }
+    gap: 12px 28px;
+    margin-top: 26px;
+    font-family: $font-family-mono;
+    font-size: 13.5px;
+    color: var(--text-secondary);
 
-  // Hero CTAs render the ui-kit's own .basic-button classes so they carry the
-  // kit's states, transitions and etching for free.
-  //
-  // Two overrides are needed because these are anchors, not buttons:
-  // button.scss puts `display: inline-flex` and the centring on the bare
-  // `button` element selector rather than on `.basic-button`, so an <a> gets
-  // the 40px height with no vertical centring and the label rides high. Width
-  // is relaxed too — the kit fixes buttons at 250px, wrong for a hero.
-  //
-  // The real fix is to move those properties onto `.basic-button` in the kit so
-  // any element can wear the class. Worth doing when the kit is next touched.
-  &__actions .basic-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-    width: auto;
-    min-width: 200px;
-    padding: 0 $spacing-lg;
-    text-decoration: none;
+    a {
+      color: var(--brand-highlight);
+      text-decoration: none;
 
-    // Full width on a phone — 200px side by side strands a gutter.
-    @media (max-width: $breakpoint-mobile) {
-      width: 100%;
-      min-width: 0;
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 
-  // Secondary action takes the cyan outline: it points, it does not act.
-  &__actions .secondary-button {
-    background: transparent;
-    border: $stroke-thin solid $route-active;
-    color: $route-active;
-
-    &:hover {
-      background: $surface-sunken;
-    }
-  }
-
-}
-
-.card__role {
-  font-family: $font-family-button;
-  font-size: $font-size-xs;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: $text-subtle;
-  margin: 0 0 $spacing-xs !important;
-}
-
-.home__work {
-  max-width: 74ch;
-
-  h3 {
-    font-size: $font-size-lg;
+  &__cta {
+    margin: 28px 0 0;
   }
 }
 
-.home__work-cta {
-  display: inline-block;
-  margin-top: $spacing-md;
-  font-family: $font-family-button;
-  font-size: $font-size-sm;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: $route-active;
+/* ── shared reveal for plain prose ──────────────────────────────────────── */
+.is-out .home-line {
+  opacity: 0.001;
+  transform: translateY(16px);
 }
 
-.home__more {
-  margin-top: $spacing-lg;
-  font-family: $font-family-button;
-  font-size: $font-size-sm;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+.is-in .home-line {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.3, 1);
 
-  a {
-    color: $route-active;
-    text-decoration: none;
+  &:nth-child(2) {
+    transition-delay: 0.11s;
+  }
 
-    &:hover {
-      color: $action-primary;
-    }
+  &:nth-child(3) {
+    transition-delay: 0.22s;
+  }
+}
+
+.is-out .home-door {
+  opacity: 0.001;
+  transform: translateY(22px);
+}
+
+.is-in .home-door {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.7s ease,
+    transform 0.8s cubic-bezier(0.2, 0.8, 0.25, 1);
+
+  &:nth-child(2) {
+    transition-delay: 0.11s;
+  }
+
+  &:nth-child(3) {
+    transition-delay: 0.22s;
+  }
+}
+
+/* ── reduced motion ─────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .home * {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Rest on the finished state rather than the opening one. */
+  .fitcut__plate {
+    transform: none;
+  }
+
+  .fitcut__well,
+  .fitcut__label--b {
+    opacity: 1;
+  }
+
+  .fitcut__kerf {
+    opacity: 0.95;
+  }
+
+  .fitcut__label--a,
+  .fitcut__ghost {
+    opacity: 0;
+  }
+
+  .fitcut__form-fill {
+    fill-opacity: 0.3;
+  }
+
+  .fitcut__caption--3 {
+    opacity: 1;
+  }
+
+  .is-out .home-line,
+  .is-out .home-door,
+  .is-out .home-org,
+  .is-out .home-step__say,
+  .home-step:not(.is-told) .home-step__answer {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+  }
+
+  .is-out .mark__d {
+    stroke-dashoffset: 0;
+  }
+
+  .is-out .home-face__img {
+    filter: grayscale(1) contrast(1.06) brightness(0.94);
+    transform: none;
   }
 }

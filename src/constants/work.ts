@@ -21,7 +21,9 @@ export const client = NAME_CLIENT ? CLIENT_NAMED : CLIENT_ANON
  * their side rather than ours. Its only job is to earn the click.
  */
 export const CASE_STUDY_TEASER = {
-  title: NAME_CLIENT ? 'Aptium — Class A medical device portal' : 'A Class A medical device portal',
+  title: NAME_CLIENT
+    ? 'Aptium — TGA-regulated medical device portal'
+    : 'A TGA-regulated medical device portal',
   summary:
     'When software is part of a medical device, "it works" is not enough — you have to be able to prove you knew it worked before you shipped it. That is what we are building right now, front end to hardware.',
   cta: 'Read how it is built',
@@ -34,13 +36,13 @@ export interface WorkSection {
 
 export const CASE_STUDY = {
   eyebrow: 'Current engagement',
-  title: 'A Class A medical device portal, built from the metal up.',
-  lede: `We are building the client portal, the API and the hosting for ${client}'s scanner management suite — a TGA-regulated Class A medical device. It is in development now. This is what it involves and why we build the way we do.`,
+  title: 'A TGA-regulated medical device portal, built from the metal up.',
+  lede: `We are building the client portal, the API and the hosting for ${client}'s scanner management suite — a TGA-regulated medical device. It is in development now. This is what it involves and why we build the way we do.`,
   sections: [
     {
       heading: 'The constraint that shapes everything',
       body: [
-        'A Class A medical device is regulated by the TGA, and regulation is mostly an evidence problem. It is not enough for the software to work — you have to be able to demonstrate that it works, that you knew it worked before you shipped it, and that you would find out if it stopped.',
+        'A medical device of this kind is regulated by the TGA, and regulation is mostly an evidence problem. It is not enough for the software to work — you have to be able to demonstrate that it works, that you knew it worked before you shipped it, and that you would find out if it stopped.',
         'In practice that means building compliant with IEC 62304, the standard governing the software lifecycle for medical devices: how the work is planned, how it is documented, how changes are traced, and how you demonstrate any of it later.',
         'It changes how you build. Documentation is not written up afterwards; it is the artefact the auditor reads, so it has to be true at every commit. Testing is not a quality nice-to-have; it is the evidence. Version history has to survive scrutiny years later. Most studios our size cannot take this work on, and most agencies price it as if it were a compliance tax rather than an engineering discipline.',
       ],

@@ -19,7 +19,18 @@ button {
 }
 
 // ── Base button box (250×40, radius, page padding) ────────────
+//
+// The display is HERE, not only on the `button` element rule above. Every
+// anchor wearing this class — the home page's call to action, /services,
+// /work, /contact — was staying `display: inline`, and width, height and
+// vertical centring are all ignored on an inline box. They were rendering as
+// green padded text at whatever the line-height happened to be, which is what
+// "the button is cooked" looks like. Same three properties the element rule
+// already sets, so a real <button> is unaffected.
 .basic-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background-color: $action-primary;
   color: $surface-page;
   text-align: center;

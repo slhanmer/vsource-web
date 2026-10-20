@@ -1,63 +1,133 @@
+///////////////////////////////////////////////////////////////////////////////
+//  TEAM
+//
+//  3 across, then 1. The rule has only ever been ONE THING: a row the team
+//  divides into, so nobody is left alone on a second row looking like they
+//  resigned. With four people that meant 1, 2, 4 and never 3. The team is five
+//  now, and five is prime — four-across strands one, two-across gives 2+2+1
+//  and strands one. Three gives 3+2, which strands nobody, and it still works
+//  at six as 3+3.
+//
+//  WHY THIS IS 3 AND THE HOME TEASER IS 5: they carry different text. The
+//  teaser shows a one-line summary, so a 230px column is fine there. These
+//  cards carry the whole bio — 460 to 650 characters. Five across inside the
+//  1320px page leaves about 211px of text column, which is roughly 30
+//  characters a line, well under the readable floor. Three leaves about 389px,
+//  or around 55 characters. The grids differ because the content does; the
+//  rule they both obey is the same one.
+///////////////////////////////////////////////////////////////////////////////
+
 .crew {
-  // Same three-up as .card-grid, at the same breakpoints, so cards are one
-  // width across the whole site rather than per-section.
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: $spacing-lg;
+  gap: clamp(16px, 2vw, 28px);
   margin-bottom: $spacing-2xl;
 
-  @media (max-width: 1000px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  @media (max-width: $breakpoint-mobile) {
+  // Straight to one. Two is skipped deliberately: at five people a two-up grid
+  // is 2 + 2 + 1, which is the orphan this whole rule exists to avoid.
+  @media (max-width: 860px) {
     grid-template-columns: 1fr;
   }
 
-  // Vertical: portrait, then name, then bio. Side-by-side needs width the
-  // column does not have once there are three of them across.
   &__card {
-    // Landing space for the anchor links from the home page cards.
+    // Landing space for the anchor links from the home page.
     scroll-margin-top: $spacing-xl;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: $spacing-md;
-    padding: $spacing-lg;
+    padding: $spacing-md;
     background: $surface-card;
     border: $stroke-hairline solid var(--chrome-edge);
     border-radius: $radius-md;
     box-shadow:
       inset 0 1px 0 0 var(--carve-lip),
       inset 0 -1px 0 0 var(--carve-dark);
-
   }
 
+  //////////////////////////////////////////////////////////////////////////
+  //  PORTRAIT
+  //  Built for the photographs before they exist, so a straight export from
+  //  the shoot drops in and the card does not change shape. 4:5 is the crop in
+  //  the brief; the duotone is applied in CSS over a greyscale source, so the
+  //  look stays tunable without going back to the originals.
+  //
+  //  Until then the initials plate fills the same box at the same size — the
+  //  page does not reflow on the day the photos land.
+  //////////////////////////////////////////////////////////////////////////
   &__portrait {
-    flex: 0 0 auto;
-    width: 64px;
-    height: 64px;
-    border-radius: $radius-full;
-    background: $surface-action-primary;
-    border: $stroke-thin solid $action-primary;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: $radius-sm;
+    background: var(--surface-sunken);
+    box-shadow:
+      inset 0 3px 8px -3px var(--carve-dark),
+      inset 0 -1px 0 var(--carve-lip);
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+  }
+
+  // No photograph. Same plate as `.home-face--empty` on the home page — see the
+  // long note there for why the mixed row is the case that matters. Kept in
+  // step with it: if one changes, change both.
+  &__portrait--empty {
+    background-image:
+      repeating-linear-gradient(116deg, transparent 0 6px, var(--home-hatch-line) 6px 7px),
+      linear-gradient(
+        158deg,
+        color-mix(in oklab, var(--brand-highlight) 24%, var(--surface-sunken)),
+        color-mix(in oklab, var(--brand-accent) 24%, var(--surface-sunken))
+      );
   }
 
   &__portrait-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    // The source stays greyscale; the green comes from the tone layer above it.
+    filter: grayscale(1) contrast(1.06) brightness(0.94);
   }
 
+  // The duotone, over the photograph rather than baked into it.
+  &__portrait-tone {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    mix-blend-mode: color;
+    background: linear-gradient(
+      160deg,
+      color-mix(in oklab, var(--brand-accent) 70%, transparent),
+      color-mix(in oklab, var(--brand-highlight) 45%, transparent)
+    );
+  }
+
+  // Only rendered when there is no portrait, inside an aria-hidden box, so this
+  // is ornament and carries no contrast duty. Cut into the plate rather than
+  // printed on it: the glyph takes the ground's own colour and the two edges
+  // do the work — dark above, light below, light from above.
+  //
+  // It was $action-primary at 0.55, which put the one colour reserved for
+  // "this commits something" on a decorative plate, next to three photographs
+  // that are tinted with the other one.
   &__initials {
     font-family: $font-family-button;
-    font-size: $font-size-md;
+    font-size: clamp(28px, 3vw, 44px);
     font-weight: $font-weight-bold;
-    letter-spacing: 0.04em;
-    color: $action-primary;
+    letter-spacing: 0.06em;
+    color: var(--surface-sunken);
+    opacity: 0.9;
+    text-shadow:
+      0 -1px 0 var(--carve-dark),
+      0 1px 0 var(--carve-lip);
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    padding: 0 $spacing-2xs $spacing-2xs;
   }
 
   &__name {
@@ -83,5 +153,15 @@
     font-size: $font-size-sm;
     line-height: $line-height-relaxed;
     color: $text-secondary;
+  }
+
+  // A placeholder that reads as a question during review, not as finished copy.
+  // Same treatment as `.home-pending`, declared here because this page does not
+  // import home.scss — a marker whose whole job is to be visible must not
+  // depend on a stylesheet that is not loaded.
+  &__pending {
+    border-bottom: 1px dashed var(--brand-highlight);
+    color: var(--text-secondary);
+    cursor: help;
   }
 }

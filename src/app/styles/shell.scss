@@ -3,16 +3,22 @@
 // global.scss sets `html { overflow: hidden }`, so the document never scrolls —
 // scrolling belongs to `.page-container`. This site follows that convention.
 //
-// The frame is a full-height flex column: header band, scroller, footer band.
-// Content scrolls between two fixed pieces of chrome, which is how an actual
-// instrument panel behaves and is why the footer is NOT inside the scroller:
+// The frame is a full-height flex column: header band, then the scroller.
+// Flexing the scroller means no `calc(100dvh - <header height>)` anywhere —
+// that arithmetic silently breaks the moment the header changes height, and it
+// has already changed three times.
 //
-//   1. `.page-container` sets `scrollbar-gutter: stable`, permanently reserving
-//      the scrollbar strip. Anything inside the scroller stops short of the
-//      viewport edge, so a footer in there never spans the full width.
-//   2. Flexing the scroller means no `calc(100dvh - <header height>)` anywhere.
-//      That arithmetic silently breaks the moment the header changes height,
-//      and it has already changed twice.
+// The footer used to be the third piece of that column, pinned below the
+// scroller so content moved between two fixed bands. It is inside the scroller
+// now: once the contact links moved up into the readout strip there was nothing
+// left in it but a copyright line, which does not earn being on screen at all
+// times — and it was coming out of the fold on every page.
+//
+// The reason it could not go in there before still stands, and is why it is no
+// longer a band: `.page-container` sets `scrollbar-gutter: stable`, permanently
+// reserving the scrollbar strip, so anything inside the scroller stops short of
+// the viewport edge. A full-width bar in there would be visibly short on the
+// right. A centred line of small print on the page background does not care.
 .site-frame {
   display: flex;
   flex-direction: column;
@@ -135,8 +141,7 @@
 .site-header__drawer-link,
 .site-header__brand,
 .site-header__toggle,
-.site-footer__contact,
-.site-footer__brand,
+.site-header__contact,
 .card--link,
 .home__more a,
 .services__includes a,

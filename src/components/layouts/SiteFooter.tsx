@@ -1,18 +1,21 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEnvelope, faPhone, faLocationDot } from '@fortawesome/free-solid-svg-icons'
-import { faLinkedinIn } from '@fortawesome/free-brands-svg-icons'
 import { CONTACT } from '@constants'
 
 import './styles/siteFooter.scss'
 
 /**
- * Bottom fascia: a debossed chrome band carrying the contact strip, then legal.
- * No nav mirror — the header is sticky and always reachable.
+ * The end of the page. One line of small print, and that is all.
  *
- * Icons come from Font Awesome, not the @icons barrel: that barrel drags every
- * SVG through svgr and the loader does not apply from a server component.
+ * It has been on a diet. It started as two chrome bands — four labelled contact
+ * links, then legal — pinned below the scroller, which meant roughly 90px of
+ * furniture on screen at all times and out of the fold on every page. The
+ * contacts have moved to the right of the header's readout strip, where they
+ * are reachable from anywhere without costing anything; what is left is the
+ * copyright and the ABN, which nobody needs until they need it.
  *
- * Both tiers pad by `--scrollbar-w` so their inners line up with page content.
+ * So no band, no border, no background: a footer that looks like chrome invites
+ * you to read it. This sits on the page like a colophon and scrolls away with
+ * everything else, which is also why it no longer has to pad itself by
+ * `--scrollbar-w` — inside the scroller the gutter is already accounted for.
  */
 // Module scope, not render: `new Date()` is on the same impure list as
 // Date.now() and the compiler rejects it in a render pass. The footer is
@@ -22,46 +25,10 @@ const YEAR = new Date().getFullYear()
 export default function SiteFooter() {
   return (
     <footer className="site-footer">
-      <div className="site-footer__contact-band">
-        <div className="site-footer__contact-inner">
-          <a className="site-footer__contact" href={`mailto:${CONTACT.email}`}>
-            <FontAwesomeIcon icon={faEnvelope} className="site-footer__icon" />
-            <span className="site-footer__contact-text">{CONTACT.email}</span>
-          </a>
-          <a className="site-footer__contact" href={CONTACT.phoneHref}>
-            <FontAwesomeIcon icon={faPhone} className="site-footer__icon" />
-            <span className="site-footer__contact-text">{CONTACT.phone}</span>
-          </a>
-          <a
-            className="site-footer__contact"
-            href={CONTACT.locationHref}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FontAwesomeIcon icon={faLocationDot} className="site-footer__icon" />
-            <span className="site-footer__contact-text">{CONTACT.location}</span>
-          </a>
-          <a
-            className="site-footer__contact"
-            href={CONTACT.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FontAwesomeIcon icon={faLinkedinIn} className="site-footer__icon" />
-            <span className="site-footer__contact-text">Follow us on LinkedIn</span>
-            <span className="visually-hidden">(opens in a new tab)</span>
-          </a>
-        </div>
-      </div>
-
-      <div className="site-footer__legal">
-        <div className="site-footer__legal-inner">
-          <span className="site-footer__legal-text">
-            &copy; {YEAR} V Source Development
-            <span className="site-footer__abn">ABN {CONTACT.abn}</span>
-          </span>
-        </div>
-      </div>
+      <p className="site-footer__legal">
+        &copy; {YEAR} V Source Development
+        <span className="site-footer__abn">ABN {CONTACT.abn}</span>
+      </p>
     </footer>
   )
 }

@@ -1,0 +1,408 @@
+///////////////////////////////////////////////////////////////////////////////
+//  BUILT — the showpiece
+//
+//  Media leads and words follow, which is the opposite of the page this
+//  replaces. The one piece of chrome is the media frame, and it is a RECESS —
+//  cut into the page, light on its lower inner rim — because that is what an
+//  opening looks like everywhere else on this site. Nothing here is a card
+//  sitting on the page with a shadow under it.
+///////////////////////////////////////////////////////////////////////////////
+
+.built {
+  --built-gap: clamp(20px, 3vw, 40px);
+}
+
+// ── the frame ──────────────────────────────────────────────────────────────
+.built-media {
+  position: relative;
+  overflow: hidden;
+  border-radius: $radius-md;
+  background: var(--surface-sunken);
+  box-shadow:
+    inset 0 3px 8px -3px var(--carve-dark),
+    inset 0 -1px 0 var(--carve-lip);
+  // Reserved before anything loads, so a clip arriving cannot shove the page.
+  aspect-ratio: 16 / 9;
+
+  &__video,
+  &__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  // Work that cannot be shown at all. The mark stands in, and the reason is
+  // written underneath rather than left as an empty box — a blank frame reads
+  // as something failing to load.
+  &--mark {
+    display: grid;
+    place-content: center;
+    gap: 14px;
+    padding: clamp(22px, 3vw, 40px);
+    text-align: center;
+  }
+
+  &__mark {
+    width: clamp(120px, 14vw, 190px);
+    margin: 0 auto;
+  }
+
+  &__note {
+    margin: 0;
+    max-width: 34ch;
+    font-family: $font-family-mono;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--text-subtle);
+  }
+}
+
+.built-media--mark .markwrap {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+// The pause control. Small, in the corner, and always there rather than
+// appearing on hover — a control you can only find by hovering does not exist
+// for anyone driving by keyboard.
+.built-media__toggle {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--text-primary);
+  color: var(--surface-page);
+  cursor: pointer;
+  opacity: 0.82;
+  transition:
+    opacity 0.25s ease,
+    background-color 0.25s ease;
+
+  &:hover,
+  &:focus-visible {
+    opacity: 1;
+    background: var(--route-active);
+  }
+}
+
+.built-media__glyph {
+  width: 7px;
+  height: 10px;
+  border-left: 2.5px solid currentColor;
+  border-right: 2.5px solid currentColor;
+
+  // Paused: the control offers play instead.
+  &.is-play {
+    width: 0;
+    height: 0;
+    border: 0;
+    border-left: 9px solid currentColor;
+    border-top: 5.5px solid transparent;
+    border-bottom: 5.5px solid transparent;
+    margin-left: 2px;
+  }
+}
+
+.built-media__long {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  padding: 6px 10px;
+  border-radius: $radius-sm;
+  background: rgba(0, 0, 0, 0.55);
+  font-family: $font-family-mono;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--surface-page);
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--route-active);
+  }
+}
+
+// ── the cards ──────────────────────────────────────────────────────────────
+.built-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+
+  &__media {
+    transition: box-shadow 0.3s ease;
+  }
+
+  &:hover &__media,
+  &:focus-visible &__media {
+    box-shadow:
+      inset 0 3px 8px -3px var(--carve-dark),
+      inset 0 -1px 0 var(--carve-lip),
+      inset 0 0 0 1.5px var(--brand-highlight);
+  }
+
+  &__body {
+    padding-top: clamp(14px, 1.8vw, 22px);
+  }
+
+  &__meta {
+    display: flex;
+    gap: 14px;
+    margin: 0 0 8px;
+    font-family: $font-family-mono;
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+  }
+
+  &__stream {
+    color: var(--brand-highlight);
+  }
+
+  // "starting" and "running since 2025" are not the same claim, so they do not
+  // get to look the same. Cyan points at the live ones; the rest stay quiet.
+  &__status {
+    &.is-live {
+      color: var(--route-active);
+    }
+
+    &.is-building,
+    &.is-starting {
+      color: var(--text-subtle);
+    }
+  }
+
+  &__title {
+    font-family: $font-family-display;
+    font-size: clamp(21px, 2.2vw, 30px);
+    font-weight: $font-weight-semibold;
+    text-align: left;
+    line-height: 1.12;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  &__line {
+    font-family: $font-family-read;
+    font-size: clamp(16px, 1.2vw, 18px);
+    line-height: 1.45;
+    color: var(--text-secondary);
+    max-width: 46ch;
+    margin: 8px 0 0;
+  }
+
+  // Cyan points, green acts: this navigates, it does not commit anything.
+  &__go {
+    display: inline-block;
+    margin-top: 12px;
+    font-family: $font-family-mono;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--route-active);
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    transition: border-color 0.3s ease;
+  }
+
+  &:hover &__go,
+  &:focus-visible &__go {
+    border-bottom-color: currentColor;
+  }
+
+  // The lead runs the full width with its words beside the media rather than
+  // under it, so the page opens on something worth looking at.
+  &--lead {
+    margin-top: clamp(26px, 3.4vw, 48px);
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: clamp(22px, 3vw, 48px);
+    align-items: center;
+
+    .built-card__body {
+      padding-top: 0;
+    }
+
+    .built-card__title {
+      font-size: clamp(26px, 3.1vw, 40px);
+    }
+
+    @media (max-width: $breakpoint-desktop) {
+      grid-template-columns: 1fr;
+      align-items: start;
+
+      .built-card__body {
+        padding-top: clamp(14px, 1.8vw, 22px);
+      }
+    }
+  }
+}
+
+.built-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: clamp(30px, 4vw, 60px) var(--built-gap, 32px);
+  margin-top: clamp(40px, 5.5vw, 84px);
+}
+
+// ── one project ────────────────────────────────────────────────────────────
+.built-project {
+  &__back {
+    color: var(--route-active);
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: underline;
+    }
+  }
+
+  &__media {
+    margin-top: clamp(24px, 3vw, 44px);
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: clamp(26px, 4vw, 66px);
+    margin-top: clamp(28px, 3.6vw, 54px);
+
+    @media (max-width: $breakpoint-desktop) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__para {
+    font-family: $font-family-read;
+    font-size: clamp(17px, 1.3vw, 19px);
+    line-height: 1.55;
+    color: var(--text-secondary);
+    max-width: 62ch;
+    margin: 0 0 18px;
+  }
+
+  &__stream {
+    font-family: $font-family-mono;
+    font-size: 12px;
+    color: var(--text-subtle);
+    margin: 26px 0 0;
+
+    a {
+      color: var(--route-active);
+      text-decoration: none;
+
+      &:hover,
+      &:focus-visible {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  // Cut into the page, like every other readout on this site.
+  &__facts {
+    margin: 0;
+    padding: clamp(18px, 2.2vw, 26px);
+    border-radius: $radius-md;
+    background: var(--surface-sunken);
+    box-shadow:
+      inset 0 3px 7px -3px var(--carve-dark),
+      inset 0 -1px 0 var(--carve-lip);
+    align-self: start;
+  }
+
+  &__fact {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px 16px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border-subtle-colour);
+
+    &:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    dt {
+      font-family: $font-family-mono;
+      font-size: 10.5px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+      margin: 0;
+    }
+
+    dd {
+      font-family: $font-family-read;
+      font-size: 16px;
+      color: var(--text-primary);
+      margin: 0;
+      text-align: right;
+    }
+  }
+
+  &__cta {
+    margin: clamp(34px, 4.4vw, 64px) 0 0;
+  }
+}
+
+// ── coming ─────────────────────────────────────────────────────────────────
+// Named and not started. Deliberately the quietest thing on the page: it is a
+// pipeline, not a portfolio, and dressing it up as the latter would be a lie
+// the cards above do not tell.
+.built-soon {
+  margin-top: clamp(48px, 6vw, 96px);
+  padding-top: clamp(22px, 2.6vw, 34px);
+  border-top: 1px solid var(--border-subtle-colour);
+
+  &__heading {
+    margin: 0 0 clamp(14px, 1.6vw, 20px);
+    font-family: $font-family-mono;
+    font-size: 10.5px;
+    font-weight: $font-weight-regular;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-align: left;
+    color: var(--text-subtle);
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px clamp(20px, 3vw, 44px);
+  }
+
+  &__item {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+  }
+
+  &__name {
+    font-family: $font-family-read;
+    font-size: clamp(17px, 1.4vw, 21px);
+    color: var(--text-secondary);
+  }
+
+  &__stream {
+    font-family: $font-family-mono;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+  }
+}

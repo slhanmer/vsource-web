@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons'
+import HeaderContacts from './HeaderContacts'
 import HeaderReadout from './HeaderReadout'
 import ThemeSwitch from './ThemeSwitch'
 import { SITE_NAV } from './siteNav'
@@ -29,6 +30,13 @@ import './styles/siteHeader.scss'
  * The drawer closes on the click that navigates rather than in an effect
  * watching the pathname — synchronous setState inside an effect forces a second
  * render pass, and the click is the only way the drawer can navigate anyway.
+ *
+ * The header is present on every page, including the home page. It used to hide
+ * on `/` and slide in once the hero had scrolled past, because the hero carried
+ * the full lockup at size and a second mark 40px above it was noise. The hero
+ * no longer carries a lockup — the mark here is the only one — so there is
+ * nothing to defer to, and the home page stops being the one page with a
+ * bespoke header. The `#home-navcue` sentinel went with it.
  */
 export default function SiteHeader() {
   const pathname = usePathname()
@@ -51,6 +59,11 @@ export default function SiteHeader() {
               Next image optimisation needs sharp on the deploy box, so we ship a
               correctly sized file instead. The 1500x500 PNG source is 315KB and
               preloads via `priority`; do not point back at it.
+
+              `priority` everywhere now. It used to be off on the home page
+              because the hero lockup was the LCP element there and preloading
+              both fetched the same artwork twice. The hero lockup is gone, so
+              this is the one mark on the page.
             */}
             <Image
               src="/logos/vsource-logo-full.webp"
@@ -93,7 +106,18 @@ export default function SiteHeader() {
         </div>
       </div>
 
-      <HeaderReadout />
+      {/*
+        Tier 2. The readings at one end, the contact links at the other — the
+        strip had two readings and a screen's worth of nothing to their right,
+        and the contacts were costing a whole band of their own at the bottom of
+        every page.
+      */}
+      <div className="site-header__readout">
+        <div className="site-header__readout-inner">
+          <HeaderReadout />
+          <HeaderContacts />
+        </div>
+      </div>
 
       <nav
         id="site-mobile-nav"

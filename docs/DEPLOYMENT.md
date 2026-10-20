@@ -8,17 +8,37 @@ whoever does the deploy, which may not be whoever built it.
 ## 1. Environment variables
 
 Copy `.env.example` to `.env.local` (local) or set these in Coolify (production).
-There are only three, all for the contact form.
+All of them are for the contact form.
+
+**Runtime only** — read per request, Coolify's normal environment is enough:
 
 | Variable | Purpose |
 | --- | --- |
 | `RESEND_API_KEY` | API key from resend.com |
 | `CONTACT_TO_EMAIL` | Where enquiries land |
 | `CONTACT_FROM_EMAIL` | Sender. Must be on a domain verified in Resend |
+| `TURNSTILE_SECRET_KEY` | Cloudflare Turnstile secret. Optional |
 
-If any are missing the contact form still renders and validates, but returns
-"The form is not configured yet. Please email us directly." rather than failing
-silently. Nothing else on the site depends on environment configuration.
+**Build time** — must be a *build* variable in Coolify, not a runtime one:
+
+| Variable | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Turnstile sitekey. Optional |
+
+`NEXT_PUBLIC_*` is inlined into the bundle by `next build`, not read at runtime.
+Set it only in the runtime environment and it compiles as `undefined`: the
+widget never renders, the form still submits, and there is no error anywhere —
+just no bot protection. The Dockerfile declares the matching `ARG`; Coolify has
+to be told to pass it at build.
+
+Both Turnstile variables are optional and independent of each other. With
+neither set, the widget is not rendered and the route skips verification — the
+honeypot, the timing check and the rate limit still apply, so the form is safe
+to ship without them.
+
+If the three Resend variables are missing the contact form still renders and
+validates, but returns "The form is not configured yet. Please email us
+directly." rather than failing silently.
 
 ---
 
@@ -105,9 +125,17 @@ the Next 16 default — skips both and the site renders unstyled.
 Docker:
 
 ```bash
-docker build --build-arg APP_ENV=prod -t vsource-web .
+docker build \
+  --build-arg APP_ENV=prod \
+  --build-arg NEXT_PUBLIC_TURNSTILE_SITE_KEY=0x4AAA... \
+  -t vsource-web .
 docker run -p 3000:3000 --env-file .env.local vsource-web
 ```
+
+**The build machine needs outbound access to `fonts.googleapis.com`.** `next/font`
+downloads Chakra Petch and IBM Plex at build time and self-hosts them in the
+bundle. There is no runtime dependency on Google — that is the point of doing it
+this way — but a build box without egress will fail.
 
 ---
 
@@ -126,13 +154,36 @@ day beforehand if you want a fast rollback.
 
 ## 5. Before launch — outstanding
 
-- [ ] Resend domain created and verified (section 2)
-- [ ] `Engineering` service copy — still a placeholder, visibly marked on /services
-- [ ] Home page hero copy — still placeholder wording
-- [ ] Clear every remaining placeholder: `grep -rn "placeholder-copy" src`
-- [ ] Favicon, apple-touch-icon and OG image — none exist yet
-- [ ] `sitemap.xml` and `robots.txt` — not created
-- [ ] Logo: currently a 1500x500 PNG with a CSS `brightness()` filter faking a
+Blocking:
+
+- [ ] **Resend domain created and verified** (section 2). Until then the form
+      cannot send to a real address.
+- [ ] **`CONTACT_TO_EMAIL`** — set to `craig@vsource.dev`. It was `simon@` during
+      development.
+- [ ] **DNS cutover** (section 4), and 301s for anything the current Virologyst
+      site has indexed, or those URLs 404.
+
+Needs Craig specifically:
+
+- [ ] **LinkedIn URL** — `constants/contact.ts` carries a placeholder
+      (`linkedin.com/company/vsource-development`). It is also used as `sameAs`
+      in the site's structured data, so it is a dead link in the schema until it
+      is real.
+- [ ] **`Taking work`** — the status line in `constants/status.ts` was invented
+      during the build. Confirm it says what you want it to say.
+- [ ] **Turnstile keys** currently live in Simon's personal Cloudflare account.
+      Recreate the widget under a V Source account so they can be rotated
+      without going through him.
+
+Not blocking:
+
+- [ ] Logo is a 600x200 WebP with a CSS `brightness()` filter faking a
       light-on-dark variant. Wants proper SVG variants from Figma, plus a
-      mark-only V for the favicon
-- [ ] Confirm footer contact details and ABN against something authoritative
+      mark-only V lockup for narrow screens.
+- [ ] Crew portraits — initials are used until they exist.
+- [ ] Never keyboard-tested or opened on a physical phone. The build is to
+      WCAG 2.2 AA and the audit was done on measurements, but a tab-through and
+      a real device check have not happened.
+
+Done since this document was first written: OG image, `robots.txt`, `sitemap.xml`,
+canonicals, JSON-LD, favicon and apple-touch-icon, all placeholder copy.

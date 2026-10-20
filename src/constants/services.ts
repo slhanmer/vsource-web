@@ -83,7 +83,7 @@ export const SERVICES: Service[] = [
     title: 'Regulated and safety-critical work',
     summary: 'When an auditor asks how you know it works, there is an answer.',
     body: [
-      'We are currently building a TGA-regulated Class A medical device portal for Aptium. Regulation is mostly an evidence problem: it is not enough that the software works, you have to be able to demonstrate you knew it worked before you shipped, and that you would find out if it stopped.',
+      'We are currently building a TGA-regulated medical device portal for Aptium. Regulation is mostly an evidence problem: it is not enough that the software works, you have to be able to demonstrate you knew it worked before you shipped, and that you would find out if it stopped.',
       'That means documentation the auditor can read, testing that constitutes evidence rather than reassurance, and a version history that survives scrutiny years later. We work compliant with whichever standard your product is held to, and we have someone whose whole job is that discipline.',
     ],
     includes: [

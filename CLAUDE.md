@@ -1,108 +1,287 @@
-# Aptium Portal — Claude Code Context
+# V Source — marketing site
 
-## Project
+## What this is
 
-Medical-grade client portal. Next.js / React / TypeScript frontend.
-Connects to a TGA-regulated Class A medical imaging device management suite.
-Take extra care — this is a regulated product.
+The public marketing site for **V Source Development**, a Brisbane software
+company. Live at `https://www.vsource.dev`.
+
+This repo was **seeded from the Aptium portal** in August and stripped back to a
+marketing shell, keeping the ui-kit and the token system. Some scaffolding from
+that origin is still present (`src/features/`, `src/services/`, `src/stores/`,
+tenant-era naming). **Nothing in this repo is the Aptium portal, is regulated,
+or touches patient or device data.** If a file or comment reads as though it
+belongs to a medical product, it is residue — flag it, do not build on it.
+
+Aptium is a *client*, described on this site. That is the whole relationship.
 
 ## Stack
 
-- Next.js, React, TypeScript
-- Custom ui-kit (React component wrappers) — lives at `src/components/ui-kit`
-- Jest + React Testing Library for tests
-- SCSS for styling (plain, not CSS modules)
-- pnpm as package manager
-- `src/types/scss.d.ts` — required for SCSS module type resolution
+- Next.js **16** (App Router) · React **19** · TypeScript
+- Plain **SCSS**, not CSS modules
+- **pnpm** (11.x, pinned via `packageManager`)
+- Custom in-house ui-kit at `src/components/ui-kit` — no Tailwind, no MUI, no
+  component library. Do not add one.
+- `output: 'standalone'` — deployed as a self-contained Node server
+- `next/font` (Google, self-hosted at build time)
 
-## Branch conventions
+## Commands
 
-- Never commit directly to `development`, `staging`, or `production`
-- Always work on a feature branch: `simon/APT-XX-description`
-- Never push to remote — Simon reviews and pushes manually
+```bash
+pnpm dev          # localhost:3000
+pnpm build        # the real check
+pnpm lint         # eslint
+pnpm test:ci      # jest, non-watch
+pnpm verify       # install --frozen-lockfile && lint:ci && test:ci && build
+```
 
-## What you can do freely
+`dev` and `build` both pass **`--webpack`** deliberately. Next 16 defaults to
+Turbopack; this project cannot use it, because the SCSS token injection in
+`next.config.ts` patches a webpack loader's `additionalData`, and `@svgr/webpack`
+is wired the same way. **Do not remove the `--webpack` flags** to "modernise" the
+scripts — the build will stop injecting tokens and every SCSS file will fail on
+an undefined variable.
 
-- Read any file
-- Edit component and page files
-- Edit feature files (except locked ones below)
-- Write and run tests
-- Run `pnpm` commands (install, test, build, lint)
+Anything written to this repo by a tool outside the dev server (a file bridge, a
+sync) needs `pnpm dev` restarted before it is picked up. `next/font` changes
+always need a restart.
 
-## What requires explicit approval
+## Permissions
 
-- Any git operation (stage, commit, push)
-- Any change to files in `src/components/ui-kit/`
-- Any change to files in `src/components/security/`
-- Any change to files in `src/providers/`
-- Any change to files in `src/hooks/`
-- Any change to files in `src/services/`
-- Any change to files in `src/features/login/`
-- Any change to files in `src/features/register/`
-- Any change to files in `src/features/admin/`
-- Any change to files in `src/features/tenant/`
-- Any change to files in `src/styles/`
-- Environment or config files
+Enforced in `.claude/settings.json`; this is the plain-English version.
 
-## Never touch
+- **Work on a feature branch.** Cut it, stage, commit, stash, delete dead files
+  with `git rm` — all of that is yours.
+- **Push to `development`, and nowhere else.** That is the one branch on the
+  allow list. `main`, `staging` and `production` are denied, as is force-push.
+  Cut `development` off `main` if it does not exist yet.
+- **Merging is Simon's, always**, and so is every promotion up the chain.
+  Finish on `development`, say so in the log, and leave it there.
+- **History is not yours to rewrite.** No rebase, no `reset --hard`, no
+  `clean`, no `filter-branch`.
+- Never touch `.env*`, `.github/`, or `.claude/`.
+- `next.config.ts` only when the task is explicitly about it.
 
-- `.env`, `.env.local`, `.env.*`
-- `.github/workflows/`
-- `next.config.js` / `next.config.ts` unless explicitly asked
+## Deployment — how this site actually ships
 
-## Project Structure & Conventions
+Full detail in `docs/DEPLOYMENT.md`. The short version, because it decides
+which branch work lands on:
 
-### Features
+- **Coolify** builds the `Dockerfile` and runs the standalone Next server. Env
+  vars are set there, not in the repo.
+- **Branch flow is `development` → `staging` → `production`**, enforced by
+  `.github/workflows/enforce-branch-flow.yml`: a PR into `staging` must come
+  from `development`, and a PR into `production` must come from `staging`.
+- **CI runs on PRs into `development`** — lint, test, build, SOUP audit.
+- `NEXT_PUBLIC_TURNSTILE_SITE_KEY` must be a **build** variable in Coolify, not
+  a runtime one. Set at runtime it compiles as `undefined`, the widget never
+  renders, the form still submits, and nothing errors anywhere — you simply
+  have no bot protection and no way to tell.
 
-Each feature lives in `src/features/[feature-name]/` and follows this structure:
+⚠ Those three branches are inherited from the Aptium seed along with the
+workflows. This repo has only ever had `main`, so the flow is described here
+but not yet in use. Craig and Tom own the deploy.
 
-- `[FeatureName].tsx` — main feature component(s) at the root level
-- `components/` — sub-components specific to this feature
-- `styles/` — scoped SCSS files, one per component (e.g. `ComponentName.scss`)
-- `utils/` — feature-specific utility functions
+## Imports
 
-### Naming conventions
+Path aliases are defined in both `tsconfig.json` and `next.config.ts` and must
+stay in sync. Use them; do not write deep relative paths.
 
-- Components: PascalCase (e.g. `AssessmentViewer.tsx`)
-- SCSS files: camelCase matching component name (e.g. `assessmentViewer.scss`)
-- Utilities: camelCase
-- No barrel files except `index.ts` at feature root for public exports
+`@/*` `@components` `@styles` `@hooks` `@utils` `@types` `@stores` `@constants`
+`@providers` `@configs` `@features` `@services` `@assets` `@images` `@icons`
 
-## Styles & Theming
+`@tokens` resolves to `src/styles/_tokens.scss` and is for the SCSS injection
+only.
 
-### Token system (multi-tenancy)
+---
 
-- All SCSS variables are defined in `src/styles/_tokens.scss`
-- Tokens are globally available in all SCSS files — never import them manually
-- Always use tokens instead of hardcoded values (colours, spacing, shadows, fonts etc)
-- Tenant-driven tokens (e.g. `$action-primary`, `$text-secondary`) are injected at runtime via CSS variables
-- Never hardcode hex values or spacing — always reach for a token first
+# The two rules that break things silently
 
-### Global styles
+## 1. The scroller is `#main`, never the window
 
-- `src/styles/global.scss` — base styles only, do not add feature styles here
-- SCSS is plain (not CSS modules) — use descriptive class names scoped by component context
+The shell is `html { overflow: hidden }` → `.site-frame` (flex column) → header
+→ `.site-scroll` → `#main.page-container.site-shell`.
 
-## Types
+**`#main` is the element that scrolls.** Any `IntersectionObserver` must pass it
+as `root`. An observer left on the default root watches the viewport, which never
+scrolls, so every entry fires once on mount and never again — the symptom is
+"the animation plays immediately and then nothing ever reveals". Same for
+`scroll` listeners and any scroll-position maths.
 
-- Shared types live in `src/types/` — one file per domain (e.g. `assessmentTypes.ts`)
-- Always check `src/types/` before creating new types
-- Feature-specific types can be co-located if truly isolated
+`.page-container` also sets `scrollbar-gutter: stable`, so a full-bleed bar
+rendered *inside* the scroller is visibly short on the right. Full-bleed chrome
+belongs outside it.
 
-## Utilities
+## 2. `$line-height-*` tokens are absolute pixel values
 
-- Shared utilities live in `src/utils/`
-- Always check here before writing new utility functions
+`$line-height-tight` is **`14px`**, not `1.14`. Setting it on anything above
+~14px type lays the lines on top of each other. They happen to work on 16–17px
+body copy, where 24px reads as ≈1.5, and nowhere else.
 
-## JSDoc
+Write an explicit unitless ratio for headings. (Converting these tokens to
+ratios is on the list; until then, assume every one of them is a trap.)
 
-All exports in the following directories must have `/** */` JSDoc blocks:
+---
 
-- `src/components/ui-kit/` — props types/interfaces and component exports
-- `src/hooks/` — hook function signatures and return values
-- `src/utils/` — all exported functions
-- `src/types/` — all exported types and interfaces
+# Design language
 
-**When adding or modifying any file in these directories**, write or update the JSDoc as part of the same change.
+The site is **machined metal**: a plate with things cut into it and raised out of
+it. Light comes **from above**, consistently, everywhere.
 
-**At the start of each new session**, scan these directories for any exports that are missing JSDoc and add them before starting other work.
+- **Recessed** = darker fill, light catching the *lower* inner rim
+  (`inset 0 3px 8px -3px var(--carve-dark), inset 0 -1px 0 var(--carve-lip)`)
+- **Raised** = lighter fill, light on the *top* edge
+- **No drop shadows.** Depth is edge treatment, not a shadow under a card. If
+  something needs to read as separate, cut it in or raise it — do not float it.
+
+## Colour
+
+Two brand colours, both swapped by theme in `src/styles/global.scss`:
+
+| Token | Light | Dark |
+|---|---|---|
+| `--brand-accent` (green) | `#215c30` | `#4fb56c` |
+| `--brand-highlight` (teal) | `#13696b` | `#1edcea` |
+
+The light teal is **not** the neon. `#19a5a8` measures 2.86:1 as text on the
+light page and fails WCAG 1.4.3; `#13696b` was derived to pass against the
+darkest surface it sits on. Do not "restore" the brighter value on light.
+
+**Cyan points, green acts.** `--route-active` (teal) for navigation and anything
+that merely indicates. `--action-primary` (green) for anything that commits.
+**Headings are never coloured.**
+
+Never hardcode a hex. Every colour, space, radius and font comes from a token;
+tokens are injected globally, so never `@use` or `@import` them in a file.
+
+## Type
+
+| Token | Family | Role |
+|---|---|---|
+| `$font-family-read` | Newsreader | headlines and body — the reading face |
+| `$font-family-display` | Chakra Petch | section headings, buttons, project titles |
+| `$font-family-ui` | IBM Plex Sans | interface text |
+| `$font-family-mono` | IBM Plex Mono | eyebrows, readouts, status labels |
+
+## Accessibility — WCAG 2.2 AA is the floor, not a pass
+
+It is also the thing the Websites stream sells, so the site failing it is a
+business problem, not a lint warning.
+
+- **2.2.2** — anything that auto-animates for more than 5s needs a visible,
+  keyboard-reachable pause control. The rotating headline and every `/built`
+  video have one. Do not add motion without one.
+- **2.5.8** — 24px minimum target, with the inline exception for targets sitting
+  in a line of text.
+- Honour `prefers-reduced-motion`. The pattern used here is `useSyncExternalStore`
+  (currently duplicated in three components — it should move to `src/hooks`).
+- Controls must be findable without hovering. A control that only appears on
+  hover does not exist for a keyboard user.
+
+---
+
+# Content rules
+
+These are commitments, not preferences. Breaking one is a factual or legal
+problem, not a style note.
+
+- **"Class A" appears nowhere.** The claim about Aptium is **TGA-regulated**.
+  `IEC 62304` is fine — it is a standard, not a classification.
+- **Nobody here is called an engineer.** Queensland regulates who may provide
+  "professional engineering services" (Professional Engineers Act 2002, BPEQ)
+  and nobody at V Source is RPEQ-registered. The Engineering stream describes
+  *work*, never a title or a qualification.
+- **The phone number appears twice, deliberately:** the header contacts and
+  `/contact`. It was pulled off the home page fold and the home page close
+  because three copies of one number on a screen is clutter, not availability —
+  not because the number is secret. It is also in the Organization JSON-LD in
+  `layout.tsx`, which is correct for local search. Do not add it to a page body.
+- Copy marked `pending: true` or `placeholder: true` in a constants file is
+  **unverified copy I invented**. It renders a visible marker. Do not remove the
+  flag without replacing the words with something someone has confirmed.
+
+---
+
+# How the content is wired
+
+The site is data-driven. Pages are templates; the words live in `src/constants/`.
+
+| File | Drives |
+|---|---|
+| `streams.ts` | the home page moves **and** all three stream pages |
+| `built.ts` | `/built` index, every project page, the "Coming" rail |
+| `partners.ts` | the partners band |
+| `crew.ts` | home team section and `/team` |
+| `contact.ts` | header contacts, footer, contact page |
+
+**Adding a fourth stream is a data change, not a new page.** `app/[stream]/`
+generates all three from `STREAMS` with `dynamicParams = false`.
+
+`STREAM_COMMON` in `streams.ts` is deliberate: hosting and ongoing support are
+the same offer through any stream, so they are one shared list rather than the
+same three paragraphs on three pages. Three near-identical pages compete with
+each other for one search result. Do not "helpfully" expand it per stream.
+
+`sitemap.ts` is generated from `STREAMS` and `BUILT`, so it stays true on its
+own. Do not hand-maintain a URL list.
+
+## Routes
+
+`/` · `/software` · `/websites` · `/engineering` · `/built` · `/built/[slug]` ·
+`/team` · `/contact`
+
+301s in `next.config.ts`: `/work` → `/built`, `/services` → `/`, `/crew` → `/team`.
+
+`src/app/work/`, `src/app/services/`, `src/app/crew/` and
+`src/app/styles/{work,services}.scss` are **dead and should be deleted** — they
+are unreachable behind those redirects. `src/constants/work.ts` stays:
+`CASE_STUDY` is raw material for the real Aptium write-up.
+
+## Layout rules that are not arbitrary
+
+- **Team cards go into a row the team divides into**, so nobody is stranded
+  alone on a second row looking like they resigned. That is the whole rule; the
+  column counts follow from the headcount and must be rechecked whenever it
+  changes. At five people: home teaser **5 → 3 → 1**, `/team` **3 → 1**. Two
+  and four are both skipped — each gives an orphan at five. The two pages
+  differ because the teaser carries a one-line summary and `/team` carries the
+  full bio, which needs roughly 55 characters a line rather than 30.
+- Portrait boxes are 4:5 and the **same size with or without a photograph**, so
+  the page does not reflow on the day the photos land. Sources stay greyscale;
+  the duotone is a CSS layer over them.
+
+---
+
+# Known traps in this codebase
+
+Each of these cost real time. They look like style nits and are not.
+
+1. **A `<button>` does not inherit its font.** `em` units inside one resolve
+   against the browser default (~13.3px), not the parent's size. Set
+   `font-size: inherit` before using `em` for anything positional.
+2. **`.basic-button` anchors must be `display: inline-flex`.** As `display:
+   inline` they silently ignore `width` and `height`, and the label will not
+   vertically centre.
+3. **A flex *item* shrink-wraps.** `justify-content: space-between` on a child
+   does nothing until that child has `flex: 1 1 auto`.
+4. **`overflow` on an inline-block moves its baseline** to the bottom margin edge
+   (CSS 2.1 §10.8.1). Use `clip-path` to clip without touching layout.
+5. **Centring text in a box: centre the cap band, not the ink box.** Descenders
+   hang below the band the eye reads, so centring the full ink box always reads
+   high. Use `text-box-trim: trim-both` + `text-box-edge: cap alphabetic`, with a
+   hand-calibrated padding fallback for older engines. Do not hand-tune — the
+   asymmetry moves with font size and optical size.
+6. **`pathLength` is an SVG attribute.** Setting it from CSS does nothing.
+
+---
+
+# Current state — read before starting
+
+As of 13 October:
+
+- **Last commit is 4 August.** Roughly two weeks of work (three stream pages,
+  `/built`, `/team`, the rebuilt home fold, the redirects) is sitting
+  **uncommitted in the working tree and has never been built or type-checked.**
+  Running `pnpm build` and fixing what falls out is the gate on everything else.
+- The live site is still the 4 August build.
+- Every project in `built.ts` still carries `placeholder: true`.
+- The `/engineering` page is entirely unverified copy awaiting Craig.

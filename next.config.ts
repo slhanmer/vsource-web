@@ -6,6 +6,35 @@ const nextConfig: NextConfig = {
   reactStrictMode: false,
   serverExternalPackages: ['canvas'],
 
+  /**
+   * Permanent redirects for routes that have been renamed on a live site.
+   *
+   * Every rename ships WITH its redirect, in the same change. A renamed route
+   * without one drops whatever ranking and inbound links the old URL had, and
+   * the loss is silent — nothing errors, the page simply stops existing for
+   * anyone who had the old address.
+   *
+   * 308, not 302: `permanent: true` tells a crawler to move its index across
+   * rather than keep checking the old one.
+   */
+  async redirects() {
+    return [
+      // The showpiece. "Work" became a gallery of projects rather than one
+      // case study, and the name went with it.
+      { source: '/work', destination: '/built', permanent: true },
+
+      // One offer per stream replaced the five-offers-on-one-page version.
+      // Home is the destination rather than /software: someone arriving at
+      // /services is asking "what do you do", and the three moves under the
+      // fold answer that better than any one stream does.
+      { source: '/services', destination: '/', permanent: true },
+
+      // Craig dislikes "crew". The nav label changed in August; the route did
+      // not, because a rename without its redirect is a silent loss.
+      { source: '/crew', destination: '/team', permanent: true },
+    ]
+  },
+
   webpack: (config, { isServer }) => {
     config.module.rules.push({
       test: /\.svg$/i,

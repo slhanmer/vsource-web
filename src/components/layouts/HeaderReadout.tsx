@@ -70,7 +70,11 @@ function Typed({ text, shown }: { text: string; shown: number }) {
 }
 
 /**
- * The header readout strip, typed out on load.
+ * The readings in the header readout strip, typed out on load.
+ *
+ * This renders the readings only — the strip itself, and the contact links at
+ * its other end, are SiteHeader's, so that one element owns the row and can lay
+ * both ends out against each other.
  *
  * Runs once per full page load: the header lives in the root layout, so client
  * navigation does not remount it and the strip does not retype on every click.
@@ -106,8 +110,8 @@ export default function HeaderReadout() {
   const complete = revealed >= TOTAL
 
   return (
-    <div className="site-header__readout">
-      <dl className="site-header__readout-inner" aria-hidden="true">
+    <>
+      <dl className="site-header__stats" aria-hidden="true">
         {ENTRIES.map((entry) => {
           const labelShown = Math.min(Math.max(revealed - entry.start, 0), entry.label.length)
           const valueStart = entry.start + entry.label.length
@@ -149,6 +153,6 @@ export default function HeaderReadout() {
           </div>
         ))}
       </dl>
-    </div>
+    </>
   )
 }

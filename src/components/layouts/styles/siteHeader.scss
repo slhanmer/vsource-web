@@ -161,7 +161,10 @@ $band-height-mobile: 56px;
   &__readout {
     display: flex;
     align-items: center;
-    height: 26px;
+    // Was 26px, when it carried nothing but type. The contact links need a
+    // target you can actually hit: 28px clears the 24px minimum (WCAG 2.5.8)
+    // and costs two pixels of chrome.
+    height: 28px;
     padding-right: var(--scrollbar-w, 0px);
     background: var(--surface-chrome-dark);
     box-shadow: inset 0 2px 3px -1px var(--carve-dark);
@@ -174,12 +177,18 @@ $band-height-mobile: 56px;
     }
   }
 
-  // Entries spread across the full width rather than bunching left, which lets
-  // the band sit tighter vertically. Safe to justify because HeaderReadout
-  // reserves every entry's final width from the first frame — nothing moves as
-  // the text types in.
+  // Readings at one end, contacts at the other.
+  //
+  // `flex: 1` is what makes space-between do anything. This is a flex ITEM of
+  // the band above, so without it the inner shrink-wraps its contents and
+  // everything sits in one clump in the centre with the free space outside it.
+  // The auto margins still centre the 1320px column.
+  //
+  // Safe to justify because HeaderReadout reserves every reading's final width
+  // from the first frame — nothing moves as the text types in.
   &__readout-inner {
     display: flex;
+    flex: 1 1 auto;
     align-items: center;
     justify-content: space-between;
     gap: $spacing-md;
@@ -209,19 +218,27 @@ $band-height-mobile: 56px;
     }
   }
 
-  // The strip is horizontally scrollable with the scrollbar hidden, so anything
-  // that overflows on a phone is effectively unreachable. Drop the two least
-  // useful entries rather than hide them behind a drag. The visually-hidden
-  // <dl> in HeaderReadout still carries all four for assistive tech.
-  &__stat:nth-child(n + 4) {
-    @media (max-width: 900px) {
+  // Measured: two readings (334px) plus four targets (124px) plus the gutters
+  // need about 530px. Below that the strip overflows, and it scrolls with its
+  // scrollbar hidden — which would put the contacts somewhere nobody can reach.
+  // The location is the one that goes: the pin in the contacts carries the same
+  // information, and "taking work" is what is worth the width.
+  &__stat:first-child {
+    @media (max-width: 560px) {
       display: none;
     }
   }
 
-  &__stat:nth-child(n + 3) {
-    @media (max-width: $breakpoint-tablet) {
-      display: none;
+  // The readings, as one group at the left end.
+  &__stats {
+    display: flex;
+    align-items: center;
+    gap: $spacing-lg;
+    margin: 0;
+    min-width: 0;
+
+    @media (max-width: $breakpoint-mobile) {
+      gap: $spacing-md;
     }
   }
 
@@ -231,6 +248,40 @@ $band-height-mobile: 56px;
     gap: $spacing-xs;
     // Fixed height so a taller descendant cannot shift the row.
     height: 1.7em;
+  }
+
+  // The contacts, at the right end. Icon only — the labels are visually hidden
+  // in HeaderContacts, which is also what gives these links their accessible
+  // names.
+  &__contacts {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: $spacing-2xs;
+  }
+
+  &__contact {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    // The strip is 28px, so this is as tall as a target here can be. It clears
+    // the 24px minimum; the width gives it somewhere to be hit horizontally.
+    min-width: 28px;
+    height: 28px;
+    border-radius: $radius-sm;
+    color: $text-subtle;
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover,
+    &:focus-visible {
+      color: $route-active;
+    }
+  }
+
+  &__contact-icon {
+    font-size: 13px;
+    flex: 0 0 auto;
   }
 
   &__stat-label {
