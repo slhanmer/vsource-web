@@ -1,10 +1,9 @@
 /**
  * The showpiece — what is on /built.
  *
- * ⚠ THE NAMES ARE REAL; THE WORDS ARE NOT. Every entry still carries
- * `placeholder: true`, which renders a visible marker on the page, so nothing
- * invented can ship quietly. Delete the flag as each one gets its real copy and
- * the marker goes with it.
+ * ⚠ THREE ENTRIES ARE STILL INVENTED: spider-drones, training-professionals and
+ * qut-capstones carry `placeholder: true` and render a marker. They are Craig's
+ * to write. Everything else was approved by Simon on 3 November 2026.
  *
  * What is actually known, and is reflected here:
  *
@@ -125,12 +124,13 @@ export const BUILT: Project[] = [
     client: 'Aptium',
     stream: 'software',
     year: '2025\u2013',
-    status: 'live',
-    line: 'Front end, API, design system and hosting, built to IEC 62304 and still running.',
-    lede: 'A TGA-regulated portal, built by four people, with the evidence to prove how it was built.',
+    status: 'building',
+    line: 'Front end, API, design system and hosting for a regulated device, built to IEC 62304.',
+    lede: 'A clinic-facing portal for a TGA-regulated medical device, built by one small team from the interface down to the hardware it runs on.',
     body: [
-      'Placeholder for the write-up. The existing /work copy is the raw material for this one \u2014 it is real, it was approved, and it should be cut down rather than replaced.',
-      'No screenshots. Aptium can be named; what is on the screens cannot be shown, and that does not change until somebody has it in writing.',
+      'Clinics use it to manage their scanners, review results and run their own users. Behind it sits an API that handles device communication, scan processing, document generation and notifications, and under both sits infrastructure we own and operate. The same people built every layer, so nothing was handed across a boundary where the reasoning got lost.',
+      'Because the software is part of a regulated device, the evidence matters as much as the code. It is built to IEC 62304: documentation versioned with the code and true at every commit, tests that stand as evidence rather than reassurance, and a change history that will survive an audit years from now.',
+      'There are no screenshots here, and there will not be. Aptium can be named; what is on its screens cannot be shown.',
     ],
     facts: [
       { label: 'Stream', value: 'Software' },
@@ -145,35 +145,6 @@ export const BUILT: Project[] = [
       width: 260,
       height: 180,
     },
-    placeholder: true,
-  },
-  {
-    slug: 'youhire',
-    title: 'YouHire',
-    client: 'YouHire',
-    stream: 'software',
-    year: '2026',
-    status: 'starting',
-    line: 'Starting now \u2014 the write-up follows once there is something to write up.',
-    lede: 'Placeholder. Work starts the week of 29 September 2026.',
-    body: [
-      'Placeholder. Nothing here should claim an outcome before there is one \u2014 this entry exists so the project has somewhere to land, not so the page looks fuller.',
-      'What it needs: what YouHire does, what we are building for them, and why they came to us rather than to a platform.',
-    ],
-    facts: [
-      { label: 'Stream', value: 'Software' },
-      { label: 'Status', value: 'Starting' },
-      { label: 'Hosting', value: 'Our own hardware, AU' },
-      { label: 'Detail', value: 'Wording needed' },
-    ],
-    media: {
-      kind: 'mark',
-      markId: 'software',
-      alt: 'No image yet: work on this has not started.',
-      width: 260,
-      height: 180,
-    },
-    placeholder: true,
   },
   {
     slug: 'training-professionals',
@@ -238,17 +209,17 @@ export const BUILT: Project[] = [
     stream: 'software',
     year: '2025\u2013',
     status: 'live',
-    line: 'The component library everything else here is built out of, and one of the QUT capstones.',
-    lede: 'Placeholder. Our own component library \u2014 the reason the rest of this list does not look like everyone else\u2019s.',
+    line: 'Our own component library, and the reason nothing on this page looks like a template.',
+    lede: 'SAUCE is the component library our interfaces are built from \u2014 written by us, documented, tested, and themed through tokens.',
     body: [
-      'Placeholder. SAUCE is the component library, RAMEN is the ORM, and both are ours. It is the honest answer to \u201cwhy does your work not look like a Tailwind template\u201d, and it is also the subject of one of the two QUT capstones.',
-      'Worth writing up properly: a tool you built and then built a business on is a stronger argument than any case study about using somebody else\u2019s.',
+      'Every input, table, modal and control in it is ours, documented in Storybook and covered by tests. A token system sits underneath, so one set of components can carry a different brand per client, or per tenant at runtime, without being forked.',
+      'We built it instead of reaching for Tailwind, Material UI or a bought template because those optimise for getting something on screen fast, and the cost is that everything built with them looks and behaves alike. A tool for a clinic should not feel like a marketing dashboard. Owning the kit also means a breaking change, a vulnerability or an abandoned package is our problem on our schedule, not someone else\u2019s on theirs.',
     ],
     facts: [
       { label: 'Stream', value: 'Software' },
       { label: 'Kind', value: 'Our own tooling' },
-      { label: 'Also', value: 'A QUT capstone' },
-      { label: 'Detail', value: 'Wording needed' },
+      { label: 'Theming', value: 'Tokens, per tenant at runtime' },
+      { label: 'Documented', value: 'Storybook' },
     ],
     media: {
       kind: 'mark',
@@ -257,7 +228,6 @@ export const BUILT: Project[] = [
       width: 260,
       height: 180,
     },
-    placeholder: true,
   },
   {
     slug: 'vsource-site',
@@ -267,16 +237,16 @@ export const BUILT: Project[] = [
     year: '2026',
     status: 'live',
     line: 'Built the way we would build yours, which is the only reason it is on this list.',
-    lede: 'Placeholder. The site you are on, built in house on the same stack and the same hardware as everything else.',
+    lede: 'The site you are on. No theme, no page builder, no template \u2014 our own components on Next.js.',
     body: [
-      'Placeholder. A web shop whose own site is a template has already answered the question. This one is ours top to bottom: our component library, our hosting, no theme and no page builder.',
-      'Worth naming the specifics when this gets written properly \u2014 the fold that holds at every viewport, WCAG 2.2 AA, and the fact that every word of it is in the HTML before any JavaScript runs.',
+      'A web shop whose own site is a template has already answered the question, so this one is ours from the components up. Every word of it is in the HTML before any JavaScript runs, which is what search engines and AI crawlers actually read.',
+      'It is held to WCAG 2.2 AA and tested on every route in both light and dark themes, with a pause control on anything that moves and a keyboard path through everything that scrolls. That is the standard the Websites stream sells, so it is the standard this site has to meet first.',
     ],
     facts: [
       { label: 'Stream', value: 'Websites' },
       { label: 'Built with', value: 'SAUCE, in house' },
       { label: 'Accessibility', value: 'WCAG 2.2 AA' },
-      { label: 'Hosting', value: 'Our own hardware, AU' },
+      { label: 'Framework', value: 'Next.js' },
     ],
     media: {
       kind: 'mark',
@@ -285,40 +255,11 @@ export const BUILT: Project[] = [
       width: 260,
       height: 180,
     },
-    placeholder: true,
-  },
-  {
-    slug: 'simon-hanmer-studio',
-    title: 'Simon Hanmer',
-    client: 'Simon Hanmer',
-    stream: 'websites',
-    year: '2026',
-    status: 'live',
-    line: 'The site the Websites offer is modelled on, including the price.',
-    lede: 'Placeholder \u2014 needs its real name and its URL.',
-    body: [
-      'Placeholder. Simon\u2019s own site, standing in as the worked example of what $150 a month buys until V Source has enough of its own to fill the list.',
-      'NEEDS: the actual title, the URL, and a screenshot. Also a decision on how it is credited, given the studio and V Source are not the same thing.',
-    ],
-    facts: [
-      { label: 'Stream', value: 'Websites' },
-      { label: 'Status', value: 'Name and URL needed' },
-      { label: 'Accessibility', value: 'WCAG 2.2 AA' },
-      { label: 'Hosting', value: 'Our own hardware, AU' },
-    ],
-    media: {
-      kind: 'image',
-      src: '/built/placeholder-site.jpg',
-      alt: 'Placeholder graphic standing in for a screenshot of the site.',
-      width: 1200,
-      height: 675,
-    },
-    placeholder: true,
   },
   {
     slug: 'nug',
-    title: 'NUG.',
-    client: 'NUG.',
+    title: 'Nug General Store',
+    client: 'Nug General Store',
     stream: 'websites',
     year: '2026',
     status: 'live',
@@ -326,8 +267,8 @@ export const BUILT: Project[] = [
     line: 'Handmade pasta in Bakery Lane, four nights a week.',
     lede: 'A small dining room that changes what it serves often, and needed a site that could keep up without a developer in the loop.',
     body: [
-      'Placeholder. The menu changes, the hours change, and a site that needs a quote and a fortnight for either is a site that quietly goes out of date. This one is edited by the people who run the room.',
-      'Placeholder. Worth writing up properly: what the brand work was, and what carried over from the room itself.',
+      'The menu changes and the hours change, and a site that needs a quote and a fortnight for either quietly goes out of date. This one is edited by the people who run the room — copy and photographs, from an admin with a preview — without a developer in the loop.',
+      'The design comes out of the room itself: the cream of the menu card, the sage panel, and the line about who does what, because at a place this size the people are the brand.',
     ],
     facts: [
       { label: 'Stream', value: 'Websites' },
@@ -337,11 +278,10 @@ export const BUILT: Project[] = [
     media: {
       kind: 'image',
       src: '/built/nug.jpg',
-      alt: 'The NUG. site: the wordmark on cream above a photograph of a full dining room with yellow walls and a line-drawn mural, beside a sage panel reading \u201cBen makes everything himself. Ruxi looks after everyone.\u201d',
+      alt: 'The Nug General Store site: the wordmark on cream above a photograph of a full dining room with yellow walls and a line-drawn mural, beside a sage panel reading \u201cBen makes everything himself. Ruxi looks after everyone.\u201d',
       width: 1440,
       height: 900,
     },
-    placeholder: true,
   },
   {
     slug: 'snug',
@@ -352,10 +292,10 @@ export const BUILT: Project[] = [
     status: 'live',
     url: 'https://goodsnug.com/',
     line: 'Korean-inspired all-day dining in Coorparoo, olive and cream on near-black.',
-    lede: 'One of three venues on the same block, each with its own brand, each needing to look like nobody else.',
+    lede: 'One of three Coorparoo sites we built side by side, each with its own brand and each needing to look like nobody else.',
     body: [
-      'Placeholder. The palette comes out of the room — olive from the bar, cream from the light the menu sits in — rather than off a swatch.',
-      'Placeholder. Needs the real write-up.',
+      'The palette comes out of the room rather than off a swatch: olive from the bar, cream from the light the menu sits in, and a photograph of the room at night doing most of the talking.',
+      'Snug is busy and does not take daytime bookings, so the site leads with what it is and when it is open, and puts booking where it applies — dinner — rather than in front of everyone.',
     ],
     facts: [
       { label: 'Stream', value: 'Websites' },
@@ -369,7 +309,6 @@ export const BUILT: Project[] = [
       width: 1440,
       height: 900,
     },
-    placeholder: true,
   },
   {
     slug: 'janes-deli',
@@ -382,8 +321,8 @@ export const BUILT: Project[] = [
     line: 'Brunch, sandwiches, filter and matcha, in olive and warm paper.',
     lede: 'The light one of the three \u2014 warm paper and a deep olive, with the menu said in three words before anything else loads.',
     body: [
-      'Placeholder. Colour taken from the signage and the tags rather than described, which is why it looks like the shop.',
-      'Placeholder. Needs the real write-up.',
+      'The light one of the three. The colour is taken from the signage and the tags rather than described, which is why it looks like the shop.',
+      'The menu is said in three words before anything else loads — brunch, sandwiches, filter and matcha — with the hours directly under it, because that is what most people opening the site want to know.',
     ],
     facts: [
       { label: 'Stream', value: 'Websites' },
@@ -397,7 +336,6 @@ export const BUILT: Project[] = [
       width: 1440,
       height: 900,
     },
-    placeholder: true,
   },
   {
     slug: 'bar-coopers',
@@ -410,8 +348,8 @@ export const BUILT: Project[] = [
     line: 'A near-black bar with the brick of the oven as its only colour.',
     lede: 'A warm near-black room whose one colour is the brick of the oven, carried onto the page as the only thing that is not type.',
     body: [
-      'Placeholder. One colour, used for the button and the rule over a menu section, and nothing else competing with it.',
-      'Placeholder. Needs the real write-up.',
+      'One colour, the brick of the oven, used for the booking button and the rule over each menu section, and nothing else competing with it.',
+      'The oven is the reason for the room, so it is the first photograph, and it sits beside the name rather than underneath it.',
     ],
     facts: [
       { label: 'Stream', value: 'Websites' },
@@ -425,7 +363,6 @@ export const BUILT: Project[] = [
       width: 1440,
       height: 900,
     },
-    placeholder: true,
   },
   {
     slug: 'don-gino',
@@ -436,10 +373,10 @@ export const BUILT: Project[] = [
     status: 'live',
     url: 'https://dongino.com.au/',
     line: 'An Italian trattoria on Hardgrave Rd, in gold and yellow on black.',
-    lede: 'What a stranger walks past on Hardgrave Rd \u2014 a black fascia and a gold script sign \u2014 which is what the page had to be.',
+    lede: 'An Italian trattoria on Hardgrave Rd in West End, named for the owner\u2019s father.',
     body: [
-      'Placeholder. An earlier draft was built from a verbal description and looked like nobody in particular; this one is sampled off the shopfront.',
-      'Placeholder. Needs the real write-up.',
+      'An earlier draft was built from a verbal description and looked like nobody in particular. This one is sampled off the shopfront \u2014 the black fascia, the gold script \u2014 because that is what a stranger walks past on Hardgrave Rd.',
+      'His story comes before the menu, because it is the reason the place exists.',
     ],
     facts: [
       { label: 'Stream', value: 'Websites' },
@@ -453,7 +390,6 @@ export const BUILT: Project[] = [
       width: 1440,
       height: 900,
     },
-    placeholder: true,
   },
 ]
 
@@ -472,6 +408,7 @@ export interface Upcoming {
 }
 
 export const COMING_SOON: Upcoming[] = [
+  { name: 'CurbHire', stream: 'software' },
   { name: 'Remy', stream: 'software' },
   { name: 'Paw Connect', stream: 'software' },
 ]

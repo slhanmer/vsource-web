@@ -140,7 +140,7 @@ export const STREAMS: Stream[] = [
     who: 'For organisations whose work does not fit a platform.',
     proof: {
       label: 'Current work',
-      body: 'A TGA-regulated medical device portal for Aptium — front end, API, design system and hosting, built to IEC 62304. Training Professionals, and YouHire starting now.',
+      body: 'A TGA-regulated medical device portal for Aptium — front end, API, design system and hosting, built to IEC 62304. Training Professionals, and CurbHire starting now.',
     },
     pricing: {
       value: 'Priced per project',
@@ -204,8 +204,7 @@ export const STREAMS: Stream[] = [
     who: 'For businesses whose site is doing less than it should.',
     proof: {
       label: 'Current work',
-      body: 'This site, and Simon\u2019s. Both built the way yours would be, which is the only reason they are on the list.',
-      pending: true,
+      body: 'This site, and five hospitality sites across Brisbane, all on the Built page. Each one built the way yours would be.',
     },
     pricing: {
       value: 'From $150 a month',
