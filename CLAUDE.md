@@ -61,25 +61,27 @@ Enforced in `.claude/settings.json`; this is the plain-English version.
 - Never touch `.env*`, `.github/`, or `.claude/`.
 - `next.config.ts` only when the task is explicitly about it.
 
-## Deployment — how this site actually ships
+## Deployment — how this site ships
 
-Full detail in `docs/DEPLOYMENT.md`. The short version, because it decides
-which branch work lands on:
-
-- **Coolify** builds the `Dockerfile` and runs the standalone Next server. Env
-  vars are set there, not in the repo.
-- **Branch flow is `development` → `staging` → `production`**, enforced by
-  `.github/workflows/enforce-branch-flow.yml`: a PR into `staging` must come
-  from `development`, and a PR into `production` must come from `staging`.
-- **CI runs on PRs into `development`** — lint, test, build, SOUP audit.
-- `NEXT_PUBLIC_TURNSTILE_SITE_KEY` must be a **build** variable in Coolify, not
-  a runtime one. Set at runtime it compiles as `undefined`, the widget never
-  renders, the form still submits, and nothing errors anywhere — you simply
-  have no bot protection and no way to tell.
-
-⚠ Those three branches are inherited from the Aptium seed along with the
-workflows. This repo has only ever had `main`, so the flow is described here
-but not yet in use. Craig and Tom own the deploy.
+- **Vercel**, from GitHub. Production branch is `main`; every push to
+  `development` gets a preview deploy. Promotion is Simon merging
+  `development` into `main`, and nobody else.
+- Env vars live in Vercel, not the repo: `RESEND_API_KEY`, `CONTACT_TO_EMAIL`,
+  `CONTACT_FROM_EMAIL`, `TURNSTILE_SECRET_KEY`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`.
+  `NEXT_PUBLIC_*` values are compiled in at build. After changing one,
+  redeploy, then check the Turnstile widget actually renders on `/contact`. A
+  missing key errors nowhere; the widget is simply absent.
+- Images are optimised by Vercel. Do not add `unoptimized`. Export sources at
+  the size given where each image is wired up (portraits 1200×1500).
+- DNS: only the apex and `www` point at Vercel. The `send.vsource.dev` DKIM, SPF
+  and MX records are Resend's and stay in Hostinger. Moving them stops the
+  contact form sending.
+- The `Dockerfile`, `output: 'standalone'` and the `development → staging →
+  production` workflow are left over from Coolify and the Aptium seed. Vercel
+  ignores them. Do not build on them.
+- This site being on Vercel does not contradict the "hosted on our own hardware,
+  in Australia" copy. That hardware is for client software, which this site
+  is not.
 
 ## Imports
 
@@ -117,8 +119,9 @@ belongs outside it.
 ~14px type lays the lines on top of each other. They happen to work on 16–17px
 body copy, where 24px reads as ≈1.5, and nowhere else.
 
-Write an explicit unitless ratio for headings. (Converting these tokens to
-ratios is on the list; until then, assume every one of them is a trap.)
+Write an explicit unitless ratio for headings. Existing uses were converted to
+ratios on 2 November, except three whose font size is a `clamp()` or inherited.
+Do not add new uses.
 
 ---
 
@@ -172,8 +175,7 @@ business problem, not a lint warning.
   video have one. Do not add motion without one.
 - **2.5.8** — 24px minimum target, with the inline exception for targets sitting
   in a line of text.
-- Honour `prefers-reduced-motion`. The pattern used here is `useSyncExternalStore`
-  (currently duplicated in three components — it should move to `src/hooks`).
+- Honour `prefers-reduced-motion`. Use `useReducedMotion` from `@hooks`.
 - Controls must be findable without hovering. A control that only appears on
   hover does not exist for a keyboard user.
 
@@ -229,12 +231,10 @@ own. Do not hand-maintain a URL list.
 `/` · `/software` · `/websites` · `/engineering` · `/built` · `/built/[slug]` ·
 `/team` · `/contact`
 
-301s in `next.config.ts`: `/work` → `/built`, `/services` → `/`, `/crew` → `/team`.
+Permanent redirects (308) in `next.config.ts`: `/work` → `/built`, `/services` → `/`, `/crew` → `/team`.
 
-`src/app/work/`, `src/app/services/`, `src/app/crew/` and
-`src/app/styles/{work,services}.scss` are **dead and should be deleted** — they
-are unreachable behind those redirects. `src/constants/work.ts` stays:
-`CASE_STUDY` is raw material for the real Aptium write-up.
+`src/constants/work.ts` stays: `CASE_STUDY` is raw material for the real
+Aptium write-up.
 
 ## Layout rules that are not arbitrary
 
@@ -276,12 +276,13 @@ Each of these cost real time. They look like style nits and are not.
 
 # Current state — read before starting
 
-As of 13 October:
+As of 2 November:
 
-- **Last commit is 4 August.** Roughly two weeks of work (three stream pages,
-  `/built`, `/team`, the rebuilt home fold, the redirects) is sitting
-  **uncommitted in the working tree and has never been built or type-checked.**
-  Running `pnpm build` and fixing what falls out is the gate on everything else.
-- The live site is still the 4 August build.
-- Every project in `built.ts` still carries `placeholder: true`.
-- The `/engineering` page is entirely unverified copy awaiting Craig.
+- All work is on `development`. The live site is still the 4 August build
+  until the Vercel cutover.
+- Invented copy still showing a marker: every `/built` entry, Asuka, two
+  partners, and `/engineering` (Craig's). The full list is the Stage 4 audit in
+  `docs/briefs/launch-ready.log.md`.
+- Photos from the 2 November shoot are coming. Tom and Asuka have no portrait,
+  permanently. Group and working shots go in `src/constants/photos.ts`.
+- Next after relaunch: Payload CMS (Neon Postgres, Vercel Blob media).
