@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useReducedMotion } from '@hooks'
 import { STREAMS } from '@constants'
 import StreamMark from './StreamMark'
 
@@ -37,20 +38,6 @@ import StreamMark from './StreamMark'
  *      is scroll distance, which means it is the reader's pace, not ours.
  */
 
-const REDUCED_QUERY = '(prefers-reduced-motion: reduce)'
-
-// Same three lines as RotatingHeadline's. If a third component needs this,
-// it should move to src/hooks rather than be copied again.
-let mql: MediaQueryList | null = null
-const media = () => (mql ??= window.matchMedia(REDUCED_QUERY))
-const subscribeReduced = (onChange: () => void) => {
-  const query = media()
-  query.addEventListener('change', onChange)
-  return () => query.removeEventListener('change', onChange)
-}
-const readReduced = () => media().matches
-const readReducedServer = () => false
-
 /** The step has entered far enough to state the problem and start the mark. */
 const SAY_MARGIN = '0px 0px -22% 0px'
 /** Further down again, for the answer. This gap IS the second scroll. */
@@ -67,7 +54,7 @@ export default function StreamMoves() {
   const [said, setSaid] = useState<boolean[]>(() => STREAMS.map(() => false))
   const [replied, setReplied] = useState<boolean[]>(() => STREAMS.map(() => false))
 
-  const reduced = useSyncExternalStore(subscribeReduced, readReduced, readReducedServer)
+  const reduced = useReducedMotion()
 
   // Derived, not stored. If motion is turned off mid-session this flips back to
   // false on the next render on its own, with nothing to reset.

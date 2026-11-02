@@ -41,7 +41,7 @@
     max-width: 68ch;
     margin: 0 0 $spacing-2xl;
     font-size: $font-size-md;
-    line-height: $line-height-relaxed;
+    line-height: 1.56;
     color: $text-secondary;
   }
 
@@ -130,7 +130,7 @@
   p {
     margin: 0;
     font-size: $font-size-sm;
-    line-height: $line-height-normal;
+    line-height: 1.71;
     color: $text-secondary;
   }
 

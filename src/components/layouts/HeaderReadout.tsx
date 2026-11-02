@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState, useSyncExternalStore } from 'react'
+import { useEffect, useState } from 'react'
+import { useReducedMotion } from '@hooks'
 import { SITE_STATUS } from '@constants'
 
 /** Milliseconds per character. */
@@ -29,20 +30,6 @@ const TOTAL = SITE_STATUS.reduce((sum, e) => sum + e.label.length + e.value.leng
 
 /** Character indices where one entry ends and the next begins. */
 const BOUNDARIES = new Set(ENTRIES.map((e) => e.start + e.label.length + e.value.length))
-
-const REDUCED_QUERY = '(prefers-reduced-motion: reduce)'
-
-let mql: MediaQueryList | null = null
-const media = () => (mql ??= window.matchMedia(REDUCED_QUERY))
-
-const subscribeReduced = (onChange: () => void) => {
-  const m = media()
-  m.addEventListener('change', onChange)
-  return () => m.removeEventListener('change', onChange)
-}
-
-const readReduced = () => media().matches
-const readReducedServer = () => false
 
 /**
  * One string, rendered a character at a time.
@@ -86,7 +73,7 @@ function Typed({ text, shown }: { text: string; shown: number }) {
  * mid-visit.
  */
 export default function HeaderReadout() {
-  const reduced = useSyncExternalStore(subscribeReduced, readReduced, readReducedServer)
+  const reduced = useReducedMotion()
   const [typed, setTyped] = useState(0)
 
   useEffect(() => {

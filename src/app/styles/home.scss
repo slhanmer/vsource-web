@@ -634,7 +634,7 @@
   &__lede {
     font-family: $font-family-read;
     font-size: 17px;
-    line-height: $line-height-normal;
+    line-height: 1.41;
     color: var(--text-secondary);
   }
 
@@ -1756,7 +1756,7 @@ $fc-shape: "path('M170 140 L250 140 L250 110 L330 110 L330 175 L390 175 L390 250
   &__body {
     font-family: $font-family-read;
     font-size: 16px;
-    line-height: $line-height-normal;
+    line-height: 1.5;
     color: var(--text-secondary);
     margin: 6px 0 0;
   }
@@ -1833,7 +1833,7 @@ $fc-shape: "path('M170 140 L250 140 L250 110 L330 110 L330 175 L390 175 L390 250
   &__bio {
     font-family: $font-family-read;
     font-size: 16px;
-    line-height: $line-height-normal;
+    line-height: 1.5;
     color: var(--text-secondary);
     margin: 9px 0 0;
   }

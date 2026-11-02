@@ -1,6 +1,7 @@
 'use client'
 
-import { Fragment, useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
+import { useReducedMotion } from '@hooks'
 
 /**
  * The headline performs the thesis.
@@ -47,18 +48,6 @@ const CUT_MS = 260
 /** How long a finished word stays up. */
 const HOLD_MS = 2600
 
-const REDUCED_QUERY = '(prefers-reduced-motion: reduce)'
-
-let mql: MediaQueryList | null = null
-const media = () => (mql ??= window.matchMedia(REDUCED_QUERY))
-const subscribeReduced = (onChange: () => void) => {
-  const query = media()
-  query.addEventListener('change', onChange)
-  return () => query.removeEventListener('change', onChange)
-}
-const readReduced = () => media().matches
-const readReducedServer = () => false
-
 export default function RotatingHeadline() {
   const slotRef = useRef<HTMLSpanElement>(null)
   const innerRef = useRef<HTMLSpanElement>(null)
@@ -72,7 +61,7 @@ export default function RotatingHeadline() {
   const [paused, setPaused] = useState(false)
   const [hovered, setHovered] = useState(false)
 
-  const reduced = useSyncExternalStore(subscribeReduced, readReduced, readReducedServer)
+  const reduced = useReducedMotion()
   const word = WORDS[index]
 
   /**

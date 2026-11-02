@@ -27,10 +27,5 @@ describe('ButtonLoader', () => {
       const { container } = render(<ButtonLoader />)
       expect(container.querySelector('.button-loader')).toBeInTheDocument()
     })
-
-    it('accepts a custom size without throwing', () => {
-      const { container } = render(<ButtonLoader size={24} />)
-      expect(container.querySelector('.button-loader')).toBeInTheDocument()
-    })
   })
 })

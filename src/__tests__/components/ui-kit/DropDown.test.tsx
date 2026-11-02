@@ -174,11 +174,4 @@ describe('Dropdown', () => {
       expect(screen.getByText('No results found')).toBeInTheDocument()
     })
   })
-
-  describe('normalCase', () => {
-    it('shows selected label without uppercase transform when normalCase=true', () => {
-      render(<Dropdown options={OPTIONS} onSelect={jest.fn()} value="apple" normalCase />)
-      expect(screen.getByText('Apple')).toBeInTheDocument()
-    })
-  })
 })

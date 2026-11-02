@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useReducedMotion } from '@hooks'
 import Image from 'next/image'
 import type { ProjectMedia as Spec } from '@constants'
 import StreamMark from '@/components/home/StreamMark'
@@ -30,20 +31,6 @@ import StreamMark from '@/components/home/StreamMark'
  * plays over the whole screen, which turns a decorative clip into a takeover.
  */
 
-const REDUCED_QUERY = '(prefers-reduced-motion: reduce)'
-
-// Same three lines as RotatingHeadline's and StreamMoves'. Third copy: this
-// should move to src/hooks now rather than be written a fourth time.
-let mql: MediaQueryList | null = null
-const media = () => (mql ??= window.matchMedia(REDUCED_QUERY))
-const subscribeReduced = (onChange: () => void) => {
-  const query = media()
-  query.addEventListener('change', onChange)
-  return () => query.removeEventListener('change', onChange)
-}
-const readReduced = () => media().matches
-const readReducedServer = () => false
-
 interface Props {
   spec: Spec
   /** Index media is smaller and lazier than the one on a project's own page. */
@@ -62,7 +49,7 @@ export default function ProjectMedia({ spec, priority = false, className = '' }:
   const [videoPlaying, setVideoPlaying] = useState(false)
   const [wanted, setWanted] = useState(true)
 
-  const reduced = useSyncExternalStore(subscribeReduced, readReduced, readReducedServer)
+  const reduced = useReducedMotion()
 
   // Derived, not stored: it cannot be playing if motion is off or the viewer
   // stopped it, whatever the element last reported.

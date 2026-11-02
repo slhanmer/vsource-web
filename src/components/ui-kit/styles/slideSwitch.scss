@@ -40,7 +40,7 @@
     font-weight: 600;
     font-size: $font-size-base;
     color: $text-primary;
-    line-height: $line-height-snug; // ← match .input-label line-height
+    line-height: 1.25; // ← match .input-label line-height
     text-align: left;
     user-select: none;
     padding-left: 2px; // aligns with input field inset
