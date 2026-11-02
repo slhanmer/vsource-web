@@ -452,6 +452,24 @@ body {
   border: 0;
 }
 
+// A placeholder that reads as a question during review, not as finished copy.
+//
+// IT LIVES HERE BECAUSE IT HAS TO. It was declared in home.scss, which only the
+// home page imports — so on a direct load of /accessibility, /software or any
+// /built/* page the marker rendered as plain unstyled text, which is to say as
+// finished copy. A marker whose entire job is to be conspicuous cannot depend
+// on a stylesheet that is not loaded. global.scss is imported by the root
+// layout, so this is now on every page.
+//
+// The `home-` prefix is historical and now wrong. Renaming it touches five
+// files for no visual gain, so it stays until something else is being done in
+// all of them.
+.home-pending {
+  border-bottom: 1px dashed var(--brand-highlight);
+  color: var(--text-secondary);
+  cursor: help;
+}
+
 .flex-container {
   display: flex;
   flex-direction: row;

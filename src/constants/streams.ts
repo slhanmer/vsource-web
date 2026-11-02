@@ -91,6 +91,16 @@ export interface StreamSection {
   body: string[]
   /** Concrete deliverables. Optional — not every section has a list. */
   includes?: string[]
+  /** An onward link, rendered after the last paragraph.
+   *
+   *  `body` entries are plain strings and the template renders them as text, so
+   *  a link cannot be written inline without either a markup renderer or markdown
+   *  leaking onto the page. This is the smaller answer: one optional link per
+   *  section, which is all any of them need.
+   *
+   *  It exists so a section can hand off to the page that covers the subject
+   *  properly instead of competing with it — same reasoning as STREAM_COMMON. */
+  link?: { href: string; label: string }
   /** Invented or unverified copy. Renders a visible marker. */
   pending?: boolean
 }
@@ -158,10 +168,15 @@ export const STREAMS: Stream[] = [
       {
         id: 'regulated',
         title: 'Regulated and safety-critical work',
+        /* Deliberately shorter than it was. The full argument lives on
+           /regulated now, and two pages making the same case in the same words
+           are two pages competing for one search result — the same reasoning as
+           STREAM_COMMON. Do not expand this back out. */
         body: [
-          'We are currently building a TGA-regulated medical device portal for Aptium. Regulation is mostly an evidence problem: it is not enough that the software works, you have to be able to demonstrate you knew it worked before you shipped, and that you would find out if it stopped.',
-          'That means documentation an auditor can read, testing that constitutes evidence rather than reassurance, and a version history that survives scrutiny years later. We work compliant with whichever standard your product is held to, and we have someone whose whole job is that discipline.',
+          'We build medical device software to IEC 62304, and regulation is mostly an evidence problem: it is not enough that the software works, you have to be able to demonstrate you knew it worked before you shipped it.',
+          'There is a longer piece on how we do that, and on what the standard actually requires.',
         ],
+        link: { href: '/regulated', label: 'What regulated work involves' },
         includes: [
           'Documentation maintained as a deliverable',
           'Test coverage as audit evidence',
@@ -203,10 +218,13 @@ export const STREAMS: Stream[] = [
       {
         id: 'accessibility',
         title: 'Accessible, and measured rather than asserted',
+        /* Shorter than it was, for the same reason as the regulated section
+           above: /accessibility carries the argument now. */
         body: [
-          'WCAG 2.2 AA is the level most organisations are expected to meet, and it covers considerably more than people expect. We build to it from the start, because retrofitting accessibility afterwards costs several times what designing for it does.',
-          'The national players audit but do not remediate — you get a report and then you have to hire somebody to act on it. We do both, in one team, which is the whole difference between a finding and a fix.',
+          'WCAG 2.2 AA is the level most Australian organisations are now expected to meet, and it covers considerably more than people expect. We build to it from the start, because retrofitting costs several times what designing for it does.',
+          'The national firms audit but do not remediate. We do both, in one team.',
         ],
+        link: { href: '/accessibility', label: 'Audits that come with the fix' },
         includes: [
           'WCAG 2.2 AA as a floor, not a finishing task',
           'Audit and remediation by the same team',

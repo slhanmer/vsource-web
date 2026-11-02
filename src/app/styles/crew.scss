@@ -155,13 +155,7 @@
     color: $text-secondary;
   }
 
-  // A placeholder that reads as a question during review, not as finished copy.
-  // Same treatment as `.home-pending`, declared here because this page does not
-  // import home.scss — a marker whose whole job is to be visible must not
-  // depend on a stylesheet that is not loaded.
-  &__pending {
-    border-bottom: 1px dashed var(--brand-highlight);
-    color: var(--text-secondary);
-    cursor: help;
-  }
+  // `&__pending` was here as a local copy of `.home-pending`, because that rule
+  // used to live in home.scss and this page does not import it. The rule is in
+  // global.scss now, so the copy is gone and the team page uses the shared one.
 }

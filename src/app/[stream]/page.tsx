@@ -103,6 +103,17 @@ export default async function StreamPage({ params }: { params: Promise<{ stream:
                 ))}
               </ul>
             )}
+            {/*
+              The hand-off to the page that covers this subject properly. It is
+              a field rather than a link inside `body` because `body` entries
+              are plain strings — markdown written in one would render as
+              literal brackets on the page.
+            */}
+            {section.link && (
+              <p className="stream__onward">
+                <Link href={section.link.href}>{section.link.label} &rarr;</Link>
+              </p>
+            )}
           </div>
         </section>
       ))}

@@ -63,6 +63,29 @@
     margin: 0 0 16px;
   }
 
+  // The hand-off to a landing page that covers this section's subject in full.
+  // Cyan points, green acts: this navigates, it does not commit anything, so it
+  // takes --route-active rather than the action green.
+  &__onward {
+    margin: clamp(18px, 2.2vw, 26px) 0 0;
+    font-family: $font-family-mono;
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+
+    a {
+      color: var(--route-active);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 2px;
+      transition: border-color 0.3s ease;
+
+      &:hover,
+      &:focus-visible {
+        border-bottom-color: currentColor;
+      }
+    }
+  }
+
   &__includes {
     list-style: none;
     margin: clamp(16px, 2vw, 24px) 0 0;

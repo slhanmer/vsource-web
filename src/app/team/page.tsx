@@ -100,7 +100,7 @@ export default function TeamPage() {
               <p className="crew__bio">
                 {member.bio}
                 {member.pending && (
-                  <span className="crew__pending" title="Entry not written by this person yet">
+                  <span className="home-pending" title="Entry not written by this person yet">
                     {' '}
                     [pending]
                   </span>

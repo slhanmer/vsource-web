@@ -70,12 +70,9 @@
   margin: 0;
 }
 
-/* A placeholder that reads as a question during review, not as finished copy. */
-.home-pending {
-  border-bottom: 1px dashed var(--brand-highlight);
-  color: var(--text-secondary);
-  cursor: help;
-}
+/* `.home-pending` used to live here, which was a bug: only the home page
+   imports this file, so the marker rendered unstyled on every other page that
+   uses it. It is in global.scss now. */
 
 /* ── the fold is one plate ──────────────────────────────────────────────────
    The three streams are openings cut through a machined surface rather than
