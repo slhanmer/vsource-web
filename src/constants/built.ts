@@ -20,10 +20,8 @@
  *     the two WIL capstones are what that stream can honestly point at. If the
  *     drones turn out not to be ours to show, that gap should be stated rather
  *     than filled.
- *   - **Simon's own site and this one are on the list deliberately**, as the
- *     worked examples of the Websites offer until V Source has enough of its
- *     own. A web shop whose own site is a template has already answered the
- *     question.
+ *   - **This site is on the list deliberately.** A web shop whose own site is
+ *     a template has already answered the question.
  *
  * MEDIA RULE — short clips self-hosted, long-form linked out. Clips are muted,
  * looping, under ten seconds, and carry a poster so nothing but the still is
@@ -224,7 +222,7 @@ export const BUILT: Project[] = [
     media: {
       kind: 'mark',
       markId: 'software',
-      alt: 'No image yet: SAUCE has not been written up.',
+      alt: 'No image: SAUCE is a code library, shown here by the Software stream mark.',
       width: 260,
       height: 180,
     },

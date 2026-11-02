@@ -289,7 +289,7 @@ export const STREAMS: Stream[] = [
         id: 'proof',
         title: 'What we can point at',
         body: [
-          'Placeholder, and the honest gap on this site. Software has Aptium and Websites has Training Professionals; this stream has a QUT partnership with two capstones running and no delivered work of its own.',
+          'Placeholder, and the honest gap on this site. Software has Aptium and Websites has the venue sites; this stream has a QUT partnership with two capstones running and no delivered work of its own.',
           'services.ts dropped engineering as a service line in August for exactly this reason — a vague claim is worse than an honest gap. That judgement still stands, and this page should either get real proof or say plainly that it is new.',
         ],
         pending: true,
