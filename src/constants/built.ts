@@ -32,22 +32,6 @@
  * Vimeo or YouTube behind a click, so no third-party script and no cookie
  * consent surface loads on our own page unless somebody asks for it.
  */
-/*
- * ⚠ PREVIEW URLS — SWAP AT CUTOVER
- *
- * All five websites entries point at Vercel preview deployments because the
- * sites are in testing, and each carries status: 'live' on the assumption that
- * it cuts over before this site redeploys.
- *
- *   nug          nug-preview.vercel.app    → nuggeneralstore.com
- *   snug         snug-preview.vercel.app   → (domain TBC)
- *   janes-deli   janes-preview.vercel.app  → (domain TBC)
- *   bar-coopers  coops-preview.vercel.app  → (domain TBC)
- *   don-gino     don-gino.vercel.app       → (domain TBC)
- *
- * If this site ships before a venue cuts over, that card claims "live" against
- * a preview URL. Check this list before any deploy.
- */
 import type { Stream } from './streams'
 
 export type MediaKind = 'video' | 'image' | 'mark'
@@ -338,7 +322,7 @@ export const BUILT: Project[] = [
     stream: 'websites',
     year: '2026',
     status: 'live',
-    url: 'https://nug-preview.vercel.app',
+    url: 'https://nuggeneralstore.com/',
     line: 'Handmade pasta in Bakery Lane, four nights a week.',
     lede: 'A small dining room that changes what it serves often, and needed a site that could keep up without a developer in the loop.',
     body: [
@@ -366,7 +350,7 @@ export const BUILT: Project[] = [
     stream: 'websites',
     year: '2026',
     status: 'live',
-    url: 'https://snug-preview.vercel.app',
+    url: 'https://goodsnug.com/',
     line: 'Korean-inspired all-day dining in Coorparoo, olive and cream on near-black.',
     lede: 'One of three venues on the same block, each with its own brand, each needing to look like nobody else.',
     body: [
@@ -394,7 +378,7 @@ export const BUILT: Project[] = [
     stream: 'websites',
     year: '2026',
     status: 'live',
-    url: 'https://janes-preview.vercel.app',
+    url: 'https://janes-deli.com/',
     line: 'Brunch, sandwiches, filter and matcha, in olive and warm paper.',
     lede: 'The light one of the three \u2014 warm paper and a deep olive, with the menu said in three words before anything else loads.',
     body: [
@@ -422,7 +406,7 @@ export const BUILT: Project[] = [
     stream: 'websites',
     year: '2026',
     status: 'live',
-    url: 'https://coops-preview.vercel.app',
+    url: 'https://barcoopers.com/',
     line: 'A near-black bar with the brick of the oven as its only colour.',
     lede: 'A warm near-black room whose one colour is the brick of the oven, carried onto the page as the only thing that is not type.',
     body: [
@@ -450,7 +434,7 @@ export const BUILT: Project[] = [
     stream: 'websites',
     year: '2026',
     status: 'live',
-    url: 'https://don-gino.vercel.app',
+    url: 'https://don-gino.com.au/',
     line: 'An Italian trattoria on Hardgrave Rd, in gold and yellow on black.',
     lede: 'What a stranger walks past on Hardgrave Rd \u2014 a black fascia and a gold script sign \u2014 which is what the page had to be.',
     body: [

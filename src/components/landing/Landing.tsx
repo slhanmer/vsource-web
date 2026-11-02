@@ -53,6 +53,7 @@ export default function Landing({ slug }: { slug: string }) {
     '@id': `${url}#service`,
     name: landing.metaTitle,
     description: landing.metaDescription,
+    serviceType: landing.serviceType,
     provider: { '@id': `${BASE}/#organisation` },
     areaServed: 'AU',
   }

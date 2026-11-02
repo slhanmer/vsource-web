@@ -21,6 +21,8 @@ export interface Landing {
   /** Browser/SERP title. */
   metaTitle: string
   metaDescription: string
+  /** schema.org `serviceType` on the page's Service block. */
+  serviceType: string
   /** The paragraph under the h1. */
   lede: string
   sections: StreamSection[]
@@ -38,13 +40,16 @@ export interface Landing {
  * device classification is theirs to disclose, never ours — explaining the
  * classes generically is fine, saying which one a client's product is, is not.
  *
- * /accessibility is `pending` because its Australian dates come from a vendor
- * summary of AHRC and DTA material, not from the primaries.
+ * The /accessibility claims were checked on 2 November 2026 against the AHRC
+ * Guidelines on equal access to digital goods and services (April 2025) and
+ * digital.gov.au. The DX Policy binds Commonwealth entities only; do not word
+ * it as though it applies to business.
  */
 export const LANDINGS: Landing[] = [
   {
     slug: 'regulated',
     stream: 'software',
+    serviceType: 'Medical device software development',
     metaTitle: 'IEC 62304 and regulated software development — Australia',
     metaDescription:
       'Medical device software built to IEC 62304 in Australia, on our own hardware. Documentation, traceability and test evidence produced as the work happens, not reconstructed for an audit.',
@@ -99,6 +104,7 @@ export const LANDINGS: Landing[] = [
   {
     slug: 'accessibility',
     stream: 'websites',
+    serviceType: 'Web accessibility audit and remediation',
     metaTitle: 'WCAG 2.2 AA audit and remediation — Brisbane',
     metaDescription:
       'Accessibility audits that come with the fix. WCAG 2.2 AA tested against real assistive technology, by the same Brisbane team that remediates what the audit finds.',
@@ -124,7 +130,7 @@ export const LANDINGS: Landing[] = [
         title: 'WCAG 2.2 AA, and what Australia now expects',
         body: [
           'The Australian Human Rights Commission affirmed WCAG 2.2 Level AA as the recommended minimum benchmark in April 2025, replacing WCAG 2.0, which had stood for about a decade. If your last accessibility work was done to 2.0, the bar has moved twice since.',
-          'The obligation itself is older and broader than any version number. The Disability Discrimination Act 1992 covers public-facing digital services, and AHRC guidance extends that to SaaS and PaaS platforms, CAPTCHAs, two-factor authentication, QR codes and biometric authentication — each of which needs an accessible alternative rather than a note in a VPAT. Federal government services carry more again under the DTA’s Digital Experience Policy, in force since 1 January 2025.',
+          'The obligation itself is older and broader than any version number. The Disability Discrimination Act 1992 covers public-facing digital services, and the AHRC’s guidelines treat SaaS and PaaS platforms, CAPTCHAs, two-factor authentication, QR codes and biometric authentication as covered by it — each of which needs an accessible alternative rather than a note in a VPAT. Federal government services carry more again under the DTA’s Digital Experience Policy, in force since 1 January 2025.',
           'One point worth knowing before you sign anything: you can outsource the delivery of a digital service, but not the responsibility for it being accessible. That liability stays with you, which is why accessibility belongs in the contract rather than in the kick-off meeting.',
         ],
         includes: [
@@ -149,6 +155,5 @@ export const LANDINGS: Landing[] = [
         ],
       },
     ],
-    pending: true,
   },
 ]
