@@ -1276,6 +1276,35 @@
     }
   }
 
+  // With the working photograph (constants/photos.ts). The photo sits beside
+  // the copy, the illustration drops under it in the same column; narrow, the
+  // photo goes above the copy. Only applied when the photo is set, so the
+  // two-column grid above is untouched until then.
+  &__grid--photo {
+    grid-template-areas:
+      'copy photo'
+      'copy cut';
+
+    @media (max-width: $breakpoint-desktop) {
+      grid-template-areas:
+        'photo'
+        'copy'
+        'cut';
+    }
+
+    > .home-why__copy {
+      grid-area: copy;
+    }
+
+    > .home-why__photo {
+      grid-area: photo;
+    }
+
+    > .fitcut {
+      grid-area: cut;
+    }
+  }
+
   &__title {
     font-family: $font-family-read;
     font-weight: 300;
@@ -1850,8 +1879,8 @@ $fc-shape: "path('M170 140 L250 140 L250 110 L330 110 L330 175 L390 175 L390 250
   /* NO PHOTOGRAPH — and this is the case that actually has to be designed.
      The all-or-nothing cases were easy and were already handled: four plates
      reads as a style, four photographs reads as a team. What was never
-     designed is the mixed row, and from the shoot on 26 October that is
-     exactly what this is — three portraits and Tom, who was not there.
+     designed is the mixed row, and that is exactly what this is, for good —
+     portraits for three, and Tom and Asuka, who will not have them.
 
      A flat grey box beside three duotone portraits does not read as a
      decision. It reads as an image that failed to load, and the eye goes

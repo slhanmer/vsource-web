@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import { CREW } from '@constants'
+import { CREW, PHOTOS } from '@constants'
+import TonedPhoto from '@/components/photos/TonedPhoto'
 import '../styles/pages.scss'
 import '../styles/crew.scss'
 
@@ -24,8 +25,8 @@ export const metadata: Metadata = {
  * milled plate with the initials cut into it, so it reads as a blank in a set
  * rather than as an image that failed to load.
  *
- * That matters because the row is MIXED, not empty. After the shoot on
- * 26 October three of these carry photographs and Tom's does not, and a flat
+ * That matters because the row is MIXED, not empty. Tom and Asuka will never
+ * have photographs (see crew.ts), the others will, and a flat
  * grey box in that row is the thing the eye goes to first. See
  * `.crew__portrait--empty` in crew.scss, and keep it in step with
  * `.home-face--empty` in home.scss.
@@ -64,6 +65,16 @@ export default function TeamPage() {
         audit than we have in stand-ups.
       </p>
 
+      {/* The group photograph, full width under the head. Renders nothing until
+          one is set in constants/photos.ts. */}
+      {PHOTOS.group && (
+        <TonedPhoto
+          photo={PHOTOS.group}
+          sizes="(max-width: 1320px) 100vw, 1320px"
+          className="crew-group"
+        />
+      )}
+
       <div className="crew">
         {CREW.map((member) => (
           <article key={member.id} id={member.id} className="crew__card">
@@ -85,6 +96,7 @@ export default function TeamPage() {
                     alt=""
                     width={880}
                     height={1100}
+                    sizes="(max-width: 860px) 100vw, (max-width: 1320px) 33vw, 420px"
                     unoptimized
                     className="crew__portrait-img"
                   />

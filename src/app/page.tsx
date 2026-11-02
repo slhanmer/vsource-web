@@ -1,12 +1,13 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { CONTACT, CREW, PARTNERS, STREAMS } from '@constants'
+import { CONTACT, CREW, PARTNERS, PHOTOS, STREAMS } from '@constants'
 import FitCut from '@/components/home/FitCut'
 import Reveal from '@/components/home/Reveal'
 import RotatingHeadline from '@/components/home/RotatingHeadline'
 import StreamMark from '@/components/home/StreamMark'
 import StreamMoves from '@/components/home/StreamMoves'
+import TonedPhoto from '@/components/photos/TonedPhoto'
 import './styles/pages.scss'
 import './styles/home.scss'
 
@@ -128,8 +129,20 @@ export default function Home() {
       <StreamMoves />
 
       <Reveal id="why" className="home-why">
-        <div className="home-why__grid">
-          <div>
+        {/*
+          The working photograph, when there is one. Unset, none of this
+          renders and the modifier is not applied, so the grid is exactly the
+          two-column copy-and-illustration it has always been.
+        */}
+        <div className={`home-why__grid ${PHOTOS.working ? 'home-why__grid--photo' : ''}`.trim()}>
+          {PHOTOS.working && (
+            <TonedPhoto
+              photo={PHOTOS.working}
+              sizes="(max-width: 979px) 100vw, 580px"
+              className="home-why__photo"
+            />
+          )}
+          <div className="home-why__copy">
             <p className="home-eyebrow">Why we work this way</p>
             <h2 className="home-why__title home-line">
               Different work, the same complaint underneath it.
@@ -208,6 +221,7 @@ export default function Home() {
                       alt=""
                       width={880}
                       height={1100}
+                      sizes="(max-width: 560px) 100vw, (max-width: 979px) 33vw, 240px"
                       unoptimized
                       className="home-face__img"
                     />

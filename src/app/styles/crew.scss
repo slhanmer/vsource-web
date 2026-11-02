@@ -17,6 +17,12 @@
 //  rule they both obey is the same one.
 ///////////////////////////////////////////////////////////////////////////////
 
+// The group photograph (constants/photos.ts), full width under the page head.
+// The treatment is TonedPhoto's; this only places it.
+.crew-group {
+  margin-bottom: $spacing-2xl;
+}
+
 .crew {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

@@ -15,11 +15,22 @@
  * 3 → 1 on this page; see the note at the top of crew.scss for why the two
  * differ. A sixth person needs neither changed.
  *
- * ⚠ PORTRAITS ARE A MIXED ROW, NOT AN EMPTY ONE. The shoot is 26 October and
- * Tom is not there, so this will run with some faces and some blanks. The
- * empty plate is designed for that case rather than being a fallback — see
- * `.crew__portrait--empty`. Add a `portrait` path per person as each lands;
- * nothing reflows when they do.
+ * ⚠ PORTRAITS ARE A MIXED ROW, NOT AN EMPTY ONE. The empty plate is designed
+ * for that case rather than being a fallback — see `.crew__portrait--empty`.
+ *
+ * PORTRAIT CONVENTION — decided, do not re-decide it:
+ *
+ *   - The file goes in `public/crew/<id>.jpg`, where `<id>` is the member's
+ *     `id` below.
+ *   - 4:5, at least 1200×1500, and a GREYSCALE source. The duotone is the CSS
+ *     layer over it; do not bake the colour into the file.
+ *   - Setting `portrait: '/crew/<id>.jpg'` is the entire change. The box is the
+ *     same size with or without a photograph, so nothing reflows.
+ *
+ * Tom and Asuka will not have portraits. That is permanent, not pending: the
+ * empty plate is their treatment, not a gap waiting to be filled. Do not chase
+ * a photograph for either of them, and do not mark their entries as missing
+ * one.
  */
 export interface CrewMember {
   /** Anchor id. Explicit, so a name or title edit cannot break inbound links. */
@@ -32,7 +43,8 @@ export interface CrewMember {
   summary: string
   /** Fuller bio used on the crew page. */
   bio: string
-  /** Optional portrait in /public/crew. Falls back to initials when absent. */
+  /** `/crew/<id>.jpg` — see the convention above. Falls back to the initials
+   *  plate when absent. */
   portrait?: string
   /** Invented or unconfirmed copy. Renders a visible marker, same as partners
    *  and projects do. Remove it when the person has read their own entry. */
