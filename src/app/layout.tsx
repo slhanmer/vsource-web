@@ -166,8 +166,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 up into the readout strip there was nothing left in it but a
                 line of small print, which does not earn being permanently
                 visible. It sits at the end of the page and scrolls away.
+
+                tabIndex 0, not -1: this is the element that scrolls, so it has
+                to be reachable from the keyboard on its own. At -1 a page with
+                nothing focusable inside it (/team) could not be scrolled
+                without a mouse (WCAG 2.1.1). No role or label — the <main>
+                inside already names the region.
               */}
-              <div id="main" tabIndex={-1} className="page-container top-align site-shell">
+              <div id="main" tabIndex={0} className="page-container top-align site-shell">
                 {children}
                 <SiteFooter />
               </div>

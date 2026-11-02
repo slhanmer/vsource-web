@@ -96,8 +96,7 @@ export default function TeamPage() {
                     alt=""
                     width={880}
                     height={1100}
-                    sizes="(max-width: 860px) 100vw, (max-width: 1320px) 33vw, 420px"
-                    unoptimized
+                    sizes="(max-width: 860px) 100vw, (max-width: 1320px) 30vw, 380px"
                     className="crew__portrait-img"
                   />
                   <span className="crew__portrait-tone" />
@@ -105,6 +104,7 @@ export default function TeamPage() {
               ) : (
                 <span className="crew__initials">{initials(member.name)}</span>
               )}
+              <span className="crew__portrait-edge" aria-hidden="true" />
             </div>
             <div className="crew__body">
               <h2 className="crew__name">{member.name}</h2>

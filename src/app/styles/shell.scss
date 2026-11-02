@@ -53,6 +53,14 @@
     flex: 1 0 auto;
   }
 
+  // #main is focusable (it is the scroller, so the keyboard has to be able to
+  // reach it). Same ring as the header controls and the skip link, drawn INSIDE
+  // the box: outside it, the frame clips it on every side.
+  &:focus-visible {
+    outline: $stroke-thick solid $text-primary;
+    outline-offset: -$stroke-thick;
+  }
+
   // Anchor links from the home page cards scroll THIS container, not the
   // document, because global.scss sets `html { overflow: hidden }`. Smooth
   // scrolling has to be declared on the scroller for the same reason.

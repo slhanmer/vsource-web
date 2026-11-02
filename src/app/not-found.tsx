@@ -11,7 +11,7 @@ export default function NotFound() {
   const router = useRouter()
 
   return (
-    <div className="notfound-page">
+    <main className="notfound-page">
       <div className="notfound-card">
         <VSourceMark className="notfound-card__mark" />
 
@@ -32,6 +32,6 @@ export default function NotFound() {
           <Button label="Home page" handleClick={() => router.push('/')} />
         </div>
       </div>
-    </div>
+    </main>
   )
 }

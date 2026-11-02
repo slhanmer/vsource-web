@@ -55,10 +55,10 @@ export default function SiteHeader() {
             onClick={closeMenu}
           >
             {/*
-              600x200 WebP. `unoptimized` is deliberate — with output:'standalone',
-              Next image optimisation needs sharp on the deploy box, so we ship a
-              correctly sized file instead. The 1500x500 PNG source is 315KB and
-              preloads via `priority`; do not point back at it.
+              600x200 WebP, resized by the host's image optimisation. It renders
+              at 74px tall (34px on mobile), so 222px or 102px wide at 3:1. The
+              1500x500 PNG source is 315KB and preloads via `priority`; do not
+              point back at it.
 
               `priority` everywhere now. It used to be off on the home page
               because the hero lockup was the LCP element there and preloading
@@ -70,7 +70,7 @@ export default function SiteHeader() {
               alt="V Source"
               width={600}
               height={200}
-              unoptimized
+              sizes="(max-width: 480px) 102px, 222px"
               priority
               className="site-header__logo"
             />

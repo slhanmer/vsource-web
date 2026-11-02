@@ -65,7 +65,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         )}
       </p>
 
-      <ProjectMedia spec={project.media} priority className="built-project__media" />
+      <ProjectMedia
+        spec={project.media}
+        priority
+        sizes="(max-width: 1320px) 100vw, 1280px"
+        className="built-project__media"
+      />
 
       <div className="built-project__grid">
         <div className="built-project__body">

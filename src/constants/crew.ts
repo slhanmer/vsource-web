@@ -69,7 +69,7 @@ export const CREW: CrewMember[] = [
   {
     id: 'tom-lee',
     name: 'Tom Lee',
-    role: 'Backend & Platform Engineer',
+    role: 'Backend & Platform Developer',
     summary: 'Backend, and the platform under it. Knows why it broke at 2am.',
     bio: 'Tom writes the code behind the interface \u2014 the services, the data and the integrations that make the visible part work. He has worked backend and full-stack since 2018, starting from a Diploma in Web Development and building the rest of the stack himself, which is how most of the people who are good at this actually learned it. On a system that has to keep running unattended, the code is only half the job; the other half is the platform under it, and Tom owns that too, from the servers and networks up to the pipeline that carries a build to a live site. If something breaks at two in the morning, he is the one who already knows why.',
   },

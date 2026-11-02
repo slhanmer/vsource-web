@@ -10,9 +10,9 @@ import './styles/tonedPhoto.scss'
  * paints under its content, so on a frame the photograph fills it would be
  * hidden the moment the photograph loaded.
  *
- * `unoptimized` matches every other image on the site — see SiteHeader.tsx —
- * so `sizes` is carried for the day that changes rather than doing anything
- * today. The width and height reserve the box before the file arrives.
+ * Optimised by the host (Vercel), so `sizes` decides which width is fetched —
+ * pass the width the photo actually renders at. The width and height reserve
+ * the box before the file arrives.
  */
 export default function TonedPhoto({
   photo,
@@ -31,7 +31,6 @@ export default function TonedPhoto({
         width={photo.width}
         height={photo.height}
         sizes={sizes}
-        unoptimized
         className="toned-photo__img"
       />
       <span className="toned-photo__tone" aria-hidden="true" />

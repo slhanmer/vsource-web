@@ -36,9 +36,12 @@ interface Props {
   /** Index media is smaller and lazier than the one on a project's own page. */
   priority?: boolean
   className?: string
+  /** The width this media renders at, for the optimiser. Required, because the
+   *  same component sits in three layouts of very different widths. */
+  sizes: string
 }
 
-export default function ProjectMedia({ spec, priority = false, className = '' }: Props) {
+export default function ProjectMedia({ spec, priority = false, className = '', sizes }: Props) {
   const video = useRef<HTMLVideoElement>(null)
   // What the VIDEO ELEMENT last told us it was doing. Not the same question as
   // "is this clip playing", which also depends on whether motion is allowed and
@@ -108,7 +111,7 @@ export default function ProjectMedia({ spec, priority = false, className = '' }:
           alt={spec.alt}
           width={spec.width}
           height={spec.height}
-          unoptimized
+          sizes={sizes}
           priority={priority}
           className="built-media__img"
         />

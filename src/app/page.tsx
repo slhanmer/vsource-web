@@ -178,7 +178,7 @@ export default function Home() {
                   alt={partner.name}
                   width={partner.width}
                   height={partner.height}
-                  unoptimized
+                  sizes="210px"
                   className="home-org__logo"
                 />
               </div>
@@ -222,7 +222,6 @@ export default function Home() {
                       width={880}
                       height={1100}
                       sizes="(max-width: 560px) 100vw, (max-width: 979px) 33vw, 240px"
-                      unoptimized
                       className="home-face__img"
                     />
                     <span className="home-face__tone" aria-hidden="true" />
@@ -235,6 +234,7 @@ export default function Home() {
                       .join('')}
                   </span>
                 )}
+                <span className="home-face__edge" aria-hidden="true" />
               </div>
               <figcaption>
                 <h3 className="home-person__name">{member.name}</h3>

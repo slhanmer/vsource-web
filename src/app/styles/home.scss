@@ -1853,10 +1853,21 @@ $fc-shape: "path('M170 140 L250 140 L250 110 L330 110 L330 175 L390 175 L390 250
      light catching the bottom one. It had the raised treatment — a light top
      edge — over a recessed background, which is the surface lit from below and
      from above at the same time. The border was doing the separating that the
-     carve should do; depth here is by edge only. */
-  box-shadow:
-    inset 0 3px 8px -3px var(--carve-dark),
-    inset 0 -1px 0 var(--carve-lip);
+     carve should do; depth here is by edge only.
+
+     The carve is drawn by `&__edge`, a layer ABOVE the photograph and the
+     tone, not by a box-shadow on this box: an inset shadow paints under the
+     box's content, so the photograph covered it the moment it loaded. */
+
+  &__edge {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    box-shadow:
+      inset 0 3px 8px -3px var(--carve-dark),
+      inset 0 -1px 0 var(--carve-lip);
+  }
 
   &__img {
     display: block;
@@ -1899,8 +1910,8 @@ $fc-shape: "path('M170 140 L250 140 L250 110 L330 110 L330 175 L390 175 L390 250
         color-mix(in oklab, var(--brand-highlight) 24%, var(--surface-recessed)),
         color-mix(in oklab, var(--brand-accent) 24%, var(--surface-recessed))
       );
-    /* No box-shadow here: the base .home-face is already the carve, and this
-       only swaps what is inside it. */
+    /* No box-shadow here: `.home-face__edge` is the carve in both states, and
+       this only swaps what is under it. */
   }
 
   /* Only ever rendered when there is no portrait, and aria-hidden, so this is

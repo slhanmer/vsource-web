@@ -39,7 +39,12 @@ export default function BuiltPage() {
 
       {featured && (
         <Link href={`/built/${featured.slug}`} className="built-card built-card--lead">
-          <ProjectMedia spec={featured.media} priority className="built-card__media" />
+          <ProjectMedia
+            spec={featured.media}
+            priority
+            sizes="(max-width: 979px) 100vw, 710px"
+            className="built-card__media"
+          />
           <div className="built-card__body">
             <p className="built-card__meta">
               <span className="built-card__stream">{featured.stream}</span>
@@ -64,7 +69,11 @@ export default function BuiltPage() {
       <div className="built-grid">
         {rest.map((project) => (
           <Link key={project.slug} href={`/built/${project.slug}`} className="built-card">
-            <ProjectMedia spec={project.media} className="built-card__media" />
+            <ProjectMedia
+              spec={project.media}
+              sizes="(max-width: 700px) 100vw, (max-width: 1080px) 50vw, 400px"
+              className="built-card__media"
+            />
             <div className="built-card__body">
               <p className="built-card__meta">
                 <span className="built-card__stream">{project.stream}</span>

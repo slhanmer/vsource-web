@@ -68,12 +68,23 @@
     overflow: hidden;
     border-radius: $radius-sm;
     background: var(--surface-sunken);
-    box-shadow:
-      inset 0 3px 8px -3px var(--carve-dark),
-      inset 0 -1px 0 var(--carve-lip);
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  // The carve, on its own layer above the photograph and the tone. As a
+  // box-shadow on `&__portrait` it painted under the image and vanished as
+  // soon as a photograph loaded. Present in both states. Same as
+  // `.home-face__edge` and `TonedPhoto`.
+  &__portrait-edge {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    box-shadow:
+      inset 0 3px 8px -3px var(--carve-dark),
+      inset 0 -1px 0 var(--carve-lip);
   }
 
   // No photograph. Same plate as `.home-face--empty` on the home page — see the
