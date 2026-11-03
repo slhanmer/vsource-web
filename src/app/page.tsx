@@ -76,17 +76,15 @@ export default function Home() {
               {STREAMS.map((stream) => (
                 <a key={stream.id} className="home-door" href={stream.href}>
                   <div className="home-door__cut">
-                    <div className="home-door__media">
-                      <CutPhoto
-                        photo={PHOTOS.streams[stream.id].door}
-                        sizes="(max-width: 480px) 96px, 168px"
-                        className="home-door__photo"
-                      />
-                      <span className="home-door__go">Learn more</span>
-                    </div>
+                    <CutPhoto
+                      photo={PHOTOS.streams[stream.id].door}
+                      sizes="(max-width: 480px) 64px, (max-width: 979px) 36vw, (max-width: 1440px) 17vw, 232px"
+                      className="home-door__photo"
+                    />
                     <div className="home-door__body">
                       <span className="home-door__name">{stream.name}</span>
                       <span className="home-door__lede">{stream.door}</span>
+                      <span className="home-door__go">Learn more</span>
                     </div>
                   </div>
                 </a>

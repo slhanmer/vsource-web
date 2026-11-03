@@ -9,8 +9,8 @@ import CutPhoto from '@/components/photos/CutPhoto'
  * The three streams, one at a time, arriving as you scroll.
  *
  * Each stream is two beats rather than one block. Scroll, and the situation
- * lands on the left while a photograph of that work fades in on the right. Scroll
- * further and the answer arrives under it, with the way through to that
+ * lands on the left. Scroll further and a photograph of that work fades in on
+ * the right together with the answer under it, with the way through to that
  * stream's page. Scroll again and the next situation starts.
  *
  * Nothing leaves. An earlier version pinned the section and swapped one step
@@ -38,10 +38,15 @@ import CutPhoto from '@/components/photos/CutPhoto'
  *      is scroll distance, which means it is the reader's pace, not ours.
  */
 
-/** The step has entered far enough to state the problem and show the photograph. */
+/** The step has entered far enough to state the problem. */
 const SAY_MARGIN = '0px 0px -22% 0px'
-/** Further down again, for the answer. This gap IS the second scroll. */
-const REPLY_MARGIN = '0px 0px -52% 0px'
+/**
+ * Further down again, for the photograph and the answer. This gap IS the
+ * second scroll. It was -52% when the photograph was a 340px thumbnail; with
+ * the photograph at the reply column's full width, -52% revealed the answer
+ * below the bottom of the screen, so nobody saw it arrive.
+ */
+const REPLY_MARGIN = '0px 0px -70% 0px'
 
 export default function StreamMoves() {
   const steps = useRef<Array<HTMLElement | null>>([])
@@ -171,7 +176,7 @@ export default function StreamMoves() {
             <div className="home-step__reply">
               <CutPhoto
                 photo={PHOTOS.streams[stream.id].step}
-                sizes="(max-width: 979px) 80vw, 340px"
+                sizes="(max-width: 979px) 92vw, (max-width: 1440px) 40vw, 580px"
                 className="home-step__photo"
               />
               <div className="home-step__answer">

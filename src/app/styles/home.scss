@@ -270,6 +270,10 @@
        to hang the block from the top edge for, and on a tall viewport pinning
        it there left the bottom third as bare plate. */
     align-self: center;
+    /* width as well as max-width: auto side margins on a grid item shrink it
+       to its content, and the doors' 40% photo column is a percentage that
+       content cannot size. Without this the doors narrowed to fit their copy. */
+    width: 100%;
     max-width: 1240px;
     margin: 0 auto;
 
@@ -500,8 +504,11 @@
 }
 
 /* ── the three doors ────────────────────────────────────────────────────── */
+/* 1fr rows: the three doors are the same height whatever their copy, and
+   between them they take whatever height the column beside them sets. */
 .home-doors {
   display: grid;
+  grid-auto-rows: 1fr;
   gap: clamp(12px, 1.6vw, 20px);
 }
 
@@ -514,43 +521,52 @@
   text-decoration: none;
   color: inherit;
 
-  /* The opening. What shows through it is the page behind the plate. */
+  /* The opening. What shows through it is the page behind the plate, and the
+     photograph fills its left part, flush to the top, bottom and left edges.
+     The opening's radius clips the photograph's outer corners. */
   &__cut {
+    position: relative;
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: clamp(14px, 1.8vw, 24px);
-    align-items: center;
-    padding: clamp(18px, 2.3vw, 30px) clamp(20px, 2.4vw, 32px);
+    grid-template-columns: 40% minmax(0, 1fr);
+    align-items: stretch;
+    overflow: hidden;
     border-radius: $radius-md;
     background: var(--surface-page);
+  }
+
+  /* The recessed edge belongs to the door, not the photograph, so it is drawn
+     on a layer over both. An inset box-shadow on the opening itself would
+     paint under the photograph and vanish behind it. */
+  &__cut::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
     box-shadow:
       inset 0 3px 7px -2px var(--carve-dark),
       inset 0 -1px 0 var(--home-plate-lip);
     transition: box-shadow 0.35s ease;
   }
 
-  /* A hole cannot lift, so hover lights the kerf instead of raising a card —
-     the same cyan cut edge the illustration ends on. */
-  &:hover &__cut,
-  &:focus-visible &__cut {
+  /* A hole cannot lift, so hover lights the kerf instead of raising a card. */
+  &:hover &__cut::after,
+  &:focus-visible &__cut::after {
     box-shadow:
       inset 0 3px 7px -2px var(--carve-dark),
       inset 0 -1px 0 var(--home-plate-lip),
       inset 0 0 0 1.5px var(--brand-highlight);
   }
 
-  /* Photograph and call to action stacked: the label sits under the image
-     rather than on a scrim over it, so it keeps the route colour on the page
-     ground and its contrast does not depend on the photograph. */
-  &__media {
-    display: grid;
-    justify-items: center;
-    gap: 10px;
-  }
-
+  /* The call to action sits under the lede, on the page ground rather than on
+     a scrim over the photograph, so its contrast does not depend on the
+     photograph. */
   &__body {
     display: grid;
+    align-content: center;
+    justify-items: start;
     gap: 4px;
+    padding: clamp(18px, 2.3vw, 30px) clamp(20px, 2.4vw, 32px);
   }
 
   &__name {
@@ -581,6 +597,7 @@
     color: var(--route-active);
     border-bottom: 1px solid transparent;
     padding-bottom: 2px;
+    margin-top: clamp(6px, 0.8vw, 10px);
     transition: border-color 0.3s ease;
   }
 
@@ -589,25 +606,13 @@
     border-bottom-color: var(--route-active);
   }
 
+  /* On a phone the door stays a row with a small inset photograph on the
+     right, not a full-width band: three bands would push the foot of the fold
+     off a 390x844 screen. */
   @media (max-width: $breakpoint-mobile) {
     &__cut {
       grid-template-columns: minmax(0, 1fr) auto;
-      gap: 14px;
       align-items: center;
-    }
-
-    /* Label and photograph side by side rather than stacked: stacked, three
-       doors grew by about 180px and pushed the plate's foot off a 390x844
-       screen. */
-    &__media {
-      order: 2;
-      grid-auto-flow: column;
-      align-items: center;
-      gap: 12px;
-    }
-
-    &__go {
-      order: -1;
     }
 
     &__lede {
@@ -616,20 +621,35 @@
   }
 }
 
-/* A door is a routing device, not an exhibit: the photograph is a fixed 4:3
-   window, the same size in all three doors whatever the source's shape, so the
-   doors stay the same height. Cropped, not squeezed. */
+/* The photograph is cropped to whatever box the door gives it, never
+   squeezed. The image is taken out of flow so it cannot set the door's height:
+   the copy and the column beside the doors do that, and the photograph
+   follows. Its own edge is off, because the door draws one over both. */
 .home-door__photo {
-  width: clamp(104px, 10.5vw, 168px);
-  aspect-ratio: 4 / 3;
+  border-radius: 0;
 
   .cut-photo__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
+  .cut-photo__edge {
+    display: none;
+  }
+
   @media (max-width: $breakpoint-mobile) {
+    order: 2;
     width: 64px;
+    aspect-ratio: 4 / 3;
+    margin-right: 15px;
+    border-radius: $radius-md;
+
+    .cut-photo__edge {
+      display: block;
+    }
   }
 }
 
@@ -678,7 +698,7 @@
   }
 
   .home-door {
-    &__cut {
+    &__body {
       padding: 13px 15px;
     }
 
@@ -737,20 +757,8 @@
     gap: 6px;
   }
 
-  .home-door__cut {
+  .home-door__body {
     padding: 9px 16px;
-  }
-
-  .home-door__media {
-    gap: 5px;
-  }
-
-  .home-door__media {
-    gap: 6px;
-  }
-
-  .home-door__photo {
-    width: 76px;
   }
 }
 
@@ -801,7 +809,7 @@
     gap: 8px;
   }
 
-  .home-door__cut {
+  .home-door__body {
     padding: 10px 14px;
   }
 }
@@ -819,7 +827,7 @@
     gap: 7px;
   }
 
-  .home-door__cut {
+  .home-door__body {
     padding: 9px 13px;
   }
 
@@ -939,7 +947,7 @@
    argument is still behind you when you get to the bottom of it.
 
    No panels anywhere in here. The problem is set at headline size with nothing
-   around it and the mark draws itself beside it; boxing either half turned the
+   around it and the photograph arrives beside it; boxing either half turned the
    section into a comparison table, which is the opposite of what it is for. */
 .home-moves {
   /* The same machined surface as the fold, and the only other section that
@@ -988,8 +996,8 @@
 }
 
 /* One step. No panels, no rules, no rail — the problem is set at headline size
-   with nothing around it, the mark draws itself beside it, and the sentence
-   that answers it arrives underneath once it has. Boxing either half turned
+   with nothing around it, then the photograph and the sentence that answers it
+   arrive beside it together. Boxing either half turned
    the page into a comparison table; this is meant to read as a statement and
    then a reply. */
 .home-step {
@@ -1000,11 +1008,13 @@
      stays there. `align-items: start` is also what lets the sticky below work —
      a stretched grid item fills its area and has nowhere to travel. */
   align-items: start;
-  /* Roughly a screenful each, which is what puts real scroll distance between
-     stating the problem and answering it, and gives the sticky column somewhere
-     to go. Not a fixed height: a step whose copy needs more room takes it. */
-  min-height: min(68svh, 680px);
-  padding-block: clamp(24px, 5vh, 64px) 0;
+  /* No min-height. The photograph and the answer under it are now most of a
+     screen on their own, and that height is what puts the scroll distance
+     between the two beats. The padding is the gap between steps, sized so the
+     next problem starts entering (SAY_MARGIN in StreamMoves.tsx) once the
+     current answer has scrolled fully into view. It also holds the "Now" line,
+     which sits above the problem on wide screens. */
+  padding-block: clamp(44px, 6vh, 64px) 0;
   max-width: 1240px;
   margin: 0 auto;
   color: inherit;
@@ -1047,7 +1057,27 @@
     top: clamp(24px, 7vh, 72px);
   }
 
-  /* The answer sits directly under the mark it belongs to. Pushing them to
+  /* One row: the top of the problem is level with the top of the photograph.
+     So on wide screens the "Now" line hangs above the problem, in the step's
+     top padding, rather than pushing it down, and the problem's line box is
+     trimmed to its cap height so the ink starts where the photograph does. */
+  @media (min-width: ($breakpoint-desktop + 1px)) {
+    &__now {
+      position: absolute;
+      bottom: calc(100% + 14px);
+      left: 0;
+      margin: 0;
+    }
+
+    @supports (text-box-edge: cap alphabetic) {
+      &__problem {
+        text-box-trim: trim-start;
+        text-box-edge: cap alphabetic;
+      }
+    }
+  }
+
+  /* The answer sits directly under the photograph it belongs to. Pushing them to
      opposite ends of the section to fill the height read as two unrelated
      things with a fault between them — the distance the second beat needs is
      the section's, not a hole inside the pair. */
@@ -1140,12 +1170,11 @@
   }
 }
 
-/* The photograph of the work, sized to sit with the answer under it rather
-   than to take over its half of the screen. A fixed 4:3 box, cropped, so the
+/* The photograph of the work fills the reply column, at 3:2, cropped, so the
    three steps match whatever shape the source is. */
 .home-step__photo {
-  width: clamp(220px, 24vw, 340px);
-  aspect-ratio: 4 / 3;
+  align-self: stretch;
+  aspect-ratio: 3 / 2;
 
   .cut-photo__img {
     height: 100%;
@@ -1153,24 +1182,10 @@
   }
 }
 
-/* Arrives with the situation — beat one — and stays. */
-.home-step.is-out .home-step__photo {
-  opacity: 0.001;
-  transform: translateY(16px);
-}
-
-.home-step.is-in .home-step__photo {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity 0.6s ease 0.15s,
-    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.15s;
-}
-
-/* Inside a step, the order is the argument: the problem is already there, the
-   photograph arrives beside it, and only then does the answer arrive.
-   Beat one — is-in. The situation states itself and the photograph fades in.
-   The answer is still waiting. */
+/* Inside a step, the order is the argument: the problem first, then the
+   photograph and the answer together.
+   Beat one — is-in. The situation states itself. The photograph and the
+   answer are still waiting. */
 .home-step.is-out .home-step__say {
   opacity: 0.001;
   transform: translateY(16px);
@@ -1184,14 +1199,17 @@
     transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Beat two — is-told, a scroll later. No transition-delay doing the waiting:
-   the gap between these is scroll distance, so it is the reader's pace rather
-   than a number we picked. */
+/* Beat two — is-told, a scroll later: the photograph and the answer arrive
+   together, on the same transition. No transition-delay doing the waiting:
+   the gap between the beats is scroll distance, so it is the reader's pace
+   rather than a number we picked. */
+.home-step:not(.is-told) .home-step__photo,
 .home-step:not(.is-told) .home-step__answer {
   opacity: 0.001;
   transform: translateY(18px);
 }
 
+.home-step.is-told .home-step__photo,
 .home-step.is-told .home-step__answer {
   opacity: 1;
   transform: none;
@@ -1637,7 +1655,7 @@
   .is-out .home-door,
   .is-out .home-org,
   .is-out .home-step__say,
-  .home-step.is-out .home-step__photo,
+  .home-step:not(.is-told) .home-step__photo,
   .home-step:not(.is-told) .home-step__answer {
     opacity: 1;
     transform: none;
