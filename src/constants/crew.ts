@@ -35,10 +35,9 @@
  * VERCEL_ENV is 'production' and any entry still has the flag. Replace the
  * file, point `portrait` at `/crew/<id>.jpg`, and delete the flag.
  *
- * Tom and Asuka will not have portraits. That is permanent, not pending: the
- * empty plate is their treatment, not a gap waiting to be filled. Do not chase
- * a photograph for either of them, and do not mark their entries as missing
- * one.
+ * Tom will not have a portrait. That is permanent, not pending: the empty
+ * plate is his treatment, not a gap waiting to be filled. Do not chase a
+ * photograph for him, and do not mark his entry as missing one.
  */
 export interface CrewMember {
   /** Anchor id. Explicit, so a name or title edit cannot break inbound links. */
@@ -49,8 +48,8 @@ export interface CrewMember {
   role: string
   /** One-line summary used on the home page teaser. */
   summary: string
-  /** Fuller bio used on the crew page. */
-  bio: string
+  /** Fuller bio used on the team page, one entry per paragraph. */
+  bio: string[]
   /** `/crew/<id>.jpg` — see the convention above. Falls back to the initials
    *  plate when absent. */
   portrait?: string
@@ -70,7 +69,9 @@ export const CREW: CrewMember[] = [
     portrait: '/crew/stock/craig-schneider.jpg',
     stockPortrait: true,
     summary: 'Computer science, engineering, and two decades on site. Runs the shop.',
-    bio: 'Craig runs V Source. He holds a computer science degree from QUT and is completing an engineering degree in computer and software systems, alongside two decades in residential construction, communications infrastructure and site supervision. That range is why we can talk about the hardware a system runs on and the site it is installed on, not only the code — and why, when an install has to pass inspection, someone here has already been the person accountable for that.',
+    bio: [
+      'Craig runs V Source. He holds a computer science degree from QUT and is completing an engineering degree in computer and software systems, alongside two decades in residential construction, communications infrastructure and site supervision. That range is why we can talk about the hardware a system runs on and the site it is installed on, not only the code — and why, when an install has to pass inspection, someone here has already been the person accountable for that.',
+    ],
   },
   {
     id: 'simon-hanmer',
@@ -79,44 +80,43 @@ export const CREW: CrewMember[] = [
     portrait: '/crew/stock/simon-hanmer.jpg',
     stockPortrait: true,
     summary: 'Designs it and builds it. Twenty years in kitchens before the degree.',
-    bio: 'Simon designs and builds the part clients actually use — the interface, the system behind it, and often the brand around it. He holds a computer science degree from QUT, and before it spent twenty-odd years running kitchens — launching restaurants, and running services where a hundred covers arrive inside ninety minutes and nothing is permitted to fail quietly. Consistency under load, working to a deadline that does not move, and knowing precisely how much can go wrong at once: that turns out to be most of what shipping software actually is.',
+    bio: [
+      'Simon designs and builds the part clients actually use — the interface, the system behind it, and often the brand around it. He holds a computer science degree from QUT, and before it spent twenty-odd years running kitchens — launching restaurants, and running services where a hundred covers arrive inside ninety minutes and nothing is permitted to fail quietly. Consistency under load, working to a deadline that does not move, and knowing precisely how much can go wrong at once: that turns out to be most of what shipping software actually is.',
+    ],
   },
   {
     id: 'tom-lee',
     name: 'Tom Lee',
     role: 'Backend & Platform Developer',
     summary: 'Backend, and the platform under it. Knows why it broke at 2am.',
-    bio: 'Tom writes the code behind the interface \u2014 the services, the data and the integrations that make the visible part work. He has worked backend and full-stack since 2018, starting from a Diploma in Web Development and building the rest of the stack himself, which is how most of the people who are good at this actually learned it. On a system that has to keep running unattended, the code is only half the job; the other half is the platform under it, and Tom owns that too, from the servers and networks up to the pipeline that carries a build to a live site. If something breaks at two in the morning, he is the one who already knows why.',
+    bio: [
+      'Tom writes the code behind the interface \u2014 the services, the data and the integrations that make the visible part work. He has worked backend and full-stack since 2018, starting from a Diploma in Web Development and building the rest of the stack himself, which is how most of the people who are good at this actually learned it. On a system that has to keep running unattended, the code is only half the job; the other half is the platform under it, and Tom owns that too, from the servers and networks up to the pipeline that carries a build to a live site. If something breaks at two in the morning, he is the one who already knows why.',
+    ],
   },
   {
     id: 'ronan-donahoe',
     name: 'Ronan Donahoe',
-    role: 'Quality & Documentation',
+    role: 'Testing & Robotics',
     portrait: '/crew/stock/ronan-donahoe.jpg',
     stockPortrait: true,
     summary: 'Finds it before the auditor does.',
-    bio: 'Ronan owns testing and documentation, and is midway through an engineering degree in mechatronics and mathematics. On a regulated product neither of those is paperwork — the documentation is the evidence that the thing is safe, and the testing is what makes the evidence true. If a build does not behave the way its documentation claims, Ronan finds it first. That is the whole job, and it is the reason we can take on work most studios our size cannot.',
+    bio: [
+      'Ronan tests what we build and writes the documentation that proves how it behaves. This is the kind of behind-the-scenes work that can make or break a product’s release or a compliance audit.',
+      'He’s drawn to problems without an obvious answer, which is exactly the right instinct for the job: good testing requires someone who can look at the system from a different angle than the people who designed it.',
+      'There is more to Ronan than just testing and documentation though. He is currently studying a double degree in Mechatronics Engineering and Computational & Applied Mathematics: hardware, software, and the maths that ties them together. He uses this range to find solutions that are practical and elegant, which usually means finding a smarter way to make something work rather than a more complicated one.',
+      'Ronan is another V Source team member with a background in hospitality (by coincidence, not by design). While Simon’s background was in the kitchen, Ronan looked after the front of house, where staying calm under pressure and solving problems on the fly is an indispensable skill. People are unpredictable, and understanding that is invaluable.',
+    ],
   },
   {
-    /*
-     * PLACEHOLDER. Asuka came on board in October to work on machine learning
-     * and testing, and that is the whole of what is confirmed. Everything
-     * below needs his own input before it goes anywhere near a deploy:
-     *
-     *   - full name (the id and the initials are both derived from it)
-     *   - how he wants the title written
-     *   - what he has worked on, and anything he would want a client to know
-     *
-     * `pending: true` renders a visible marker on both the home page and
-     * /team, so this cannot ship quietly. Remove it once he has read his own
-     * entry — not before, and not on his behalf.
-     */
-    id: 'asuka',
-    name: 'Asuka',
-    role: 'Machine Learning & Testing',
-    summary: 'Placeholder — machine learning and testing. Joined October 2026.',
-    bio: 'Placeholder. Asuka joined in October to work on machine learning and testing. The rest of this entry is his to write: what he has built, where the ML experience comes from, and what he would want someone considering us to know about that side of the work. Nothing here should ship as written.',
-    pending: true,
+    id: 'asuka-hirai',
+    name: 'Asuka Hirai',
+    role: 'Testing & Machine Learning',
+    portrait: '/crew/asuka-hirai.jpg',
+    summary:
+      'Tests it until he knows why it works — computer science, with a background in machine learning.',
+    bio: [
+      'Asuka holds a Bachelor of Information Technology, majoring in Computer Science, from QUT, with an academic background in machine learning, computer vision, and software development. At V Source, he focuses on software testing and quality assurance, identifying issues that might otherwise go unnoticed and ensuring the final product works as intended. With a particular interest in artificial intelligence and problem-solving, he brings an analytical approach to his work and a curiosity for understanding not just whether something works, but why it works — or why it doesn’t.',
+    ],
   },
 ]
 

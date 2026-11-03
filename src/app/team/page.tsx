@@ -25,8 +25,8 @@ export const metadata: Metadata = {
  * milled plate with the initials cut into it, so it reads as a blank in a set
  * rather than as an image that failed to load.
  *
- * That matters because the row is MIXED, not empty. Tom and Asuka will never
- * have photographs (see crew.ts), the others will, and a flat
+ * That matters because the row is MIXED, not empty. Tom will never have a
+ * photograph (see crew.ts), the others will, and a flat
  * grey box in that row is the thing the eye goes to first. See
  * `.crew__portrait--empty` in crew.scss, and keep it in step with
  * `.home-face--empty` in home.scss.
@@ -105,15 +105,17 @@ export default function TeamPage() {
             <div className="crew__body">
               <h2 className="crew__name">{member.name}</h2>
               <p className="crew__role">{member.role}</p>
-              <p className="crew__bio">
-                {member.bio}
-                {member.pending && (
-                  <span className="home-pending" title="Entry not written by this person yet">
-                    {' '}
-                    [pending]
-                  </span>
-                )}
-              </p>
+              {member.bio.map((paragraph, i) => (
+                <p key={i} className="crew__bio">
+                  {paragraph}
+                  {member.pending && i === member.bio.length - 1 && (
+                    <span className="home-pending" title="Entry not written by this person yet">
+                      {' '}
+                      [pending]
+                    </span>
+                  )}
+                </p>
+              ))}
             </div>
           </article>
         ))}

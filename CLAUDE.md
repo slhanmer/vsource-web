@@ -282,9 +282,9 @@ As of 2 November:
 
 - All work is on `development`. The live site is still the 4 August build
   until the Vercel cutover.
-- Invented copy still showing a marker: every `/built` entry, Asuka, two
+- Invented copy still showing a marker: every `/built` entry, two
   partners, and `/robotics` (Craig's). The full list is the Stage 4 audit in
   `docs/briefs/launch-ready.log.md`.
-- Photos from the 2 November shoot are coming. Tom and Asuka have no portrait,
+- Photos from the 2 November shoot are coming. Tom has no portrait,
   permanently. Group and working shots go in `src/constants/photos.ts`.
 - Next after relaunch: Payload CMS (Neon Postgres, Vercel Blob media).

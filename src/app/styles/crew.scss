@@ -156,6 +156,12 @@
     color: $text-secondary;
   }
 
+  // A bio is one paragraph per entry in crew.ts, spaced like the body
+  // paragraphs on the stream pages.
+  &__bio + &__bio {
+    margin-top: $spacing-md;
+  }
+
   // `&__pending` was here as a local copy of `.home-pending`, because that rule
   // used to live in home.scss and this page does not import it. The rule is in
   // global.scss now, so the copy is gone and the team page uses the shared one.
