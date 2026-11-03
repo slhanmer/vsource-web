@@ -22,8 +22,8 @@
  *
  *   - The file goes in `public/crew/<id>.jpg`, where `<id>` is the member's
  *     `id` below.
- *   - 4:5, at least 1200×1500, and a GREYSCALE source. The duotone is the CSS
- *     layer over it; do not bake the colour into the file.
+ *   - 4:5, at least 1200×1500, and a COLOUR source. There is no tone layer;
+ *     the recessed edge is the only thing drawn over it.
  *   - Setting `portrait: '/crew/<id>.jpg'` is the entire change. The box is the
  *     same size with or without a photograph, so nothing reflows.
  *

@@ -1,10 +1,11 @@
 import Image from 'next/image'
 import type { Photo } from '@constants'
-import './styles/tonedPhoto.scss'
+import './styles/cutPhoto.scss'
 
 /**
- * A photograph from the shoot, with the site's treatment: greyscale source,
- * duotone as a CSS layer, cut into the page rather than floated on it.
+ * A photograph cut into the page rather than floated on it. In colour, as
+ * shot: there is no tone layer and no filter. Depth comes from the recessed
+ * edge.
  *
  * The edge is its own layer ABOVE the image. An inset box-shadow on the frame
  * paints under its content, so on a frame the photograph fills it would be
@@ -14,7 +15,7 @@ import './styles/tonedPhoto.scss'
  * pass the width the photo actually renders at. The width and height reserve
  * the box before the file arrives.
  */
-export default function TonedPhoto({
+export default function CutPhoto({
   photo,
   sizes,
   className = '',
@@ -24,17 +25,16 @@ export default function TonedPhoto({
   className?: string
 }) {
   return (
-    <figure className={`toned-photo ${className}`.trim()}>
+    <figure className={`cut-photo ${className}`.trim()}>
       <Image
         src={photo.src}
         alt={photo.alt}
         width={photo.width}
         height={photo.height}
         sizes={sizes}
-        className="toned-photo__img"
+        className="cut-photo__img"
       />
-      <span className="toned-photo__tone" aria-hidden="true" />
-      <span className="toned-photo__edge" aria-hidden="true" />
+      <span className="cut-photo__edge" aria-hidden="true" />
     </figure>
   )
 }

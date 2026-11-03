@@ -2,14 +2,14 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from '@hooks'
-import { STREAMS } from '@constants'
-import StreamMark from './StreamMark'
+import { PHOTOS, STREAMS } from '@constants'
+import CutPhoto from '@/components/photos/CutPhoto'
 
 /**
  * The three streams, one at a time, arriving as you scroll.
  *
  * Each stream is two beats rather than one block. Scroll, and the situation
- * lands on the left while the mark starts drawing itself on the right. Scroll
+ * lands on the left while a photograph of that work fades in on the right. Scroll
  * further and the answer arrives under it, with the way through to that
  * stream's page. Scroll again and the next situation starts.
  *
@@ -38,7 +38,7 @@ import StreamMark from './StreamMark'
  *      is scroll distance, which means it is the reader's pace, not ours.
  */
 
-/** The step has entered far enough to state the problem and start the mark. */
+/** The step has entered far enough to state the problem and show the photograph. */
 const SAY_MARGIN = '0px 0px -22% 0px'
 /** Further down again, for the answer. This gap IS the second scroll. */
 const REPLY_MARGIN = '0px 0px -52% 0px'
@@ -169,7 +169,11 @@ export default function StreamMoves() {
             </div>
 
             <div className="home-step__reply">
-              <StreamMark id={stream.id} className="home-step__mark" />
+              <CutPhoto
+                photo={PHOTOS.streams[stream.id].step}
+                sizes="(max-width: 979px) 80vw, 340px"
+                className="home-step__photo"
+              />
               <div className="home-step__answer">
                 <h3 id={`${stream.id}-name`} className="home-step__name">
                   {stream.name}

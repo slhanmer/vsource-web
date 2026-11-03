@@ -1,0 +1,28 @@
+// A photograph cut into the plate, in colour. Same treatment as the portraits
+// (`.home-face`, `.crew__portrait`): no tone layer and no filter, and the
+// recessed edge drawn over the top.
+.cut-photo {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: $radius-md;
+  background: var(--surface-recessed);
+
+  &__img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  // Recessed: dark on the upper inner rim, light catching the lower one. On
+  // its own layer so the photograph does not cover it.
+  &__edge {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    box-shadow:
+      inset 0 3px 8px -3px var(--carve-dark),
+      inset 0 -1px 0 var(--carve-lip);
+  }
+}

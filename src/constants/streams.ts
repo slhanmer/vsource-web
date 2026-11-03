@@ -41,9 +41,14 @@
  * stream actually sells is still Craig's to define; this copy is mine and
  * unverified.
  */
+/** The streams, as a closed set. A union rather than `string` so anything
+ *  keyed by stream — the home page photographs in photos.ts — fails the type
+ *  check when a stream is added without its entry. */
+export type StreamId = 'software' | 'websites' | 'engineering'
+
 export interface Stream {
   /** Anchor id, also used for the row id and the nav link. */
-  id: string
+  id: StreamId
   /** Plain, searchable name. */
   name: string
   /** One short line for the door in the hero. Deliberately NOT the same

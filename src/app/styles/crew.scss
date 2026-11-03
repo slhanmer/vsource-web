@@ -18,7 +18,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 // The group photograph (constants/photos.ts), full width under the page head.
-// The treatment is TonedPhoto's; this only places it.
+// The treatment is CutPhoto's; this only places it.
 .crew-group {
   margin-bottom: $spacing-2xl;
 }
@@ -55,8 +55,8 @@
   //  PORTRAIT
   //  Built for the photographs before they exist, so a straight export from
   //  the shoot drops in and the card does not change shape. 4:5 is the crop in
-  //  the brief; the duotone is applied in CSS over a greyscale source, so the
-  //  look stays tunable without going back to the originals.
+  //  the brief. Photographs go in in colour, with no tone layer; depth comes
+  //  from the recessed edge.
   //
   //  Until then the initials plate fills the same box at the same size — the
   //  page does not reflow on the day the photos land.
@@ -73,10 +73,10 @@
     justify-content: center;
   }
 
-  // The carve, on its own layer above the photograph and the tone. As a
+  // The carve, on its own layer above the photograph. As a
   // box-shadow on `&__portrait` it painted under the image and vanished as
   // soon as a photograph loaded. Present in both states. Same as
-  // `.home-face__edge` and `TonedPhoto`.
+  // `.home-face__edge` and `CutPhoto`.
   &__portrait-edge {
     position: absolute;
     inset: 0;
@@ -104,21 +104,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    // The source stays greyscale; the green comes from the tone layer above it.
-    filter: grayscale(1) contrast(1.06) brightness(0.94);
-  }
-
-  // The duotone, over the photograph rather than baked into it.
-  &__portrait-tone {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    mix-blend-mode: color;
-    background: linear-gradient(
-      160deg,
-      color-mix(in oklab, var(--brand-accent) 70%, transparent),
-      color-mix(in oklab, var(--brand-highlight) 45%, transparent)
-    );
   }
 
   // Only rendered when there is no portrait, inside an aria-hidden box, so this
@@ -127,8 +112,7 @@
   // do the work — dark above, light below, light from above.
   //
   // It was $action-primary at 0.55, which put the one colour reserved for
-  // "this commits something" on a decorative plate, next to three photographs
-  // that are tinted with the other one.
+  // "this commits something" on a decorative plate.
   &__initials {
     font-family: $font-family-button;
     font-size: clamp(28px, 3vw, 44px);

@@ -247,8 +247,8 @@ Aptium write-up.
   differ because the teaser carries a one-line summary and `/team` carries the
   full bio, which needs roughly 55 characters a line rather than 30.
 - Portrait boxes are 4:5 and the **same size with or without a photograph**, so
-  the page does not reflow on the day the photos land. Sources stay greyscale;
-  the duotone is a CSS layer over them.
+  the page does not reflow on the day the photos land. Photographs go in in
+  colour, with no tone layer. Depth comes from the recessed edge.
 
 ---
 

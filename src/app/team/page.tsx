@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { CREW, PHOTOS } from '@constants'
-import TonedPhoto from '@/components/photos/TonedPhoto'
+import CutPhoto from '@/components/photos/CutPhoto'
 import '../styles/pages.scss'
 import '../styles/crew.scss'
 
@@ -68,7 +68,7 @@ export default function TeamPage() {
       {/* The group photograph, full width under the head. Renders nothing until
           one is set in constants/photos.ts. */}
       {PHOTOS.group && (
-        <TonedPhoto
+        <CutPhoto
           photo={PHOTOS.group}
           sizes="(max-width: 1320px) 100vw, 1320px"
           className="crew-group"
@@ -81,26 +81,22 @@ export default function TeamPage() {
             {/*
               The portrait box is the same size and shape whether there is a
               photograph in it or not, so the page does not reflow on the day
-              the shoot lands. The source stays greyscale and the duotone is a
-              layer over it — a straight export drops in and picks up the
-              treatment without being re-edited.
+              the shoot lands. Photographs go in in colour, with no tone
+              layer; the recessed edge is drawn over the top.
             */}
             <div
               className={`crew__portrait ${member.portrait ? '' : 'crew__portrait--empty'}`.trim()}
               aria-hidden="true"
             >
               {member.portrait ? (
-                <>
-                  <Image
-                    src={member.portrait}
-                    alt=""
-                    width={880}
-                    height={1100}
-                    sizes="(max-width: 860px) 100vw, (max-width: 1320px) 30vw, 380px"
-                    className="crew__portrait-img"
-                  />
-                  <span className="crew__portrait-tone" />
-                </>
+                <Image
+                  src={member.portrait}
+                  alt=""
+                  width={1200}
+                  height={1500}
+                  sizes="(max-width: 860px) 100vw, (max-width: 1320px) 30vw, 380px"
+                  className="crew__portrait-img"
+                />
               ) : (
                 <span className="crew__initials">{initials(member.name)}</span>
               )}

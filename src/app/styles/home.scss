@@ -525,8 +525,9 @@
       inset 0 0 0 1.5px var(--brand-highlight);
   }
 
-  /* Mark and call to action stacked: the label sits under the drawing rather
-     than trailing the copy, so the whole left column reads as one target. */
+  /* Photograph and call to action stacked: the label sits under the image
+     rather than on a scrim over it, so it keeps the route colour on the page
+     ground and its contrast does not depend on the photograph. */
   &__media {
     display: grid;
     justify-items: center;
@@ -581,8 +582,18 @@
       align-items: center;
     }
 
+    /* Label and photograph side by side rather than stacked: stacked, three
+       doors grew by about 180px and pushed the plate's foot off a 390x844
+       screen. */
     &__media {
       order: 2;
+      grid-auto-flow: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    &__go {
+      order: -1;
     }
 
     &__lede {
@@ -591,23 +602,20 @@
   }
 }
 
-/* A door is a routing device, not an exhibit: the mark sits straight in the
-   opening with no panel of its own, and small. */
-.home-door .markwrap {
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  padding: 0;
-  width: clamp(76px, 7.6vw, 108px);
+/* A door is a routing device, not an exhibit: the photograph is a fixed 4:3
+   window, the same size in all three doors whatever the source's shape, so the
+   doors stay the same height. Cropped, not squeezed. */
+.home-door__photo {
+  width: clamp(104px, 10.5vw, 168px);
+  aspect-ratio: 4 / 3;
 
-  .mark {
-    max-height: 76px;
+  .cut-photo__img {
+    height: 100%;
+    object-fit: cover;
   }
 
-  /* Two classes, so this beats .markwrap's own display regardless of where
-     either rule sits in the file. */
   @media (max-width: $breakpoint-mobile) {
-    display: none;
+    width: 64px;
   }
 }
 
@@ -727,8 +735,8 @@
     gap: 6px;
   }
 
-  .home-door .markwrap .mark {
-    max-height: 44px;
+  .home-door__photo {
+    width: 76px;
   }
 }
 
@@ -1118,30 +1126,37 @@
   }
 }
 
-/* The mark, at the size something gets when it is the only object on its half
-   of the screen. No plate under it — that was the box. */
-.home-step .markwrap {
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  padding: 0;
-  /* This is the only object on its half of the screen and it is the thing that
-     moves, so it is sized to be watched rather than to be noticed. */
-  width: clamp(210px, 27vw, 400px);
+/* The photograph of the work, sized to sit with the answer under it rather
+   than to take over its half of the screen. A fixed 4:3 box, cropped, so the
+   three steps match whatever shape the source is. */
+.home-step__photo {
+  width: clamp(220px, 24vw, 340px);
+  aspect-ratio: 4 / 3;
 
-  .mark {
-    max-height: 230px;
+  .cut-photo__img {
+    height: 100%;
+    object-fit: cover;
   }
 }
 
+/* Arrives with the situation — beat one — and stays. */
+.home-step.is-out .home-step__photo {
+  opacity: 0.001;
+  transform: translateY(16px);
+}
+
+.home-step.is-in .home-step__photo {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.6s ease 0.15s,
+    transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.15s;
+}
+
 /* Inside a step, the order is the argument: the problem is already there, the
-   mark draws, and only then does the answer arrive. The mark's own strokes are
-   handled by the shared .is-in / .is-out rules above, which is why each step
-   carries those classes rather than a name of its own. */
-/* Beat one — is-in. The situation states itself and the mark starts drawing;
-   the mark's own strokes are handled by the shared .is-in / .is-out rules
-   above, which is why the step carries those classes rather than a name of its
-   own. The answer is still waiting. */
+   photograph arrives beside it, and only then does the answer arrive.
+   Beat one — is-in. The situation states itself and the photograph fades in.
+   The answer is still waiting. */
 .home-step.is-out .home-step__say {
   opacity: 0.001;
   transform: translateY(16px);
@@ -1178,9 +1193,13 @@
   padding-inline: var(--home-gutter);
   overflow-x: clip;
 
+  // Copy | photograph on wide screens; narrow, the photograph goes above the
+  // copy. The photo is first in the source for that reason, and placed by
+  // area here.
   &__grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 0.86fr);
+    grid-template-areas: 'copy photo';
     gap: clamp(26px, 4.5vw, 64px);
     align-items: center;
     max-width: 1240px;
@@ -1188,23 +1207,9 @@
 
     @media (max-width: $breakpoint-desktop) {
       grid-template-columns: 1fr;
-    }
-  }
-
-  // With the working photograph (constants/photos.ts). The photo sits beside
-  // the copy, the illustration drops under it in the same column; narrow, the
-  // photo goes above the copy. Only applied when the photo is set, so the
-  // two-column grid above is untouched until then.
-  &__grid--photo {
-    grid-template-areas:
-      'copy photo'
-      'copy cut';
-
-    @media (max-width: $breakpoint-desktop) {
       grid-template-areas:
         'photo'
-        'copy'
-        'cut';
+        'copy';
     }
 
     > .home-why__copy {
@@ -1213,10 +1218,6 @@
 
     > .home-why__photo {
       grid-area: photo;
-    }
-
-    > .fitcut {
-      grid-area: cut;
     }
   }
 
@@ -1238,336 +1239,6 @@
     color: var(--text-secondary);
     max-width: 56ch;
     margin: 20px 0 0;
-  }
-}
-
-/* ── the cut illustration ───────────────────────────────────────────────── */
-.fitcut {
-  position: relative;
-
-  &__svg {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  &__form-a {
-    stop-color: var(--brand-highlight);
-  }
-
-  &__form-b {
-    stop-color: var(--brand-accent);
-  }
-
-  &__form-fill {
-    fill-opacity: 0.17;
-  }
-
-  &__plate-a {
-    stop-color: var(--home-plate-top);
-  }
-
-  &__plate-b {
-    stop-color: var(--home-plate-bottom);
-  }
-
-  &__plate-edge {
-    stroke: var(--home-plate-edge);
-  }
-
-  &__plate-lip {
-    stroke: var(--home-plate-lip);
-  }
-
-  &__hatch-bg {
-    fill: var(--home-well);
-  }
-
-  &__hatch-line {
-    stroke: var(--home-hatch-line);
-  }
-
-  &__ghost {
-    stroke: var(--text-subtle);
-    opacity: 0;
-  }
-
-  &__kerf {
-    stroke: var(--brand-highlight);
-    opacity: 0;
-  }
-
-  &__slotline {
-    stroke: var(--home-plate-edge);
-  }
-
-  &__well {
-    opacity: 0;
-  }
-
-  &__label {
-    font-family: $font-family-mono;
-    font-size: 11.5px;
-    letter-spacing: 0.2em;
-
-    &--a {
-      fill: var(--text-subtle);
-    }
-
-    &--b {
-      fill: var(--brand-highlight);
-      opacity: 0;
-    }
-  }
-
-  &__plate {
-    transform: translateY(-340px);
-  }
-
-  &__captions {
-    position: relative;
-    min-height: 3.4em;
-    margin-top: 6px;
-  }
-
-  &__caption {
-    position: absolute;
-    inset: 0;
-    margin: 0;
-    font-family: $font-family-read;
-    font-size: clamp(17px, 1.35vw, 19.5px);
-    line-height: $line-height-normal;
-    color: var(--text-secondary);
-    opacity: 0;
-
-    em {
-      font-style: normal;
-      color: var(--brand-highlight);
-    }
-  }
-
-  &__replay {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    padding: 5px 9px;
-    border-radius: $radius-sm;
-    border: 1px solid var(--border-subtle-colour);
-    background: none;
-    cursor: pointer;
-    font-family: $font-family-mono;
-    font-size: 10px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--text-subtle);
-    opacity: 0;
-    transition:
-      opacity 0.3s,
-      color 0.3s,
-      border-color 0.3s;
-
-    &:hover {
-      color: var(--brand-highlight);
-    }
-  }
-
-  &:hover &__replay,
-  &__replay:focus-visible {
-    opacity: 1;
-  }
-}
-
-/* The morph. Both paths carry twelve points in the same winding order so the
-   browser interpolates cleanly. The SLOT is the generic opening; the SHAPE is
-   the business. A browser without CSS `d` support ignores all of this and
-   keeps the static attribute, which is already the finished state. */
-$fc-slot: "path('M190 130 L250 130 L255 130 L325 130 L370 130 L370 175 L370 270 L345 270 L330 270 L235 270 L190 270 L190 245 Z')";
-$fc-shape: "path('M170 140 L250 140 L250 110 L330 110 L330 175 L390 175 L390 250 L340 250 L340 290 L230 290 L230 245 L170 245 Z')";
-
-.fitcut__slot {
-  d: #{$fc-shape};
-}
-
-.fitcut.is-playing {
-  .fitcut__plate {
-    animation: fc-plate 6.6s cubic-bezier(0.5, 0, 0.15, 1) 1 forwards;
-  }
-
-  .fitcut__slot {
-    animation: fc-morph 6.6s cubic-bezier(0.3, 0.8, 0.2, 1) 1 forwards;
-  }
-
-  .fitcut__well {
-    animation:
-      fc-morph 6.6s cubic-bezier(0.3, 0.8, 0.2, 1) 1 forwards,
-      fc-well 6.6s linear 1 forwards;
-  }
-
-  .fitcut__kerf {
-    animation:
-      fc-morph 6.6s cubic-bezier(0.3, 0.8, 0.2, 1) 1 forwards,
-      fc-kerf 6.6s linear 1 forwards;
-  }
-
-  .fitcut__ghost {
-    animation: fc-ghost 6.6s linear 1 forwards;
-  }
-
-  .fitcut__label--a {
-    animation: fc-label-out 6.6s linear 1 forwards;
-  }
-
-  .fitcut__label--b {
-    animation: fc-label-in 6.6s linear 1 forwards;
-  }
-
-  .fitcut__form-fill {
-    animation: fc-lift 6.6s linear 1 forwards;
-  }
-
-  .fitcut__caption--1 {
-    animation: fc-cap-a 6.6s linear 1 forwards;
-  }
-
-  .fitcut__caption--2 {
-    animation: fc-cap-b 6.6s linear 1 forwards;
-  }
-
-  .fitcut__caption--3 {
-    animation: fc-cap-c 6.6s linear 1 forwards;
-  }
-}
-
-@keyframes fc-plate {
-  0%,
-  13.6% {
-    transform: translateY(-340px);
-  }
-  28.8%,
-  100% {
-    transform: translateY(0);
-  }
-}
-
-@keyframes fc-morph {
-  0%,
-  59.1% {
-    d: #{$fc-slot};
-  }
-  78.8%,
-  100% {
-    d: #{$fc-shape};
-  }
-}
-
-@keyframes fc-well {
-  0%,
-  13.6% {
-    opacity: 0;
-  }
-  28.8%,
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes fc-ghost {
-  0%,
-  29% {
-    opacity: 0;
-  }
-  33.3%,
-  62% {
-    opacity: 0.85;
-  }
-  76%,
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes fc-kerf {
-  0%,
-  62% {
-    opacity: 0;
-  }
-  80%,
-  100% {
-    opacity: 0.95;
-  }
-}
-
-@keyframes fc-label-out {
-  0%,
-  58% {
-    opacity: 1;
-  }
-  66%,
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes fc-label-in {
-  0%,
-  72% {
-    opacity: 0;
-  }
-  82%,
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes fc-lift {
-  0%,
-  72% {
-    fill-opacity: 0.17;
-  }
-  88%,
-  100% {
-    fill-opacity: 0.3;
-  }
-}
-
-@keyframes fc-cap-a {
-  0%,
-  2.3% {
-    opacity: 0;
-  }
-  5%,
-  12% {
-    opacity: 1;
-  }
-  15%,
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes fc-cap-b {
-  0%,
-  29% {
-    opacity: 0;
-  }
-  32%,
-  55% {
-    opacity: 1;
-  }
-  58%,
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes fc-cap-c {
-  0%,
-  76% {
-    opacity: 0;
-  }
-  82%,
-  100% {
-    opacity: 1;
   }
 }
 
@@ -1754,9 +1425,8 @@ $fc-shape: "path('M170 140 L250 140 L250 110 L330 110 L330 175 L390 175 L390 250
   }
 }
 
-/* A real image slot. The source stays greyscale and the duotone is applied
-   here, so a straight export from the shoot drops in and picks up the
-   treatment without being re-edited. No photo yet: the initials plate is a
+/* A real image slot. Photographs go in in colour, with no tone layer; depth
+   comes from the recessed edge. No photo yet: the initials plate is a
    deliberate look rather than a gap, same as the crew page. */
 .home-face {
   position: relative;
@@ -1770,8 +1440,8 @@ $fc-shape: "path('M170 140 L250 140 L250 110 L330 110 L330 175 L390 175 L390 250
      from above at the same time. The border was doing the separating that the
      carve should do; depth here is by edge only.
 
-     The carve is drawn by `&__edge`, a layer ABOVE the photograph and the
-     tone, not by a box-shadow on this box: an inset shadow paints under the
+     The carve is drawn by `&__edge`, a layer ABOVE the photograph, not by a
+     box-shadow on this box: an inset shadow paints under the
      box's content, so the photograph covered it the moment it loaded. */
 
   &__edge {
@@ -1790,16 +1460,6 @@ $fc-shape: "path('M170 140 L250 140 L250 110 L330 110 L330 175 L390 175 L390 250
     height: 100%;
     object-fit: cover;
     object-position: 50% 22%;
-    filter: grayscale(1) contrast(1.06) brightness(0.94);
-  }
-
-  &__tone {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: linear-gradient(158deg, var(--brand-highlight), var(--brand-accent));
-    mix-blend-mode: color;
-    opacity: 0.72;
   }
 
   /* NO PHOTOGRAPH — and this is the case that actually has to be designed.
@@ -1808,14 +1468,13 @@ $fc-shape: "path('M170 140 L250 140 L250 110 L330 110 L330 175 L390 175 L390 250
      designed is the mixed row, and that is exactly what this is, for good —
      portraits for three, and Tom and Asuka, who will not have them.
 
-     A flat grey box beside three duotone portraits does not read as a
-     decision. It reads as an image that failed to load, and the eye goes
-     straight to it.
+     A flat grey box beside three portraits does not read as a decision. It
+     reads as an image that failed to load, and the eye goes straight to it.
 
      So the empty plate is made of the same two things everything else here is
-     made of: the duotone, pulled right back so it sits quietly under the
-     photographs instead of competing with them, and the mill texture the rest
-     of the site is cut from. Same box, same colour family, different
+     made of: the two brand colours, pulled right back so the plate sits
+     quietly beside the photographs instead of competing with them, and the
+     mill texture the rest of the site is cut from. Same box, same colour family, different
      material — a blank in a set, which is what it is. */
   &--empty {
     background-image:
@@ -1855,7 +1514,7 @@ $fc-shape: "path('M170 140 L250 140 L250 110 L330 110 L330 175 L390 175 L390 250
 }
 
 .is-out .home-face__img {
-  filter: grayscale(1) blur(14px) saturate(0.2);
+  filter: blur(14px) saturate(0.2);
   transform: scale(1.06);
 }
 
@@ -1960,37 +1619,11 @@ $fc-shape: "path('M170 140 L250 140 L250 110 L330 110 L330 175 L390 175 L390 250
     transition: none !important;
   }
 
-  /* Rest on the finished state rather than the opening one. */
-  .fitcut__plate {
-    transform: none;
-  }
-
-  .fitcut__well,
-  .fitcut__label--b {
-    opacity: 1;
-  }
-
-  .fitcut__kerf {
-    opacity: 0.95;
-  }
-
-  .fitcut__label--a,
-  .fitcut__ghost {
-    opacity: 0;
-  }
-
-  .fitcut__form-fill {
-    fill-opacity: 0.3;
-  }
-
-  .fitcut__caption--3 {
-    opacity: 1;
-  }
-
   .is-out .home-line,
   .is-out .home-door,
   .is-out .home-org,
   .is-out .home-step__say,
+  .home-step.is-out .home-step__photo,
   .home-step:not(.is-told) .home-step__answer {
     opacity: 1;
     transform: none;
@@ -2002,7 +1635,7 @@ $fc-shape: "path('M170 140 L250 140 L250 110 L330 110 L330 175 L390 175 L390 250
   }
 
   .is-out .home-face__img {
-    filter: grayscale(1) contrast(1.06) brightness(0.94);
+    filter: none;
     transform: none;
   }
 }

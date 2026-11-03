@@ -2,12 +2,10 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { CONTACT, CREW, PARTNERS, PHOTOS, STREAMS } from '@constants'
-import FitCut from '@/components/home/FitCut'
 import Reveal from '@/components/home/Reveal'
 import RotatingHeadline from '@/components/home/RotatingHeadline'
-import StreamMark from '@/components/home/StreamMark'
 import StreamMoves from '@/components/home/StreamMoves'
-import TonedPhoto from '@/components/photos/TonedPhoto'
+import CutPhoto from '@/components/photos/CutPhoto'
 import './styles/pages.scss'
 import './styles/home.scss'
 
@@ -33,7 +31,7 @@ export const metadata: Metadata = {
  * other page, and the plate opens straight onto the argument.
  *
  * Everything below the fold is a server component. The only client boundaries
- * are the rotating headline, the cut animation and the Reveal wrappers, and the
+ * are the rotating headline, the stream bands and the Reveal wrappers, and the
  * copy inside a Reveal is still rendered on the server.
  */
 export default function Home() {
@@ -41,9 +39,8 @@ export default function Home() {
     <main className="home">
       {/*
         The fold is one machined plate. The streams are openings cut through
-        it, not cards resting on a page — same material and the same mechanic
-        as the cut illustration further down, at page scale, so the thing the
-        animation is about is the thing the page is made of.
+        it, not cards resting on a page, and each opening has a photograph of
+        that kind of work cut into it in turn.
 
         The door names are spans, not headings: the band for each stream below
         carries the real h2, and two h2s with the same text would put every
@@ -80,7 +77,11 @@ export default function Home() {
                 <a key={stream.id} className="home-door" href={stream.href}>
                   <div className="home-door__cut">
                     <div className="home-door__media">
-                      <StreamMark id={stream.id} className="home-door__mark" />
+                      <CutPhoto
+                        photo={PHOTOS.streams[stream.id].door}
+                        sizes="(max-width: 480px) 96px, 168px"
+                        className="home-door__photo"
+                      />
                       <span className="home-door__go">Learn more</span>
                     </div>
                     <div className="home-door__body">
@@ -129,19 +130,12 @@ export default function Home() {
       <StreamMoves />
 
       <Reveal id="why" className="home-why">
-        {/*
-          The working photograph, when there is one. Unset, none of this
-          renders and the modifier is not applied, so the grid is exactly the
-          two-column copy-and-illustration it has always been.
-        */}
-        <div className={`home-why__grid ${PHOTOS.working ? 'home-why__grid--photo' : ''}`.trim()}>
-          {PHOTOS.working && (
-            <TonedPhoto
-              photo={PHOTOS.working}
-              sizes="(max-width: 979px) 100vw, 580px"
-              className="home-why__photo"
-            />
-          )}
+        <div className="home-why__grid">
+          <CutPhoto
+            photo={PHOTOS.working}
+            sizes="(max-width: 979px) 100vw, 580px"
+            className="home-why__photo"
+          />
           <div className="home-why__copy">
             <p className="home-eyebrow">Why we work this way</p>
             <h2 className="home-why__title home-line">
@@ -160,7 +154,6 @@ export default function Home() {
               wrong, build to that, and stay on to run it.
             </p>
           </div>
-          <FitCut />
         </div>
       </Reveal>
 
@@ -209,23 +202,16 @@ export default function Home() {
             <figure key={member.id} className="home-person">
               <div className={`home-face ${member.portrait ? '' : 'home-face--empty'}`.trim()}>
                 {member.portrait ? (
-                  <>
-                    {/*
-                      The source stays greyscale and the duotone is applied in
-                      CSS, so a straight export from the shoot drops in and
-                      picks up the treatment without being re-edited — and the
-                      look stays tunable without going back to the originals.
-                    */}
-                    <Image
-                      src={member.portrait}
-                      alt=""
-                      width={880}
-                      height={1100}
-                      sizes="(max-width: 560px) 100vw, (max-width: 979px) 33vw, 240px"
-                      className="home-face__img"
-                    />
-                    <span className="home-face__tone" aria-hidden="true" />
-                  </>
+                  /* In colour, with no tone layer. The edge below is drawn
+                     over it. */
+                  <Image
+                    src={member.portrait}
+                    alt=""
+                    width={1200}
+                    height={1500}
+                    sizes="(max-width: 560px) 100vw, (max-width: 979px) 33vw, 240px"
+                    className="home-face__img"
+                  />
                 ) : (
                   <span className="home-face__initials" aria-hidden="true">
                     {member.name
