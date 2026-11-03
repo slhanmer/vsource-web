@@ -180,7 +180,8 @@ Not blocking:
 - [ ] Logo is a 600x200 WebP with a CSS `brightness()` filter faking a
       light-on-dark variant. Wants proper SVG variants from Figma, plus a
       mark-only V lockup for narrow screens.
-- [ ] Crew portraits — initials are used until they exist.
+- [ ] Crew portraits — a terminal tile stands in until they exist (permanently,
+      for Tom).
 - [ ] Never keyboard-tested or opened on a physical phone. The build is to
       WCAG 2.2 AA and the audit was done on measurements, but a tab-through and
       a real device check have not happened.

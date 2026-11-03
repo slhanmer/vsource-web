@@ -123,6 +123,17 @@
   --scrollbar-w: 20px;
   --toast-offset-top: 108px;
 
+  // How much chrome overlaps the top of the scroller, for `scroll-margin-top`
+  // on anchor targets. Zero at every breakpoint, and that is measured, not
+  // assumed: the header (band 68px, 56px on mobile, plus the 28px readout) is
+  // a flex item ABOVE `.site-scroll`, not over it. Its `position: sticky` has
+  // nothing to stick against because the frame never scrolls. So `#main`'s
+  // top edge is already the bottom of the bar, and an anchor lands right under
+  // it with no allowance. The 90px and 110px margins this replaces assumed the
+  // header sat on top of the page, and parked every target that far down. If
+  // chrome is ever put inside the scroller, set its height here.
+  --scroll-clearance: 0px;
+
   // Touch devices use overlay scrollbars and reserve no gutter, so the chrome
   // bands would pad 20px that page content does not — pushing every band's
   // content out of line with the page.

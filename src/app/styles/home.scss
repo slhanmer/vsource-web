@@ -20,12 +20,12 @@
   --home-plate-bottom: #c6d3cb;
   --home-plate-edge: rgba(47, 58, 52, 0.22);
   --home-plate-lip: rgba(255, 255, 255, 0.85);
-  --home-hatch-line: rgba(47, 58, 52, 0.18);
   --home-well: #c0cec6;
   --home-mill: rgba(47, 58, 52, 0.02);
   --home-engrave: rgba(47, 58, 52, 0.3);
-  /* Partner marks in the fold: dark ink on light, light ink on dark. */
-  --home-logo-ink: brightness(0);
+  /* The ground partner logos sit on, in the fold strip and the partners band.
+     Light in both themes: supplied artwork is drawn for white. */
+  --home-logo-plate: #f4f7f5;
 }
 
 [data-theme='dark'] .home {
@@ -33,11 +33,9 @@
   --home-plate-bottom: #0d1712;
   --home-plate-edge: rgba(255, 255, 255, 0.12);
   --home-plate-lip: rgba(255, 255, 255, 0.22);
-  --home-hatch-line: rgba(255, 255, 255, 0.08);
   --home-well: #070f0c;
   --home-mill: rgba(255, 255, 255, 0.014);
   --home-engrave: rgba(0, 0, 0, 0.55);
-  --home-logo-ink: brightness(0) invert(1);
 }
 
 .visually-hidden {
@@ -143,12 +141,12 @@
   }
 }
 
-/* The partners' marks in one ink that follows the theme, set back from the
-   headline. The filter flattens each PNG to its alpha, so it only works on
-   transparent artwork: an opaque PNG comes out as a solid block. QUT's mark is
-   a solid square with the letters knocked out, so it correctly becomes a
-   one-colour square with the letters cut through. The partners band further
-   down keeps the logos in their own colours. */
+/* The partners' marks in their own colours, in both themes. Each sits on a
+   small raised light plate, the same ground the partners band gives them:
+   Aptium's purple and Training Professionals' navy disappear against the dark
+   plate without it, and recolouring someone else's mark is not ours to do.
+   Raised like the cards in the band: light on the top edge, a hairline seating
+   the bottom. */
 .home-plate__logos {
   display: flex;
   align-items: center;
@@ -161,13 +159,19 @@
 
 .home-plate__logo {
   display: flex;
+  align-items: center;
+  height: 32px;
+  padding: 4px 8px;
+  border-radius: $radius-sm;
+  background: var(--home-logo-plate);
+  box-shadow:
+    inset 0 1px 0 var(--carve-lip),
+    0 1px 0 var(--home-plate-edge);
 }
 
 .home-plate__logo-img {
   width: auto;
-  height: 24px;
-  filter: var(--home-logo-ink);
-  opacity: 0.6;
+  height: 100%;
 }
 
 .home-plate__cue {
@@ -251,8 +255,8 @@
   overflow-x: clip;
 
   /* Said on the left, offered on the right. Centred text also meant the
-     headline had to be perfectly symmetrical to look right, which a slot that
-     changes width can never be. */
+     headline had to be perfectly symmetrical to look right, which a slot with
+     words of different widths in it can never be. */
   &__inner {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -384,9 +388,8 @@
     color: var(--text-primary);
   }
 
-  /* The cut line is the only thing that changes width, and it is alone on its
-     line, so it grows and shrinks about its own centre without moving anything
-     else on the page. */
+  /* The slot on its own line. It is cut once to the widest word and never
+     changes width, so nothing else on the page moves while the words type. */
   &__cutline {
     display: block;
   }
@@ -434,20 +437,19 @@
     box-shadow:
       inset 0 3px 6px -2px var(--carve-dark),
       inset 0 -1px 0 var(--home-plate-lip);
-    text-align: center;
+    /* Fixed width, set once in RotatingHeadline to the widest word. Shorter
+       words sit at the left, on the same baseline. */
+    text-align: left;
     /* NOT overflow: hidden. An inline-block whose overflow is anything but
        visible takes its baseline from the bottom margin edge rather than its
        last line box (CSS 2.1 10.8.1), which lifted the word clear of the rest
        of the line by the descender plus the bottom padding. clip-path clips
        without touching layout, so the baseline stays the text's. */
     clip-path: inset(0 round 4px);
-    transition: width 0.5s cubic-bezier(0.3, 0.85, 0.2, 1);
   }
 
-  /* Every character is in the DOM from the first frame; untyped ones only
-     lose their ink. The word therefore always measures its finished width, so
-     the slot is recut once and the letters fill an opening that is already the
-     right size — rather than the slot chasing the text a character at a time. */
+  /* Every character is in the DOM from the first frame; untyped ones are
+     taken out of flow by `&__ghost`. */
   &__inner {
     display: inline-block;
     white-space: pre;
@@ -455,11 +457,9 @@
     font-weight: 400;
   }
 
-  /* display:none, not visibility:hidden. Holding the untyped characters'
-     width would pin the typed ones to the left of an already full-width
-     opening, which is what made a half-typed word look off-centre. The slot is
-     still recut to the finished width first, from a measured clone, so nothing
-     reflows. */
+  /* display:none, so the caret, which follows the last typed character, sits
+     right after the typed text rather than after a run of invisible ones. The
+     slot is already the widest word wide, so nothing reflows. */
   &__ghost {
     display: none;
   }
@@ -624,8 +624,16 @@
 /* The photograph is cropped to whatever box the door gives it, never
    squeezed. The image is taken out of flow so it cannot set the door's height:
    the copy and the column beside the doors do that, and the photograph
-   follows. Its own edge is off, because the door draws one over both. */
-.home-door__photo {
+   follows. Its own edge is off, because the door draws one over both.
+
+   No radius of its own, at any width. A photograph inside a frame never
+   carries one: where it touches the frame's edge the corner is the frame's
+   (the opening clips it), and where it is inset, as the phone thumbnail is,
+   its corners are square. Two different radii nested leave a gap at every
+   corner. Two classes deep so it outranks `.cut-photo`'s own radius, which
+   loads after this file; at one class it lost, and the phone thumbnail kept
+   its 8px corners. */
+.home-door .home-door__photo {
   border-radius: 0;
 
   .cut-photo__img {
@@ -645,7 +653,6 @@
     width: 64px;
     aspect-ratio: 4 / 3;
     margin-right: 15px;
-    border-radius: $radius-md;
 
     .cut-photo__edge {
       display: block;
@@ -965,6 +972,9 @@
   box-shadow: inset 0 1px 0 var(--home-plate-lip);
   padding-block: clamp(44px, 6vw, 90px) clamp(60px, 9vw, 130px);
   padding-inline: var(--home-gutter);
+  /* The fold's "More on each" cue lands here: the section's top edge right
+     under the bar, which is exactly one fold down. */
+  scroll-margin-top: var(--scroll-clearance);
 
   &__head {
     max-width: 1240px;
@@ -1018,8 +1028,8 @@
   max-width: 1240px;
   margin: 0 auto;
   color: inherit;
-  /* Cleared by the header, which is sticky. */
-  scroll-margin-top: 110px;
+  /* See --scroll-clearance in shell.scss. */
+  scroll-margin-top: var(--scroll-clearance);
 
   /* One mono line, so the sentence beside it reads as the situation rather
      than as something we are claiming about ourselves. */
@@ -1184,38 +1194,43 @@
 
 /* Inside a step, the order is the argument: the problem first, then the
    photograph and the answer together.
+
+   Both beats arrive the same way: a fade with a 12px rise, 500ms, ease-out,
+   once. Opacity and movement share one duration and one curve. With the rise
+   running longer on a springier curve than the fade, the block was fully
+   opaque while still travelling, and read as popping in and then settling.
+   No clip-path wipes and no scale.
+
    Beat one — is-in. The situation states itself. The photograph and the
    answer are still waiting. */
 .home-step.is-out .home-step__say {
   opacity: 0.001;
-  transform: translateY(16px);
+  transform: translateY(12px);
 }
 
 .home-step.is-in .home-step__say {
   opacity: 1;
   transform: none;
   transition:
-    opacity 0.5s ease,
-    transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
 }
 
-/* Beat two — is-told, a scroll later: the photograph and the answer arrive
-   together, on the same transition. No transition-delay doing the waiting:
-   the gap between the beats is scroll distance, so it is the reader's pace
-   rather than a number we picked. */
-.home-step:not(.is-told) .home-step__photo,
-.home-step:not(.is-told) .home-step__answer {
+/* Beat two — is-told, a scroll later: the photograph, heading and copy arrive
+   as one block. No transition-delay doing the waiting: the gap between the
+   beats is scroll distance, so it is the reader's pace rather than a number
+   we picked. */
+.home-step:not(.is-told) .home-step__reply {
   opacity: 0.001;
-  transform: translateY(18px);
+  transform: translateY(12px);
 }
 
-.home-step.is-told .home-step__photo,
-.home-step.is-told .home-step__answer {
+.home-step.is-told .home-step__reply {
   opacity: 1;
   transform: none;
   transition:
-    opacity 0.55s ease,
-    transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1);
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
 }
 
 /* ── why we work this way ───────────────────────────────────────────────── */
@@ -1280,7 +1295,7 @@
   padding-block: clamp(44px, 6vw, 88px);
   padding-inline: var(--home-gutter);
   overflow-x: clip;
-  scroll-margin-top: 90px;
+  scroll-margin-top: var(--scroll-clearance);
 
   &__head {
     display: flex;
@@ -1348,17 +1363,24 @@
     /* Supplied artwork, drawn for white. Recolouring someone else's mark to
        suit our palette is not ours to do, so the plate stays light in both
        themes and the logo sits on the ground it was designed for. */
+    /* One row that is exactly the plate's inner height. Left as an auto row
+       it grew to the image's own height, so `max-height: 100%` on the logo
+       measured against the logo and QUT's 96px mark overflowed the plate.
+       With the row pinned, every logo fits inside the same 14px padding. */
     display: grid;
+    grid-template-rows: minmax(0, 1fr);
     place-items: center;
     height: 88px;
     padding: 14px;
     border-radius: $radius-sm;
-    background: #f4f7f5;
+    background: var(--home-logo-plate);
   }
 
   &__logo {
+    max-width: 100%;
     max-height: 100%;
     width: auto;
+    height: auto;
     object-fit: contain;
   }
 
@@ -1458,8 +1480,7 @@
 }
 
 /* A real image slot. Photographs go in in colour, with no tone layer; depth
-   comes from the recessed edge. No photo yet: the initials plate is a
-   deliberate look rather than a gap, same as the crew page. */
+   comes from the recessed edge. Free-standing, so it keeps its own radius. */
 .home-face {
   position: relative;
   aspect-ratio: 4 / 5;
@@ -1495,54 +1516,11 @@
   }
 
   /* NO PHOTOGRAPH — and this is the case that actually has to be designed.
-     The all-or-nothing cases were easy and were already handled: four plates
-     reads as a style, four photographs reads as a team. What was never
-     designed is the mixed row, and that is exactly what this is, for good —
-     portraits for four, and Tom, who will not have one.
-
-     A flat grey box beside three portraits does not read as a decision. It
+     The row is mixed for good: portraits for four, and Tom, who will not have
+     one. A flat grey box beside four portraits does not read as a decision; it
      reads as an image that failed to load, and the eye goes straight to it.
-
-     So the empty plate is made of the same two things everything else here is
-     made of: the two brand colours, pulled right back so the plate sits
-     quietly beside the photographs instead of competing with them, and the
-     mill texture the rest of the site is cut from. Same box, same colour family, different
-     material — a blank in a set, which is what it is. */
-  &--empty {
-    background-image:
-      repeating-linear-gradient(116deg, transparent 0 6px, var(--home-hatch-line) 6px 7px),
-      linear-gradient(
-        158deg,
-        color-mix(in oklab, var(--brand-highlight) 24%, var(--surface-recessed)),
-        color-mix(in oklab, var(--brand-accent) 24%, var(--surface-recessed))
-      );
-    /* No box-shadow here: `.home-face__edge` is the carve in both states, and
-       this only swaps what is under it. */
-  }
-
-  /* Only ever rendered when there is no portrait, and aria-hidden, so this is
-     ornament rather than text — it carries no contrast duty and is meant to be
-     read as material, not words.
-
-     Cut in rather than printed on: the glyph is the plate's own ground colour
-     and the two edges do all the work — dark above, light below, light from
-     above like everything else on this site. The old treatment was
-     text-primary at 0.14, which is a watermark on a grey box. */
-  &__initials {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    font-family: $font-family-display;
-    font-weight: $font-weight-bold;
-    font-size: clamp(34px, 4vw, 54px);
-    letter-spacing: 0.05em;
-    color: var(--surface-recessed);
-    opacity: 0.9;
-    text-shadow:
-      0 -1px 0 var(--carve-dark),
-      0 1px 0 var(--carve-lip);
-  }
+     So the box holds a TerminalTile instead (components/photos), the same tile
+     /team uses, under the same edge. */
 }
 
 .is-out .home-face__img {
@@ -1564,7 +1542,7 @@
   padding-inline: var(--home-gutter);
   max-width: 1240px;
   margin: 0 auto;
-  scroll-margin-top: 90px;
+  scroll-margin-top: var(--scroll-clearance);
 
   &__title {
     font-family: $font-family-read;
@@ -1655,8 +1633,7 @@
   .is-out .home-door,
   .is-out .home-org,
   .is-out .home-step__say,
-  .home-step:not(.is-told) .home-step__photo,
-  .home-step:not(.is-told) .home-step__answer {
+  .home-step:not(.is-told) .home-step__reply {
     opacity: 1;
     transform: none;
     clip-path: none;

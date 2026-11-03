@@ -142,7 +142,7 @@ export default function StreamMoves() {
   }, [reduced])
 
   return (
-    <section className="home-moves" aria-labelledby="moves-heading">
+    <section id="what-changes" className="home-moves" aria-labelledby="moves-heading">
       <div className="home-moves__head">
         <p className="home-eyebrow">What changes</p>
         <h2 id="moves-heading" className="home-moves__title">

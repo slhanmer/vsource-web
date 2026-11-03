@@ -1,36 +1,37 @@
 'use client'
 
-import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from '@hooks'
-import { CUT_MS, DELETE_MS, HOLD_MS, SEQUENCE, TYPE_MS } from './headlineTimeline'
+import { DELETE_MS, HOLD_MS, SEQUENCE, TYPE_MS, WORDS } from './headlineTimeline'
 
 /**
  * The headline performs the thesis.
  *
- * "Software / Websites / Robotics — built to fit", where the leading word
- * sits in a cut slot. The slot is recut to the next word's width first, and
- * only then is the word typed into it: the opening is made to fit, rather than
- * the word being squeezed to suit the opening. That is the argument of the page
- * rendered as a piece of type.
+ * "Software / Robotics / Websites — built to fit", where the leading word
+ * sits in a cut slot. The slot is cut once, to the width of the widest word,
+ * and never changes after that: each word is typed into the same opening,
+ * left-aligned on the same baseline, and the shorter ones leave a little of it
+ * open on the right. One fixed opening that every word fits is steadier to read
+ * than a slot that moves between words, and nothing beside it has to move.
  *
  * The typing convention is the header readout's, deliberately — same site, same
  * machine. Every character has its own span from the first frame and untyped
- * ones are `visibility: hidden`, so the word holds its full width throughout
- * and the slot never has to chase the text. The caret has zero net width for
- * the same reason.
+ * ones are `display: none`, so the typed text grows rightward from the slot's
+ * left edge. The caret has zero net width, so it never pushes the text.
  *
  * Three things this has to get right:
  *
  *   1. **The sentence exists in the HTML.** A crawler that does not run
  *      JavaScript — per the SEO notes, most of the AI ones — must still read
- *      "Software, websites and robotics, built to fit." That is the
+ *      "Software, robotics and websites, built to fit." That is the
  *      visually-hidden span; the animated copy is aria-hidden so a screen
  *      reader is not read three words in a row.
- *   2. **Widths are measured, not guessed**, and only once the webfont has
- *      landed. Measure against the fallback face and every width is wrong by
- *      the time the real font swaps in.
- *   3. **WCAG 2.2.2, by stopping.** It plays once — Software, Websites,
- *      Robotics, Software — and stops on Software inside five seconds, so it
+ *   2. **The width is measured, not guessed**, once, and only after the webfont
+ *      has landed. Measure against the fallback face and the width is wrong by
+ *      the time the real font swaps in. It is stored in em, so it follows the
+ *      headline's clamp()ed size across viewports without measuring again.
+ *   3. **WCAG 2.2.2, by stopping.** It plays once — Software, Robotics,
+ *      Websites, Software — and stops on Software inside five seconds, so it
  *      needs no pause control. It must STAY inside five seconds: the budget and
  *      its arithmetic are in headlineTimeline.ts, and a test fails if a fourth
  *      word or a longer hold takes it over. Under prefers-reduced-motion it does
@@ -52,52 +53,45 @@ export default function RotatingHeadline() {
   const caret = typing && !reduced
 
   /**
-   * Recut the slot to the current word. Every character is in the DOM whether
-   * it has been typed or not, so the inner span is always exactly the finished
-   * word wide and can be measured directly. The slot's own padding is added
-   * back on — miss that and the word is clipped by the padding either side.
+   * Cut the slot to the widest word, once. Each word is measured from a clone
+   * of the inner span, so it is set in the same weight and size as the live
+   * text, and the slot's own padding is added back on — miss that and the
+   * widest word is clipped by the padding either side. The result is stored in
+   * em against the slot's font size, so it scales with the headline across
+   * breakpoints and nothing ever has to measure it again.
    */
-  const fit = useCallback(() => {
-    const slot = slotRef.current
-    const inner = innerRef.current
-    if (!slot || !inner) return
-
-    // Measured from a clone with every character inked. The untyped ones are
-    // display:none in the live copy so the typed text can sit centred in the
-    // opening and grow outward from the middle — which means the live element
-    // is never the finished width and cannot be measured directly.
-    const probe = inner.cloneNode(true) as HTMLElement
-    probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre'
-    probe.querySelectorAll('.rotator__ghost').forEach((ghost) => {
-      ghost.classList.remove('rotator__ghost')
-    })
-    probe.querySelectorAll('.rotator__caret').forEach((caret) => caret.remove())
-    slot.appendChild(probe)
-    const width = probe.getBoundingClientRect().width
-    slot.removeChild(probe)
-    if (!width) return
-
-    const style = getComputedStyle(slot)
-    const padding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight)
-    slot.style.width = `${width + padding}px`
-  }, [])
-
-  // Measure once the font is actually available, again whenever the word
-  // changes, and on resize.
   useEffect(() => {
     let cancelled = false
     const ready = document.fonts?.ready ?? Promise.resolve()
     ready.then(() => {
-      if (!cancelled) fit()
+      const slot = slotRef.current
+      const inner = innerRef.current
+      if (cancelled || !slot || !inner) return
+
+      const widest = Math.max(
+        ...WORDS.map((candidate) => {
+          const probe = inner.cloneNode(false) as HTMLElement
+          probe.textContent = candidate
+          probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre'
+          slot.appendChild(probe)
+          const width = probe.getBoundingClientRect().width
+          slot.removeChild(probe)
+          return width
+        })
+      )
+      if (!widest) return
+
+      const style = getComputedStyle(slot)
+      const padding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight)
+      const em = parseFloat(style.fontSize)
+      slot.style.width = `${(widest + padding) / em}em`
     })
-    window.addEventListener('resize', fit)
     return () => {
       cancelled = true
-      window.removeEventListener('resize', fit)
     }
-  }, [fit, step])
+  }, [])
 
-  // The run: hold, backspace, recut, type — once through SEQUENCE, then stop.
+  // The run: hold, backspace, type — once through SEQUENCE, then stop.
   // Reduced motion tears the chain down; the render below then shows the last
   // word, which is the first word, so nothing visibly changes.
   useEffect(() => {
@@ -121,18 +115,17 @@ export default function RotatingHeadline() {
         n -= 1
         setShown(Math.max(n, 0))
         if (n > 0) after(DELETE_MS, back)
-        else after(CUT_MS, advance)
+        else advance()
       }
       after(DELETE_MS, back)
     }
 
-    // The slot is recut here — setStep re-renders the new word at full width,
-    // the measuring effect above picks it up, and the width transition runs
-    // while nothing is being typed.
+    // The slot is already the right width for every word, so the next one is
+    // set and typed straight away.
     const advance = () => {
       stepRef.current += 1
       setStep(stepRef.current)
-      after(CUT_MS, type)
+      type()
     }
 
     const type = () => {
@@ -161,12 +154,10 @@ export default function RotatingHeadline() {
   return (
     <div className="rotator">
       <h1 className="rotator__h1">
-        <span className="visually-hidden">Software, websites and robotics, built to fit.</span>
+        <span className="visually-hidden">Software, robotics and websites, built to fit.</span>
         {/*
-          The slot gets its own line. On one line with "built to fit" the whole
-          line changes width every time the word does, so the tail slid left and
-          right on every cut. Alone on a line it grows from its own middle and
-          nothing else on the page knows.
+          The slot gets its own line, so the headline reads as two lines:
+          the word in its opening, then "built to fit." under it.
         */}
         <span className="rotator__cutline" aria-hidden="true">
           <span ref={slotRef} className="rotator__slot">

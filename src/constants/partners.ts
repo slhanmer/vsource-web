@@ -6,13 +6,12 @@
  * recognises. Aptium's screens are under NDA, which is why the proof here is
  * words rather than a product shot.
  *
- * In the partners band, logos sit on a light plate regardless of theme, in
- * their own colours: they are supplied artwork designed for white. The fold's
- * "Working with" strip shows the same files flattened to one theme ink by a CSS
- * filter, which only works because every file has a transparent background.
- * Keep it that way when a logo is replaced.
+ * Logos sit on a light plate regardless of theme, in their own colours, both
+ * in the partners band and in the fold's "Working with" strip: they are
+ * supplied artwork designed for white, and recolouring them is not ours to do.
+ * `qut.png` is the original file until QUT's official artwork arrives.
  *
- * `pending` marks copy that is not ours yet. It renders as a visible query on
+ * `pending` marks copy that is not confirmed yet. It renders as a visible query on
  * the page rather than silently reading as finished text — better that a
  * placeholder looks like a question during review than that it ships.
  */
@@ -26,7 +25,8 @@ export interface Partner {
   width: number
   height: number
   body: string
-  /** True while the wording still needs to come from Craig. */
+  /** True while the wording is unconfirmed: what the relationship involves
+   *  has not yet been checked with the client or partner it describes. */
   pending?: boolean
 }
 
@@ -47,8 +47,7 @@ export const PARTNERS: Partner[] = [
     logo: '/logos/partners/qut.png',
     width: 94,
     height: 96,
-    body: 'Full industry partner with QUT.',
-    pending: true,
+    body: 'Full industry partner with QUT, with student capstone teams working on live projects with us.',
   },
   {
     id: 'training-professionals',
@@ -57,7 +56,6 @@ export const PARTNERS: Partner[] = [
     logo: '/logos/partners/training-professionals.png',
     width: 85,
     height: 72,
-    body: 'Training Professionals.',
-    pending: true,
+    body: 'Rebuilt a ten-year-old training platform, then added AI marking that runs on hardware we own in Australia, so student work never goes to a third-party AI service.',
   },
 ]

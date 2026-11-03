@@ -6,13 +6,14 @@ import Reveal from '@/components/home/Reveal'
 import RotatingHeadline from '@/components/home/RotatingHeadline'
 import StreamMoves from '@/components/home/StreamMoves'
 import CutPhoto from '@/components/photos/CutPhoto'
+import TerminalTile from '@/components/photos/TerminalTile'
 import './styles/pages.scss'
 import './styles/home.scss'
 
 export const metadata: Metadata = {
-  title: 'Software, websites and robotics — Brisbane',
+  title: 'Software, robotics and websites — Brisbane',
   description:
-    'Custom software, websites and systems work, built in Brisbane on hardware we own. We work out what is actually wrong, build the thing that fixes it, and stay on to run it.',
+    'Custom software, robotics and websites, built in Brisbane on hardware we own. We work out what is actually wrong, build the thing that fixes it, and stay on to run it.',
 }
 
 /**
@@ -117,7 +118,7 @@ export default function Home() {
                 ))}
               </ul>
             </div>
-            <a className="home-plate__cue" href="#software">
+            <a className="home-plate__cue" href="#what-changes">
               <span className="home-plate__cue-label">More on each</span>
               <span className="home-plate__cue-knob" aria-hidden="true">
                 <svg viewBox="0 0 24 24" focusable="false">
@@ -188,7 +189,7 @@ export default function Home() {
                 <p className="home-org__body">
                   {partner.body}
                   {partner.pending && (
-                    <span className="home-pending" title="Wording still to come from Craig">
+                    <span className="home-pending" title="Wording not confirmed yet">
                       {' '}
                       [wording needed]
                     </span>
@@ -208,7 +209,7 @@ export default function Home() {
         <div className="home-people">
           {CREW.map((member) => (
             <figure key={member.id} className="home-person">
-              <div className={`home-face ${member.portrait ? '' : 'home-face--empty'}`.trim()}>
+              <div className="home-face">
                 {member.portrait ? (
                   /* In colour, with no tone layer. The edge below is drawn
                      over it. */
@@ -221,12 +222,7 @@ export default function Home() {
                     className="home-face__img"
                   />
                 ) : (
-                  <span className="home-face__initials" aria-hidden="true">
-                    {member.name
-                      .split(' ')
-                      .map((part) => part[0])
-                      .join('')}
-                  </span>
+                  <TerminalTile name={member.name} />
                 )}
                 <span className="home-face__edge" aria-hidden="true" />
               </div>

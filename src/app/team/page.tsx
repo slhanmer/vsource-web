@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { CREW, PHOTOS } from '@constants'
 import CutPhoto from '@/components/photos/CutPhoto'
+import TerminalTile from '@/components/photos/TerminalTile'
 import '../styles/pages.scss'
 import '../styles/crew.scss'
 
@@ -20,24 +21,14 @@ export const metadata: Metadata = {
  * and the route was not. /crew now 301s here (next.config.ts); the old
  * app/crew/ folder has been deleted.
  *
- * Initials fallback, used where a portrait does not exist. Deliberately not a
- * grey avatar silhouette: the box keeps its 4:5 shape and takes a tinted,
- * milled plate with the initials cut into it, so it reads as a blank in a set
- * rather than as an image that failed to load.
+ * Where a portrait does not exist, the box holds a TerminalTile: the same
+ * 4:5 shape and edge, with a terminal answering `whoami` in it. Deliberately
+ * not a grey avatar silhouette, which reads as an image that failed to load.
  *
  * That matters because the row is MIXED, not empty. Tom will never have a
- * photograph (see crew.ts), the others will, and a flat
- * grey box in that row is the thing the eye goes to first. See
- * `.crew__portrait--empty` in crew.scss, and keep it in step with
- * `.home-face--empty` in home.scss.
+ * photograph (see crew.ts), the others will, and a flat grey box in that row
+ * is the thing the eye goes to first. The home team row uses the same tile.
  */
-const initials = (name: string) =>
-  name
-    .split(' ')
-    .map((part) => part[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase()
 
 const CREW_SCHEMA = {
   '@context': 'https://schema.org',
@@ -84,10 +75,7 @@ export default function TeamPage() {
               the shoot lands. Photographs go in in colour, with no tone
               layer; the recessed edge is drawn over the top.
             */}
-            <div
-              className={`crew__portrait ${member.portrait ? '' : 'crew__portrait--empty'}`.trim()}
-              aria-hidden="true"
-            >
+            <div className="crew__portrait" aria-hidden="true">
               {member.portrait ? (
                 <Image
                   src={member.portrait}
@@ -98,7 +86,7 @@ export default function TeamPage() {
                   className="crew__portrait-img"
                 />
               ) : (
-                <span className="crew__initials">{initials(member.name)}</span>
+                <TerminalTile name={member.name} />
               )}
               <span className="crew__portrait-edge" aria-hidden="true" />
             </div>

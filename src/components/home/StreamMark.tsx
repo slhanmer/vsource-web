@@ -154,8 +154,8 @@ export default function StreamMark({ id, className = '' }: Props) {
   let mark = null
 
   if (id === 'software') mark = <SoftwareMark />
-  else if (id === 'websites') mark = <WebsitesMark />
   else if (id === 'robotics') mark = <RoboticsMark />
+  else if (id === 'websites') mark = <WebsitesMark />
   else return null
 
   return <div className={`markwrap ${className}`.trim()}>{mark}</div>

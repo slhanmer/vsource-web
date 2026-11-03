@@ -11,7 +11,8 @@ export interface SiteNavItem {
 
 /**
  * The three streams first, because they are what is being sold, then the proof
- * and the way to start.
+ * and the way to start. The streams are in the same order as STREAMS
+ * (constants/streams.ts) — keep the two in step.
  *
  * Team is deliberately NOT here. Five nav items plus a mark and a theme switch
  * is more than a 68px band can hold honestly, and of the five the people page
@@ -21,8 +22,8 @@ export interface SiteNavItem {
  */
 export const SITE_NAV: SiteNavItem[] = [
   { label: 'Software', href: '/software' },
-  { label: 'Websites', href: '/websites' },
   { label: 'Robotics', href: '/robotics' },
+  { label: 'Websites', href: '/websites' },
   { label: 'Built', href: '/built' },
   { label: 'Contact', href: '/contact' },
 ]

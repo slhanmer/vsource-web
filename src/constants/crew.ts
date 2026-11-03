@@ -1,8 +1,10 @@
 /**
  * The team.
  *
- * Order is Craig, Simon, Tom, Ronan, Asuka: the two who scope and design a job,
- * then the three who make it hold up in production.
+ * Order is Craig, Simon, Ronan, Asuka, Tom: the two who scope and design a
+ * job, then the three who make it hold up in production, with Tom last. His is
+ * the one tile with no photograph, and at the end of the row it closes the set
+ * instead of interrupting the faces (Simon's call, review-1, 3 November).
  *
  * Bios are written to be specific rather than flattering: the point of this
  * section is that a prospective client can tell we are identifiable people with
@@ -15,8 +17,8 @@
  * 3 → 1 on this page; see the note at the top of crew.scss for why the two
  * differ. A sixth person needs neither changed.
  *
- * ⚠ PORTRAITS ARE A MIXED ROW, NOT AN EMPTY ONE. The empty plate is designed
- * for that case rather than being a fallback — see `.crew__portrait--empty`.
+ * ⚠ PORTRAITS ARE A MIXED ROW, NOT AN EMPTY ONE. The no-portrait tile is
+ * designed for that case rather than being a fallback — see TerminalTile.
  *
  * PORTRAIT CONVENTION — decided, do not re-decide it:
  *
@@ -35,8 +37,8 @@
  * VERCEL_ENV is 'production' and any entry still has the flag. Replace the
  * file, point `portrait` at `/crew/<id>.jpg`, and delete the flag.
  *
- * Tom will not have a portrait. That is permanent, not pending: the empty
- * plate is his treatment, not a gap waiting to be filled. Do not chase a
+ * Tom will not have a portrait. That is permanent, not pending: the terminal
+ * tile is his treatment, not a gap waiting to be filled. Do not chase a
  * photograph for him, and do not mark his entry as missing one.
  */
 export interface CrewMember {
@@ -50,8 +52,8 @@ export interface CrewMember {
   summary: string
   /** Fuller bio used on the team page, one entry per paragraph. */
   bio: string[]
-  /** `/crew/<id>.jpg` — see the convention above. Falls back to the initials
-   *  plate when absent. */
+  /** `/crew/<id>.jpg` — see the convention above. Falls back to the terminal
+   *  tile when absent. */
   portrait?: string
   /** The portrait is a stock stand-in, not the person. Review only: the guard
    *  below fails a production build while any entry has it. */
@@ -85,15 +87,6 @@ export const CREW: CrewMember[] = [
     ],
   },
   {
-    id: 'tom-lee',
-    name: 'Tom Lee',
-    role: 'Backend & Platform Developer',
-    summary: 'Backend, and the platform under it. Knows why it broke at 2am.',
-    bio: [
-      'Tom writes the code behind the interface \u2014 the services, the data and the integrations that make the visible part work. He has worked backend and full-stack since 2018, starting from a Diploma in Web Development and building the rest of the stack himself, which is how most of the people who are good at this actually learned it. On a system that has to keep running unattended, the code is only half the job; the other half is the platform under it, and Tom owns that too, from the servers and networks up to the pipeline that carries a build to a live site. If something breaks at two in the morning, he is the one who already knows why.',
-    ],
-  },
-  {
     id: 'ronan-donahoe',
     name: 'Ronan Donahoe',
     role: 'Testing & Robotics',
@@ -116,6 +109,15 @@ export const CREW: CrewMember[] = [
       'Tests it until he knows why it works — computer science, with a background in machine learning.',
     bio: [
       'Asuka holds a Bachelor of Information Technology, majoring in Computer Science, from QUT, with an academic background in machine learning, computer vision, and software development. At V Source, he focuses on software testing and quality assurance, identifying issues that might otherwise go unnoticed and ensuring the final product works as intended. With a particular interest in artificial intelligence and problem-solving, he brings an analytical approach to his work and a curiosity for understanding not just whether something works, but why it works — or why it doesn’t.',
+    ],
+  },
+  {
+    id: 'tom-lee',
+    name: 'Tom Lee',
+    role: 'Backend & Platform Developer',
+    summary: 'Backend, and the platform under it. Knows why it broke at 2am.',
+    bio: [
+      'Tom writes the code behind the interface \u2014 the services, the data and the integrations that make the visible part work. He has worked backend and full-stack since 2018, starting from a Diploma in Web Development and building the rest of the stack himself, which is how most of the people who are good at this actually learned it. On a system that has to keep running unattended, the code is only half the job; the other half is the platform under it, and Tom owns that too, from the servers and networks up to the pipeline that carries a build to a live site. If something breaks at two in the morning, he is the one who already knows why.',
     ],
   },
 ]

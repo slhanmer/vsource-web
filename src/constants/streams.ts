@@ -45,7 +45,7 @@
 /** The streams, as a closed set. A union rather than `string` so anything
  *  keyed by stream — the home page photographs in photos.ts — fails the type
  *  check when a stream is added without its entry. */
-export type StreamId = 'software' | 'websites' | 'robotics'
+export type StreamId = 'software' | 'robotics' | 'websites'
 
 export interface Stream {
   /** Anchor id, also used for the row id and the nav link. */
@@ -194,6 +194,55 @@ export const STREAMS: Stream[] = [
     href: '/software',
   },
   {
+    id: 'robotics',
+    name: 'Robotics',
+    door: 'Machines that move, and the software that keeps them moving.',
+    problem: 'The hardware works on the bench and nowhere else.',
+    solution:
+      'The machine, its control loop and the software around it, built by the people who have to make it work in the field.',
+    lede: 'Robotics and automation — the mechanism, the control loop and the software, worked out together rather than handed between teams.',
+    caps: [
+      'Computer systems and mechatronics backgrounds, with two engineering degrees in progress',
+      'Control software for platforms that walk, roll or fly',
+      'Sensors, embedded hardware and the code that reads them',
+      'Systems where the software and the hardware have to agree with each other',
+    ],
+    who: 'For work where the software has to drive something physical.',
+    proof: {
+      label: 'Partnership',
+      body: 'Full industry partner with QUT, with two Work Integrated Learning capstones running — one on the drone work, one on SAUCE.',
+      pending: true,
+    },
+    pricing: {
+      value: 'Priced per engagement',
+      note: 'Placeholder. Scope is Craig\u2019s to define, and the price follows the scope.',
+    },
+    promise: 'Machines that move, and the software that keeps them moving — built together.',
+    pageLede:
+      'Placeholder — this page needs Craig. Every word of this stream is written blind and none of it has been checked against what is actually being sold.',
+    sections: [
+      {
+        id: 'scope',
+        title: 'What this stream actually is',
+        body: [
+          'Placeholder. Craig defines the scope here: what kind of robotics work is being taken on, at what stage of a project, and for whom.',
+          'One thing constrains whatever goes in: nobody here is RPEQ-registered, and Queensland regulates who may provide "professional engineering services" under the Professional Engineers Act 2002. That is why this stream is called Robotics, and why this page describes work, not titles.',
+        ],
+        pending: true,
+      },
+      {
+        id: 'proof',
+        title: 'What we can point at',
+        body: [
+          'Placeholder, and the honest gap on this site. Software has Aptium and Websites has the venue sites; this stream has a QUT partnership with two capstones running and no delivered work of its own.',
+          'This stream is new. The QUT partnership and the two capstones are what it can point at today; delivered work will be listed here as it lands.',
+        ],
+        pending: true,
+      },
+    ],
+    href: '/robotics',
+  },
+  {
     id: 'websites',
     name: 'Websites',
     door: 'Fast, accessible, and yours to edit.',
@@ -253,54 +302,5 @@ export const STREAMS: Stream[] = [
       },
     ],
     href: '/websites',
-  },
-  {
-    id: 'robotics',
-    name: 'Robotics',
-    door: 'Machines that move, and the software that keeps them moving.',
-    problem: 'The hardware works on the bench and nowhere else.',
-    solution:
-      'The machine, its control loop and the software around it, built by the people who have to make it work in the field.',
-    lede: 'Robotics and automation — the mechanism, the control loop and the software, worked out together rather than handed between teams.',
-    caps: [
-      'Computer systems and mechatronics backgrounds, with two engineering degrees in progress',
-      'Control software for platforms that walk, roll or fly',
-      'Sensors, embedded hardware and the code that reads them',
-      'Systems where the software and the hardware have to agree with each other',
-    ],
-    who: 'For work where the software has to drive something physical.',
-    proof: {
-      label: 'Partnership',
-      body: 'Full industry partner with QUT, with two Work Integrated Learning capstones running — one on the drone work, one on SAUCE.',
-      pending: true,
-    },
-    pricing: {
-      value: 'Priced per engagement',
-      note: 'Placeholder. Scope is Craig\u2019s to define, and the price follows the scope.',
-    },
-    promise: 'Machines that move, and the software that keeps them moving — built together.',
-    pageLede:
-      'Placeholder — this page needs Craig. Every word of this stream is written blind and none of it has been checked against what is actually being sold.',
-    sections: [
-      {
-        id: 'scope',
-        title: 'What this stream actually is',
-        body: [
-          'Placeholder. Craig defines the scope here: what kind of robotics work is being taken on, at what stage of a project, and for whom.',
-          'One thing constrains whatever goes in: nobody here is RPEQ-registered, and Queensland regulates who may provide "professional engineering services" under the Professional Engineers Act 2002. That is why this stream is called Robotics, and why this page describes work, not titles.',
-        ],
-        pending: true,
-      },
-      {
-        id: 'proof',
-        title: 'What we can point at',
-        body: [
-          'Placeholder, and the honest gap on this site. Software has Aptium and Websites has the venue sites; this stream has a QUT partnership with two capstones running and no delivered work of its own.',
-          'This stream is new. The QUT partnership and the two capstones are what it can point at today; delivered work will be listed here as it lands.',
-        ],
-        pending: true,
-      },
-    ],
-    href: '/robotics',
   },
 ]

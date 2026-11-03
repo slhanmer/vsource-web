@@ -1,6 +1,5 @@
 import {
   BUDGET_MS,
-  CUT_MS,
   DELETE_MS,
   HOLD_MS,
   SEQUENCE,
@@ -18,10 +17,10 @@ describe('rotating headline timeline', () => {
     // Summed here from the constants, not just trusted from timelineMs().
     let total = 0
     for (let i = 1; i < SEQUENCE.length; i += 1) {
-      total +=
-        HOLD_MS + SEQUENCE[i - 1].length * DELETE_MS + 2 * CUT_MS + SEQUENCE[i].length * TYPE_MS
+      total += HOLD_MS + SEQUENCE[i - 1].length * DELETE_MS + SEQUENCE[i].length * TYPE_MS
     }
     expect(total).toBe(timelineMs())
+    expect(total).toBe(3240)
     expect(total).toBeLessThanOrEqual(BUDGET_MS)
     expect(BUDGET_MS).toBeLessThan(5000)
   })

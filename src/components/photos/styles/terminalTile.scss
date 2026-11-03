@@ -1,0 +1,64 @@
+// The no-portrait tile. See TerminalTile.tsx.
+//
+// The surface is the readout strip's: its chrome-dark face, its subtle label
+// colour for the command, its secondary value colour for the answer, and its
+// route-active caret. The carve is not drawn here — the portrait box this sits
+// in draws its edge on a layer above it, the same as over a photograph.
+.term-tile {
+  position: absolute;
+  inset: 0;
+  container-type: inline-size;
+  background: var(--surface-chrome-dark);
+}
+
+// Sized from the tile's own width, so one rule fits a 230px home teaser and a
+// 380px /team card.
+.term-tile__screen {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  padding: 11cqi 10cqi;
+  font-family: $font-family-mono;
+  font-size: clamp(13px, 8.5cqi, 24px);
+  line-height: 1.4;
+  white-space: pre;
+}
+
+.term-tile__line--cmd {
+  color: var(--text-subtle);
+}
+
+.term-tile__line--out {
+  color: var(--text-secondary);
+}
+
+// A block cursor, like the readout's caret. Four one-second blinks, then the
+// animation ends and the cursor is left solid — inside the five seconds after
+// which WCAG 2.2.2 would want a pause control.
+.term-tile__cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.05em;
+  margin-left: 0.15em;
+  vertical-align: text-bottom;
+  background: var(--route-active);
+  animation: term-tile-blink 1s steps(1, end) 4;
+}
+
+// On the home page the team row is revealed on scroll, so the blinks wait for
+// it to arrive rather than running out while it is still off screen.
+.is-out .term-tile__cursor {
+  animation: none;
+}
+
+@keyframes term-tile-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .term-tile__cursor {
+    animation: none;
+  }
+}

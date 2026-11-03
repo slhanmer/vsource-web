@@ -192,7 +192,7 @@ problem, not a style note.
 - **Nobody here is called an engineer.** Queensland regulates who may provide
   "professional engineering services" (Professional Engineers Act 2002, BPEQ)
   and nobody at V Source is RPEQ-registered. The same goes for the offer: the
-  third stream is **Robotics**, not Engineering, because a stream called
+  stream is **Robotics**, not Engineering, because a stream called
   Engineering offers the regulated service. Do not rename it back.
 - **The phone number appears twice, deliberately:** the header contacts and
   `/contact`. It was pulled off the home page fold and the home page close
@@ -230,7 +230,7 @@ own. Do not hand-maintain a URL list.
 
 ## Routes
 
-`/` · `/software` · `/websites` · `/robotics` · `/built` · `/built/[slug]` ·
+`/` · `/software` · `/robotics` · `/websites` · `/built` · `/built/[slug]` ·
 `/team` · `/contact`
 
 Permanent redirects (308) in `next.config.ts`: `/work` → `/built`, `/services` → `/`, `/crew` → `/team`.
@@ -282,8 +282,9 @@ As of 2 November:
 
 - All work is on `development`. The live site is still the 4 August build
   until the Vercel cutover.
-- Invented copy still showing a marker: every `/built` entry, two
-  partners, and `/robotics` (Craig's). The full list is the Stage 4 audit in
+- Invented copy still showing a marker: every `/built` entry and
+  `/robotics` (Craig's). Both partner entries were confirmed by Simon on
+  3 November (review-1). The full list is the Stage 4 audit in
   `docs/briefs/launch-ready.log.md`.
 - Photos from the 2 November shoot are coming. Tom has no portrait,
   permanently. Group and working shots go in `src/constants/photos.ts`.

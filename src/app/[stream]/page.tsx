@@ -7,7 +7,7 @@ import '../styles/pages.scss'
 import '../styles/stream.scss'
 
 /**
- * One offer per stream — /software, /websites, /robotics.
+ * One offer per stream — /software, /robotics, /websites.
  *
  * One template, three routes, all of it driven from constants/streams.ts. A
  * fourth stream would be a data change rather than a new page, and nothing here

@@ -66,22 +66,6 @@ export const PHOTOS: {
         credit: { name: 'Cabri Caldwell', url: 'https://unsplash.com/photos/6jg8KPfEOtU' },
       },
     },
-    websites: {
-      door: {
-        src: '/photos/stock/websites-door.jpg',
-        alt: 'A café counter in daylight: a customer in a flannel shirt talks with a staff member in a striped top, under a hand-lettered drinks menu on the wall.',
-        width: 2000,
-        height: 1333,
-        credit: { name: 'Toa Heftiba', url: 'https://unsplash.com/photos/Oyf1-w0lxbE' },
-      },
-      step: {
-        src: '/photos/stock/websites-step.jpg',
-        alt: 'A restaurant kitchen pass mid-service: a cook in a blue apron lifts a pan of mussels over the steel bench, with squeeze bottles and plates lined up beside it.',
-        width: 2000,
-        height: 1331,
-        credit: { name: 'Stella He', url: 'https://unsplash.com/photos/hM6MSq__M0Q' },
-      },
-    },
     robotics: {
       door: {
         src: '/photos/stock/robotics-door.jpg',
@@ -96,6 +80,22 @@ export const PHOTOS: {
         width: 2000,
         height: 1331,
         credit: { name: 'Eric Stoynov', url: 'https://unsplash.com/photos/y25LI38cd9w' },
+      },
+    },
+    websites: {
+      door: {
+        src: '/photos/stock/websites-door.jpg',
+        alt: 'A café counter in daylight: a customer in a flannel shirt talks with a staff member in a striped top, under a hand-lettered drinks menu on the wall.',
+        width: 2000,
+        height: 1333,
+        credit: { name: 'Toa Heftiba', url: 'https://unsplash.com/photos/Oyf1-w0lxbE' },
+      },
+      step: {
+        src: '/photos/stock/websites-step.jpg',
+        alt: 'A restaurant kitchen pass mid-service: a cook in a blue apron lifts a pan of mussels over the steel bench, with squeeze bottles and plates lined up beside it.',
+        width: 2000,
+        height: 1331,
+        credit: { name: 'Stella He', url: 'https://unsplash.com/photos/hM6MSq__M0Q' },
       },
     },
   },

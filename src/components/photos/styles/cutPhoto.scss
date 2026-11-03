@@ -1,6 +1,10 @@
 // A photograph cut into the plate, in colour. Same treatment as the portraits
 // (`.home-face`, `.crew__portrait`): no tone layer and no filter, and the
 // recessed edge drawn over the top.
+//
+// $radius-md is for a free-standing photograph only. Inside a frame a
+// photograph never carries its own radius: the frame clips it where it touches
+// the edge, and it is square where it is inset (see `.home-door__photo`).
 .cut-photo {
   position: relative;
   margin: 0;
