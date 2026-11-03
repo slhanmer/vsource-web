@@ -7,7 +7,7 @@ import { CUT_MS, DELETE_MS, HOLD_MS, SEQUENCE, TYPE_MS } from './headlineTimelin
 /**
  * The headline performs the thesis.
  *
- * "Software / Websites / Engineering — built to fit", where the leading word
+ * "Software / Websites / Robotics — built to fit", where the leading word
  * sits in a cut slot. The slot is recut to the next word's width first, and
  * only then is the word typed into it: the opening is made to fit, rather than
  * the word being squeezed to suit the opening. That is the argument of the page
@@ -23,14 +23,14 @@ import { CUT_MS, DELETE_MS, HOLD_MS, SEQUENCE, TYPE_MS } from './headlineTimelin
  *
  *   1. **The sentence exists in the HTML.** A crawler that does not run
  *      JavaScript — per the SEO notes, most of the AI ones — must still read
- *      "Software, websites and engineering, built to fit." That is the
+ *      "Software, websites and robotics, built to fit." That is the
  *      visually-hidden span; the animated copy is aria-hidden so a screen
  *      reader is not read three words in a row.
  *   2. **Widths are measured, not guessed**, and only once the webfont has
  *      landed. Measure against the fallback face and every width is wrong by
  *      the time the real font swaps in.
  *   3. **WCAG 2.2.2, by stopping.** It plays once — Software, Websites,
- *      Engineering, Software — and stops on Software inside five seconds, so it
+ *      Robotics, Software — and stops on Software inside five seconds, so it
  *      needs no pause control. It must STAY inside five seconds: the budget and
  *      its arithmetic are in headlineTimeline.ts, and a test fails if a fourth
  *      word or a longer hold takes it over. Under prefers-reduced-motion it does
@@ -161,7 +161,7 @@ export default function RotatingHeadline() {
   return (
     <div className="rotator">
       <h1 className="rotator__h1">
-        <span className="visually-hidden">Software, websites and engineering, built to fit.</span>
+        <span className="visually-hidden">Software, websites and robotics, built to fit.</span>
         {/*
           The slot gets its own line. On one line with "built to fit" the whole
           line changes width every time the word does, so the tail slid left and

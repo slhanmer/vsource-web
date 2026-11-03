@@ -10,7 +10,7 @@ import './styles/pages.scss'
 import './styles/home.scss'
 
 export const metadata: Metadata = {
-  title: 'Software, websites and engineering — Brisbane',
+  title: 'Software, websites and robotics — Brisbane',
   description:
     'Custom software, websites and systems work, built in Brisbane on hardware we own. We work out what is actually wrong, build the thing that fixes it, and stay on to run it.',
 }

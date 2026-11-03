@@ -35,8 +35,9 @@
  * degrees; Simon holds computer science; Tom a diploma plus eight years. Nobody
  * here is RPEQ-registered, and Queensland regulates who may provide
  * "professional engineering services" (Professional Engineers Act 2002, BPEQ).
- * So nothing on this site calls anyone a qualified engineer, and stream 03 no
- * longer claims the title either — it describes the work instead. Revisit the
+ * So nothing on this site calls anyone a qualified engineer, and stream 03 was
+ * renamed from Engineering to Robotics in November 2026 for the same reason:
+ * offering "engineering" is offering the regulated service. Revisit the
  * wording when Craig and Ronan finish, not before. The scope of what that
  * stream actually sells is still Craig's to define; this copy is mine and
  * unverified.
@@ -44,7 +45,7 @@
 /** The streams, as a closed set. A union rather than `string` so anything
  *  keyed by stream — the home page photographs in photos.ts — fails the type
  *  check when a stream is added without its entry. */
-export type StreamId = 'software' | 'websites' | 'engineering'
+export type StreamId = 'software' | 'websites' | 'robotics'
 
 export interface Stream {
   /** Anchor id, also used for the row id and the nav link. */
@@ -74,7 +75,7 @@ export interface Stream {
   /** Proof. Label plus body; `pending` marks copy that is not ours yet. */
   proof: { label: string; body: string; pending?: boolean }
   /** What it costs, said on the page rather than hidden behind a form.
-   *  Software and Engineering cannot be priced before they are scoped, and
+   *  Software and Robotics cannot be priced before they are scoped, and
    *  saying so plainly is more useful than "contact us for pricing". */
   pricing: { value: string; note: string }
   /** The h1 on the stream's own page. A promise, not a label. */
@@ -254,20 +255,20 @@ export const STREAMS: Stream[] = [
     href: '/websites',
   },
   {
-    id: 'engineering',
-    name: 'Engineering',
-    door: 'The problem worked out properly, before anyone builds.',
-    problem: 'Nobody has written down what it actually has to do.',
+    id: 'robotics',
+    name: 'Robotics',
+    door: 'Machines that move, and the software that keeps them moving.',
+    problem: 'The hardware works on the bench and nowhere else.',
     solution:
-      'The problem written down properly first — what it has to do, and how you will know when it does.',
-    lede: 'Working out what the system actually has to do — before anyone writes code, or instead of writing any.',
+      'The machine, its control loop and the software around it, built by the people who have to make it work in the field.',
+    lede: 'Robotics and automation — the mechanism, the control loop and the software, worked out together rather than handed between teams.',
     caps: [
       'Computer systems and mechatronics backgrounds, with two engineering degrees in progress',
-      'Working out the requirement properly before a build is committed to',
-      'Documentation and traceability that stands up to an audit',
+      'Control software for platforms that walk, roll or fly',
+      'Sensors, embedded hardware and the code that reads them',
       'Systems where the software and the hardware have to agree with each other',
     ],
-    who: 'For work that needs the problem defined, not just built.',
+    who: 'For work where the software has to drive something physical.',
     proof: {
       label: 'Partnership',
       body: 'Full industry partner with QUT, with two Work Integrated Learning capstones running — one on the drone work, one on SAUCE.',
@@ -277,7 +278,7 @@ export const STREAMS: Stream[] = [
       value: 'Priced per engagement',
       note: 'Placeholder. Scope is Craig\u2019s to define, and the price follows the scope.',
     },
-    promise: 'The problem worked out properly, before anyone commits to building it.',
+    promise: 'Machines that move, and the software that keeps them moving — built together.',
     pageLede:
       'Placeholder — this page needs Craig. Every word of this stream is written blind and none of it has been checked against what is actually being sold.',
     sections: [
@@ -285,8 +286,8 @@ export const STREAMS: Stream[] = [
         id: 'scope',
         title: 'What this stream actually is',
         body: [
-          'Placeholder. Craig defines the scope here: what kind of engineering work is being taken on, at what stage of a project, and for whom.',
-          'Two things constrain whatever goes in: nobody here is RPEQ-registered, and Queensland regulates who may provide "professional engineering services" under the Professional Engineers Act 2002. So this page describes work, not titles, until Craig and Ronan finish their degrees.',
+          'Placeholder. Craig defines the scope here: what kind of robotics work is being taken on, at what stage of a project, and for whom.',
+          'One thing constrains whatever goes in: nobody here is RPEQ-registered, and Queensland regulates who may provide "professional engineering services" under the Professional Engineers Act 2002. That is why this stream is called Robotics, and why this page describes work, not titles.',
         ],
         pending: true,
       },
@@ -300,6 +301,6 @@ export const STREAMS: Stream[] = [
         pending: true,
       },
     ],
-    href: '/engineering',
+    href: '/robotics',
   },
 ]

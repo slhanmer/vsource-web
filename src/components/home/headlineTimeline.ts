@@ -6,16 +6,17 @@
  * seconds. The budget is 4,500 ms from mount to the last character typed, which
  * leaves headroom for hydration and the font landing.
  *
- * The run is Software (on screen at mount) → Websites → Engineering → Software:
+ * The run is Software (on screen at mount) → Websites → Robotics → Software:
  *
  *   holds    3 × HOLD_MS                         3 × 600 = 1,800
- *   deletes  (8 + 8 + 11) chars × DELETE_MS      27 × 18 =   486
+ *   deletes  (8 + 8 + 8) chars × DELETE_MS       24 × 18 =   432
  *   cuts     3 changes × 2 beats × CUT_MS        6 × 120 =   720
- *   types    (8 + 11 + 8) chars × TYPE_MS        27 × 42 = 1,134
+ *   types    (8 + 8 + 8) chars × TYPE_MS         24 × 42 = 1,008
  *                                                         -------
- *                                                         4,140 ms
+ *                                                         3,960 ms
  *
- * Each hold outlasts the longest word's typing (Engineering, 11 × 42 = 462 ms),
+ * Each hold outlasts the longest word's typing (all three are eight letters,
+ * 8 × 42 = 336 ms),
  * so a word is read for longer than it takes to appear.
  *
  * There is no room in this for a fourth word, or for a longer hold. Both push it
@@ -23,7 +24,7 @@
  * tests/headlineTimeline.test.ts fails before that happens.
  */
 
-export const WORDS = ['Software', 'Websites', 'Engineering'] as const
+export const WORDS = ['Software', 'Websites', 'Robotics'] as const
 
 /** The words in the order they are shown: the full set, then back to the first,
  *  where it stops. */

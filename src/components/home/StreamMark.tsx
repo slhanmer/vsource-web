@@ -116,7 +116,7 @@ function WebsitesMark() {
 }
 
 /** A mechanism, and the tolerance it has to hold. */
-function EngineeringMark() {
+function RoboticsMark() {
   return (
     <svg className="mark" viewBox="0 0 260 180" aria-hidden="true">
       <g className="mark__base" fill="none" strokeWidth="1.6">
@@ -155,7 +155,7 @@ export default function StreamMark({ id, className = '' }: Props) {
 
   if (id === 'software') mark = <SoftwareMark />
   else if (id === 'websites') mark = <WebsitesMark />
-  else if (id === 'engineering') mark = <EngineeringMark />
+  else if (id === 'robotics') mark = <RoboticsMark />
   else return null
 
   return <div className={`markwrap ${className}`.trim()}>{mark}</div>

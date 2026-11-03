@@ -16,7 +16,7 @@
  *     project it is and whether the footage is ours to publish are Craig's to
  *     answer; the clip in /public/built is a six-second throwaway, not the real
  *     thing.
- *   - **Engineering has no delivered work of its own.** The QUT partnership and
+ *   - **Robotics has no delivered work of its own.** The QUT partnership and
  *     the two WIL capstones are what that stream can honestly point at. If the
  *     drones turn out not to be ours to show, that gap should be stated rather
  *     than filled.
@@ -90,7 +90,7 @@ export const BUILT: Project[] = [
     slug: 'spider-drones',
     title: 'Spider drones',
     client: 'Placeholder',
-    stream: 'engineering',
+    stream: 'robotics',
     year: '2026',
     status: 'building',
     line: 'A walking platform, and the control loop that keeps it walking.',
@@ -100,7 +100,7 @@ export const BUILT: Project[] = [
       'The clip above is a throwaway I generated to exercise the video path — muted, six seconds, self-hosted. Replace it with the real footage and the page needs no other change.',
     ],
     facts: [
-      { label: 'Stream', value: 'Engineering' },
+      { label: 'Stream', value: 'Robotics' },
       { label: 'Status', value: 'Placeholder' },
       { label: 'Media', value: 'Clip on our own hardware' },
       { label: 'Rights', value: 'Unconfirmed' },
@@ -176,24 +176,24 @@ export const BUILT: Project[] = [
     slug: 'qut-capstones',
     title: 'QUT capstones',
     client: 'Queensland University of Technology',
-    stream: 'engineering',
+    stream: 'robotics',
     year: '2026',
     status: 'building',
     line: 'Two Work Integrated Learning capstones running now \u2014 one on the drones, one on SAUCE.',
     lede: 'Placeholder. Two WIL capstone teams are running with QUT: one on the drone work, one on SAUCE.',
     body: [
       'Placeholder. This is the entry for the QUT partnership and the two capstones currently running under Work Integrated Learning \u2014 what each team is working on, what V Source brought to it, and what comes out the other end.',
-      'It matters more than a normal entry, because Engineering has no delivered work of its own yet. Until it does, this and the partnership are what that stream can honestly point at.',
+      'It matters more than a normal entry, because Robotics has no delivered work of its own yet. Until it does, this and the partnership are what that stream can honestly point at.',
     ],
     facts: [
-      { label: 'Stream', value: 'Engineering' },
+      { label: 'Stream', value: 'Robotics' },
       { label: 'Partner', value: 'QUT' },
       { label: 'Programme', value: 'Work Integrated Learning' },
       { label: 'Running', value: 'Two capstones' },
     ],
     media: {
       kind: 'mark',
-      markId: 'engineering',
+      markId: 'robotics',
       alt: 'No image yet: the capstone projects have not been written up.',
       width: 260,
       height: 180,

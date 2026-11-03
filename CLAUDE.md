@@ -191,8 +191,9 @@ problem, not a style note.
   `IEC 62304` is fine — it is a standard, not a classification.
 - **Nobody here is called an engineer.** Queensland regulates who may provide
   "professional engineering services" (Professional Engineers Act 2002, BPEQ)
-  and nobody at V Source is RPEQ-registered. The Engineering stream describes
-  *work*, never a title or a qualification.
+  and nobody at V Source is RPEQ-registered. The same goes for the offer: the
+  third stream is **Robotics**, not Engineering, because a stream called
+  Engineering offers the regulated service. Do not rename it back.
 - **The phone number appears twice, deliberately:** the header contacts and
   `/contact`. It was pulled off the home page fold and the home page close
   because three copies of one number on a screen is clutter, not availability —
@@ -229,7 +230,7 @@ own. Do not hand-maintain a URL list.
 
 ## Routes
 
-`/` · `/software` · `/websites` · `/engineering` · `/built` · `/built/[slug]` ·
+`/` · `/software` · `/websites` · `/robotics` · `/built` · `/built/[slug]` ·
 `/team` · `/contact`
 
 Permanent redirects (308) in `next.config.ts`: `/work` → `/built`, `/services` → `/`, `/crew` → `/team`.
@@ -282,7 +283,7 @@ As of 2 November:
 - All work is on `development`. The live site is still the 4 August build
   until the Vercel cutover.
 - Invented copy still showing a marker: every `/built` entry, Asuka, two
-  partners, and `/engineering` (Craig's). The full list is the Stage 4 audit in
+  partners, and `/robotics` (Craig's). The full list is the Stage 4 audit in
   `docs/briefs/launch-ready.log.md`.
 - Photos from the 2 November shoot are coming. Tom and Asuka have no portrait,
   permanently. Group and working shots go in `src/constants/photos.ts`.

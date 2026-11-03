@@ -82,16 +82,16 @@ export const PHOTOS: {
         credit: { name: 'Stella He', url: 'https://unsplash.com/photos/hM6MSq__M0Q' },
       },
     },
-    engineering: {
+    robotics: {
       door: {
-        src: '/photos/stock/engineering-door.jpg',
+        src: '/photos/stock/robotics-door.jpg',
         alt: 'An older man’s hands at a worn wooden bench, working a metal plate held down in a jig, with hand tools and a lamp around him.',
         width: 2000,
         height: 1333,
         credit: { name: 'Hasan Mrad', url: 'https://unsplash.com/photos/9Foi-h8zmIU' },
       },
       step: {
-        src: '/photos/stock/engineering-step.jpg',
+        src: '/photos/stock/robotics-step.jpg',
         alt: 'Hands twisting red wires together at a paint-marked workbench, beside wire strippers, a battery and a printed wiring guide.',
         width: 2000,
         height: 1331,

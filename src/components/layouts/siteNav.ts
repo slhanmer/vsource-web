@@ -22,7 +22,7 @@ export interface SiteNavItem {
 export const SITE_NAV: SiteNavItem[] = [
   { label: 'Software', href: '/software' },
   { label: 'Websites', href: '/websites' },
-  { label: 'Engineering', href: '/engineering' },
+  { label: 'Robotics', href: '/robotics' },
   { label: 'Built', href: '/built' },
   { label: 'Contact', href: '/contact' },
 ]
