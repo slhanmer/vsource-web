@@ -27,6 +27,14 @@
  *   - Setting `portrait: '/crew/<id>.jpg'` is the entire change. The box is the
  *     same size with or without a photograph, so nothing reflows.
  *
+ * ⚠ STOCK STAND-INS. Until the shoot lands, Craig, Simon and Ronan carry a
+ * stock portrait from Unsplash (`public/crew/stock/`), flagged
+ * `stockPortrait: true`, so the rows can be reviewed with faces in them.
+ * Those are strangers' faces under real names, so they must never reach
+ * production: the guard at the foot of this file fails `next build` when
+ * VERCEL_ENV is 'production' and any entry still has the flag. Replace the
+ * file, point `portrait` at `/crew/<id>.jpg`, and delete the flag.
+ *
  * Tom and Asuka will not have portraits. That is permanent, not pending: the
  * empty plate is their treatment, not a gap waiting to be filled. Do not chase
  * a photograph for either of them, and do not mark their entries as missing
@@ -46,6 +54,9 @@ export interface CrewMember {
   /** `/crew/<id>.jpg` — see the convention above. Falls back to the initials
    *  plate when absent. */
   portrait?: string
+  /** The portrait is a stock stand-in, not the person. Review only: the guard
+   *  below fails a production build while any entry has it. */
+  stockPortrait?: boolean
   /** Invented or unconfirmed copy. Renders a visible marker, same as partners
    *  and projects do. Remove it when the person has read their own entry. */
   pending?: boolean
@@ -56,6 +67,8 @@ export const CREW: CrewMember[] = [
     id: 'craig-schneider',
     name: 'Craig Schneider',
     role: 'Founder & Technical Director',
+    portrait: '/crew/stock/craig-schneider.jpg',
+    stockPortrait: true,
     summary: 'Computer science, engineering, and two decades on site. Runs the shop.',
     bio: 'Craig runs V Source. He holds a computer science degree from QUT and is completing an engineering degree in computer and software systems, alongside two decades in residential construction, communications infrastructure and site supervision. That range is why we can talk about the hardware a system runs on and the site it is installed on, not only the code — and why, when an install has to pass inspection, someone here has already been the person accountable for that.',
   },
@@ -63,6 +76,8 @@ export const CREW: CrewMember[] = [
     id: 'simon-hanmer',
     name: 'Simon Hanmer',
     role: 'Lead Developer & UX',
+    portrait: '/crew/stock/simon-hanmer.jpg',
+    stockPortrait: true,
     summary: 'Designs it and builds it. Twenty years in kitchens before the degree.',
     bio: 'Simon designs and builds the part clients actually use — the interface, the system behind it, and often the brand around it. He holds a computer science degree from QUT, and before it spent twenty-odd years running kitchens — launching restaurants, and running services where a hundred covers arrive inside ninety minutes and nothing is permitted to fail quietly. Consistency under load, working to a deadline that does not move, and knowing precisely how much can go wrong at once: that turns out to be most of what shipping software actually is.',
   },
@@ -77,6 +92,8 @@ export const CREW: CrewMember[] = [
     id: 'ronan-donahoe',
     name: 'Ronan Donahoe',
     role: 'Quality & Documentation',
+    portrait: '/crew/stock/ronan-donahoe.jpg',
+    stockPortrait: true,
     summary: 'Finds it before the auditor does.',
     bio: 'Ronan owns testing and documentation, and is midway through an engineering degree in mechatronics and mathematics. On a regulated product neither of those is paperwork — the documentation is the evidence that the thing is safe, and the testing is what makes the evidence true. If a build does not behave the way its documentation claims, Ronan finds it first. That is the whole job, and it is the reason we can take on work most studios our size cannot.',
   },
@@ -102,3 +119,19 @@ export const CREW: CrewMember[] = [
     pending: true,
   },
 ]
+
+/*
+ * The stock-portrait guard. Module scope, so it runs wherever this file is
+ * evaluated — which, during `next build`, is the prerender of `/` and `/team`.
+ * Vercel sets VERCEL_ENV to 'production' only for the production deployment,
+ * so previews still build with the stand-ins and production refuses to.
+ */
+const stockPortraits = CREW.filter((member) => member.stockPortrait)
+if (process.env.VERCEL_ENV === 'production' && stockPortraits.length > 0) {
+  throw new Error(
+    `Stock stand-in portraits must not ship to production: ${stockPortraits
+      .map((member) => member.name)
+      .join(', ')}. Replace each with the real photograph and remove ` +
+      '`stockPortrait: true` in src/constants/crew.ts.'
+  )
+}
