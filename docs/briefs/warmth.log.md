@@ -247,3 +247,66 @@ breaks "nobody recognisable" in its own way.
 not mine.
 
 STATUS: partial
+
+## Run 2 — 2026-11-03 — development
+
+Stage 2 only, per the Run 2 note. Done, one commit with the new
+`public/logos/partners/qut.png`, pushed to `development`. With Stages 1, 3
+and 4 from Run 1, the brief is now complete.
+
+Verification used `next start` on **port 3124**. Port 3123 was still held by
+the Run 1 server, which serves the old build, so I left it alone.
+
+### Stage 2 — logos in "Working with"
+
+**Transparency check, re-run on the new file:**
+
+| file | size | transparent pixels | corners |
+|---|---|---|---|
+| `aptium.png` | 185×56 | 72% | alpha 0 |
+| `qut.png` | 94×96 | 14% (the letters) | alpha 255, by design |
+| `training-professionals.png` | 85×72 | 61% | alpha 0 |
+
+QUT passes on the Run 2 note's terms: the square is meant to be opaque, and
+the letters are now knocked out. The size is unchanged, so `partners.ts`
+needed no width or height change.
+
+**What changed**
+- `page.tsx`: `home-plate__trust` is now a `div` holding the "Working with"
+  label and a `ul` of three `li`, each with a `next/image` whose `alt` is
+  `partner.name`. The `ul` is `aria-labelledby` the label, so it is announced
+  as "Working with, list, 3 items".
+- `home.scss`: the logos are 24px tall, with width from the aspect ratio:
+  Aptium 79, QUT 24 and Training Professionals 28. They are all one ink:
+  `--home-logo-ink` is `brightness(0)` on light and
+  `brightness(0) invert(1)` on dark, declared in the existing per-theme
+  `.home` blocks, so there are no new hex values. They are at 0.6 opacity.
+  The drawn middot between names is gone, because there are no names left
+  to separate.
+- `partners.ts` header comment: it said recolouring a partner's mark "is not
+  ours to do". That is the decision this stage reverses, so the comment now
+  says the band keeps the logos' own colours and the fold strip flattens them
+  with a filter, which only works while every file is transparent.
+- The partners band further down is untouched.
+
+**Brief vs code:** the brief says the foot is hidden at ≤480px. The rule is
+actually `(max-height: 820px), (max-width: 720px)`, so it is hidden at
+≤720px. That is the same outcome at 390px, and the note accepts it, so I did
+not change it.
+
+### Verify
+
+- `pnpm tsc --noEmit` clean · `pnpm lint` clean · `pnpm test:ci` 42 suites /
+  594 tests · `pnpm build` passes.
+- 1440×900, light and dark: all three logos load at 24px tall with the
+  theme's filter at 0.6 opacity. QUT reads as a one-colour square with the
+  letters cut through.
+- 390×844: the foot is `display: none`, as accepted. The partners band
+  carries the logos there.
+- axe-core 4.12.1 on `/` at 1440, light and dark: **0 violations**.
+- Screenshots:
+  - `C:\tmp\logos\home-1440-light-fold.png` · `home-1440-dark-fold.png`
+  - `C:\tmp\logos\foot-1440-light.png` · `foot-1440-dark.png` (the strip, close up)
+  - `C:\tmp\logos\home-390-light-fold.png` · `home-390-dark-fold.png`
+
+STATUS: done

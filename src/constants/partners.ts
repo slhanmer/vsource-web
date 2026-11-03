@@ -6,9 +6,11 @@
  * recognises. Aptium's screens are under NDA, which is why the proof here is
  * words rather than a product shot.
  *
- * Logos sit on a light plate regardless of theme: they are supplied artwork
- * designed for white, and recolouring someone else's mark to suit our palette
- * is not ours to do.
+ * In the partners band, logos sit on a light plate regardless of theme, in
+ * their own colours: they are supplied artwork designed for white. The fold's
+ * "Working with" strip shows the same files flattened to one theme ink by a CSS
+ * filter, which only works because every file has a transparent background.
+ * Keep it that way when a logo is replaced.
  *
  * `pending` marks copy that is not ours yet. It renders as a visible query on
  * the page rather than silently reading as finished text — better that a

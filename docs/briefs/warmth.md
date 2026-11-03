@@ -60,6 +60,15 @@ motion lasting longer than five seconds.
   filter on an opaque PNG turns it into a solid block. If any are opaque, stop
   this stage and log which ones.
 - Do not change the partners band further down the page.
+- **Run 2 note (3 Nov):** `qut.png` has been replaced by a version whose white
+  letters are transparent. The QUT mark *is* a solid blue square with the letters
+  knocked out, so its corners are meant to be opaque. Under the filter it becomes
+  a one-colour square with the letters cut through, which is the correct reversed
+  mark. Treat it as passing the transparency check and do the stage. Commit the
+  new `qut.png` with it.
+- The foot is `display: none` at ≤480px and on screens shorter than 820px.
+  That is accepted: the logos are a desktop fold detail, and the partners band
+  further down carries them on every screen.
 
 ---
 

@@ -101,14 +101,24 @@ export default function Home() {
             sections down the page.
           */}
           <div className="home-plate__foot">
-            <p className="home-plate__trust">
-              <span className="home-plate__trust-label">Working with</span>
-              {PARTNERS.map((partner) => (
-                <span key={partner.id} className="home-plate__trust-name">
-                  {partner.name}
-                </span>
-              ))}
-            </p>
+            <div className="home-plate__trust">
+              <span id="home-trust-label" className="home-plate__trust-label">
+                Working with
+              </span>
+              <ul className="home-plate__logos" aria-labelledby="home-trust-label">
+                {PARTNERS.map((partner) => (
+                  <li key={partner.id} className="home-plate__logo">
+                    <Image
+                      src={partner.logo}
+                      alt={partner.name}
+                      width={partner.width}
+                      height={partner.height}
+                      className="home-plate__logo-img"
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
             <a className="home-plate__cue" href="#software">
               <span className="home-plate__cue-label">More on each</span>
               <span className="home-plate__cue-knob" aria-hidden="true">
