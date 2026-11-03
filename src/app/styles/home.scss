@@ -350,11 +350,9 @@
 
 /* ── the rotating headline ──────────────────────────────────────────────── */
 .rotator {
-  /* One headline set as two lines, but only the first is in the h1. The second
-     line is its own element so the pause control can sit INSIDE it, where the
-     full stop used to be, without a button ending up inside a heading — which
-     would put "Pause the rotating words" into the h1's accessible name. The
-     complete sentence is in the visually-hidden span, so nothing is lost. */
+  /* One headline set as two lines, but only the first is in the h1. The
+     complete sentence is in the h1's visually-hidden span, so the second line
+     is presentation only. */
   &__h1,
   &__tailline {
     font-family: $font-family-read;
@@ -376,10 +374,7 @@
   }
 
   &__tailline {
-    display: flex;
-    align-items: flex-end;
-    /* The air a full stop gets, not the air a button gets. */
-    gap: 0.03em;
+    display: block;
     margin-top: 0.12em;
   }
 
@@ -477,86 +472,6 @@
       height: 0.78em;
       background: var(--route-active);
     }
-  }
-
-  /* WCAG 2.2.2. The words start typing on their own and loop for a good deal
-     longer than five seconds, so a pause control is not optional — but it being
-     a line of text in the middle of the composition was. It used to read
-     "\25AE\25AE PAUSE" in the gap between the headline and the lede and it was the
-     first thing the eye landed on.
-
-     Same control, same keyboard behaviour, no label: a knob cut into the plate,
-     in the same language as the cue at the foot, sitting where the headline's
-     full stop was — so the page gains a control and loses a mark rather than
-     gaining an object.
-
-     It is sized and spaced as punctuation, in em, so it scales with the
-     headline and reads as the last mark of the sentence rather than as a
-     button that happens to be nearby. That takes it under the 24px target
-     minimum at small sizes, which WCAG 2.5.8 allows explicitly: the inline
-     exception covers a target sitting in a line of text. The accessible name
-     lives on aria-label, which is what a screen reader reads either way. Under
-     reduced motion there is no animation and no knob, so the sentence gets its
-     full stop back (see RotatingHeadline). */
-  &__pause {
-    --knob: clamp(13px, 0.27em, 22px);
-    display: grid;
-    place-items: center;
-    flex: none;
-    /* Load-bearing. A button does not inherit its font, so every `em` here
-       would resolve against the browser's 13.3px default — or the kit's 20px
-       button rule — instead of the headline, and both the size and the baseline
-       offset below would come out a fifth of what they should be. */
-    font-size: inherit;
-    width: var(--knob);
-    height: var(--knob);
-    /* A full stop's bottom IS the baseline. flex-end puts this on the bottom of
-       the line box instead, which is the baseline plus the descent, so it gets
-       lifted back by that much. Measured, because Newsreader's optical size
-       axis moves it: the descent is 0.218em of the font size at 68px, 0.225em
-       at 40px and 0.254em at 26px. 0.225em lands within three quarters of a
-       pixel of the baseline at all three. */
-    margin-bottom: 0.225em;
-    padding: 0;
-    border: 0;
-    border-radius: 50%;
-    /* Ink, not a cut. A full stop is made of the same stuff as the letters, so
-       this takes the text colour and the glyph inside it takes the page — which
-       is white with a black pause in dark, and reads as the mark it is standing
-       in for rather than as a control that happens to be nearby. It flips with
-       the theme for the same reason: on the light theme a full stop is dark. */
-    background: var(--text-primary);
-    color: var(--surface-page);
-    cursor: pointer;
-    transition:
-      background-color 0.3s ease,
-      color 0.3s ease;
-
-    &:hover,
-    &:focus-visible {
-      background: var(--route-active);
-      color: var(--surface-page);
-    }
-
-    &[aria-pressed='true'] .rotator__icon {
-      border: 0;
-      width: 0;
-      height: 0;
-      border-left: calc(var(--knob) * 0.3) solid currentColor;
-      border-top: calc(var(--knob) * 0.19) solid transparent;
-      border-bottom: calc(var(--knob) * 0.19) solid transparent;
-      /* An optical nudge: a triangle centred on its bounding box reads left. */
-      margin-left: calc(var(--knob) * 0.07);
-    }
-  }
-
-  /* Proportioned off the knob rather than in pixels, so the glyph stays a glyph
-     at 22px and at 13px instead of filling one and vanishing in the other. */
-  &__icon {
-    width: calc(var(--knob) * 0.24);
-    height: calc(var(--knob) * 0.38);
-    border-left: max(1px, calc(var(--knob) * 0.09)) solid currentColor;
-    border-right: max(1px, calc(var(--knob) * 0.09)) solid currentColor;
   }
 }
 

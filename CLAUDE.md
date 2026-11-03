@@ -171,8 +171,9 @@ It is also the thing the Websites stream sells, so the site failing it is a
 business problem, not a lint warning.
 
 - **2.2.2** — anything that auto-animates for more than 5s needs a visible,
-  keyboard-reachable pause control. The rotating headline and every `/built`
-  video have one. Do not add motion without one.
+  keyboard-reachable pause control. Every `/built` video has one. The rotating
+  headline has none because it plays once and stops inside five seconds — keep
+  it that way. Do not add motion without one.
 - **2.5.8** — 24px minimum target, with the inline exception for targets sitting
   in a line of text.
 - Honour `prefers-reduced-motion`. Use `useReducedMotion` from `@hooks`.

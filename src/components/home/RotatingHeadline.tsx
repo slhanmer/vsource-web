@@ -2,6 +2,7 @@
 
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from '@hooks'
+import { CUT_MS, DELETE_MS, HOLD_MS, SEQUENCE, TYPE_MS } from './headlineTimeline'
 
 /**
  * The headline performs the thesis.
@@ -24,45 +25,31 @@ import { useReducedMotion } from '@hooks'
  *      JavaScript — per the SEO notes, most of the AI ones — must still read
  *      "Software, websites and engineering, built to fit." That is the
  *      visually-hidden span; the animated copy is aria-hidden so a screen
- *      reader is not read three words on a loop.
+ *      reader is not read three words in a row.
  *   2. **Widths are measured, not guessed**, and only once the webfont has
  *      landed. Measure against the fallback face and every width is wrong by
  *      the time the real font swaps in.
- *   3. **WCAG 2.2.2.** This auto-starts and loops for longer than five seconds,
- *      so it needs a real pause control. It also pauses on hover and focus, and
- *      does not run at all under prefers-reduced-motion. The control is a knob
- *      at the end of the headline with no visible label — the name is on
- *      aria-label, which is what gets announced either way. It cannot simply be
- *      dropped: without it the animation fails 2.2.2 outright.
+ *   3. **WCAG 2.2.2, by stopping.** It plays once — Software, Websites,
+ *      Engineering, Software — and stops on Software inside five seconds, so it
+ *      needs no pause control. It must STAY inside five seconds: the budget and
+ *      its arithmetic are in headlineTimeline.ts, and a test fails if a fourth
+ *      word or a longer hold takes it over. Under prefers-reduced-motion it does
+ *      not run at all.
  */
-
-const WORDS = ['Software', 'Websites', 'Engineering'] as const
-
-/** Milliseconds per character typed. Slower than the readout's 16ms — at
- *  headline size, readout speed reads as a flicker rather than as typing. */
-const TYPE_MS = 58
-/** Backspacing is quicker than typing, as it is on a real keyboard. */
-const DELETE_MS = 26
-/** The beat where the slot is being recut and nothing is being written. */
-const CUT_MS = 260
-/** How long a finished word stays up. */
-const HOLD_MS = 2600
-
 export default function RotatingHeadline() {
   const slotRef = useRef<HTMLSpanElement>(null)
   const innerRef = useRef<HTMLSpanElement>(null)
-  /** The cycle reads the index from a ref so advancing a word does not tear
+  /** The run reads its position from a ref so advancing a word does not tear
    *  down and restart the timer chain that is advancing it. */
-  const indexRef = useRef(0)
+  const stepRef = useRef(0)
 
-  const [index, setIndex] = useState(0)
-  const [shown, setShown] = useState(WORDS[0].length)
+  const [step, setStep] = useState(0)
+  const [shown, setShown] = useState<number>(SEQUENCE[0].length)
   const [typing, setTyping] = useState(false)
-  const [paused, setPaused] = useState(false)
-  const [hovered, setHovered] = useState(false)
 
   const reduced = useReducedMotion()
-  const word = WORDS[index]
+  const word = reduced ? SEQUENCE[SEQUENCE.length - 1] : SEQUENCE[step]
+  const caret = typing && !reduced
 
   /**
    * Recut the slot to the current word. Every character is in the DOM whether
@@ -108,18 +95,14 @@ export default function RotatingHeadline() {
       cancelled = true
       window.removeEventListener('resize', fit)
     }
-  }, [fit, index])
+  }, [fit, step])
 
-  // The cycle: hold, backspace, recut, type, repeat. Any of paused, hovered or
-  // reduced tears the chain down rather than letting it run and discarding
-  // ticks — a timer that fires into a paused component is how these drift.
+  // The run: hold, backspace, recut, type — once through SEQUENCE, then stop.
+  // Reduced motion tears the chain down; the render below then shows the last
+  // word, which is the first word, so nothing visibly changes.
   useEffect(() => {
-    if (reduced) {
-      setShown(WORDS[indexRef.current].length)
-      setTyping(false)
-      return
-    }
-    if (paused || hovered) return
+    const last = SEQUENCE.length - 1
+    if (reduced || stepRef.current >= last) return
 
     let alive = true
     let timer = 0
@@ -133,7 +116,7 @@ export default function RotatingHeadline() {
 
     const erase = () => {
       setTyping(true)
-      let n = WORDS[indexRef.current].length
+      let n = SEQUENCE[stepRef.current].length
       const back = () => {
         n -= 1
         setShown(Math.max(n, 0))
@@ -143,12 +126,12 @@ export default function RotatingHeadline() {
       after(DELETE_MS, back)
     }
 
-    // The slot is recut here — setIndex re-renders the new word at full width,
+    // The slot is recut here — setStep re-renders the new word at full width,
     // the measuring effect above picks it up, and the width transition runs
     // while nothing is being typed.
     const advance = () => {
-      indexRef.current = (indexRef.current + 1) % WORDS.length
-      setIndex(indexRef.current)
+      stepRef.current += 1
+      setStep(stepRef.current)
       after(CUT_MS, type)
     }
 
@@ -157,10 +140,10 @@ export default function RotatingHeadline() {
       const forward = () => {
         n += 1
         setShown(n)
-        if (n < WORDS[indexRef.current].length) after(TYPE_MS, forward)
+        if (n < SEQUENCE[stepRef.current].length) after(TYPE_MS, forward)
         else {
           setTyping(false)
-          hold()
+          if (stepRef.current < last) hold()
         }
       }
       after(TYPE_MS, forward)
@@ -171,18 +154,12 @@ export default function RotatingHeadline() {
       alive = false
       window.clearTimeout(timer)
     }
-  }, [reduced, paused, hovered])
+  }, [reduced])
 
   const visible = reduced ? word.length : shown
 
   return (
-    <div
-      className="rotator"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
-    >
+    <div className="rotator">
       <h1 className="rotator__h1">
         <span className="visually-hidden">Software, websites and engineering, built to fit.</span>
         {/*
@@ -194,11 +171,11 @@ export default function RotatingHeadline() {
         <span className="rotator__cutline" aria-hidden="true">
           <span ref={slotRef} className="rotator__slot">
             <span ref={innerRef} className="rotator__inner">
-              {typing && visible === 0 && <span className="rotator__caret" />}
+              {caret && visible === 0 && <span className="rotator__caret" />}
               {Array.from(word).map((char, i) => (
-                <Fragment key={`${word}-${i}`}>
+                <Fragment key={`${step}-${i}`}>
                   <span className={i < visible ? undefined : 'rotator__ghost'}>{char}</span>
-                  {typing && i === visible - 1 && <span className="rotator__caret" />}
+                  {caret && i === visible - 1 && <span className="rotator__caret" />}
                 </Fragment>
               ))}
             </span>
@@ -207,27 +184,12 @@ export default function RotatingHeadline() {
       </h1>
 
       {/*
-        The second line, outside the h1 on purpose. The pause control sits in it
-        where the full stop would be, and a <button> inside an <h1> would put
-        its label into the heading's accessible name. The whole sentence is in
-        the visually-hidden span above, so the heading still reads correctly.
-
-        Under reduced motion nothing animates, so there is no control — and the
-        sentence takes its full stop back rather than ending on a bare "fit".
+        The second line, outside the h1 and aria-hidden. The whole sentence,
+        full stop included, is in the visually-hidden span above, so the
+        heading's accessible name is complete without it.
       */}
       <p className="rotator__tailline">
-        <span aria-hidden="true">built to fit{reduced ? '.' : ''}</span>
-        {!reduced && (
-          <button
-            type="button"
-            className="rotator__pause"
-            aria-pressed={paused}
-            aria-label={paused ? 'Resume the rotating words' : 'Pause the rotating words'}
-            onClick={() => setPaused((value) => !value)}
-          >
-            <span className="rotator__icon" aria-hidden="true" />
-          </button>
-        )}
+        <span aria-hidden="true">built to fit.</span>
       </p>
     </div>
   )
