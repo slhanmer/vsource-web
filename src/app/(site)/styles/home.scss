@@ -1748,27 +1748,6 @@
   }
 }
 
-/* THE DOORS ARRIVE WITH THEIR WORDS (HeroRun.tsx). `is-armed` is only ever
-   set after mount and never under reduced motion, so before hydration and
-   without JavaScript every door is simply there.
-
-   A waiting door is transparent, not gone: it is still a link that can be
-   clicked or focused, and focusing it brings it in at once (`shown`, with no
-   transition). An arriving one uses the site's standard entrance: 12px rise,
-   500ms, ease-out. */
-.home-doors.is-armed .home-door.is-waiting {
-  opacity: 0;
-  transform: translateY(12px);
-}
-
-.home-doors.is-armed .home-door.is-arriving {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity 0.5s ease-out,
-    transform 0.5s ease-out;
-}
-
 /* The door whose word is on screen. Cyan points: the kerf lights in
    --route-active, the way hover lights it, so the eye joins the word to its
    card. When the run ends no door has this, and the fold is still. */
@@ -1787,7 +1766,6 @@
   }
 
   .is-out .home-line,
-  .home-doors.is-armed .home-door.is-waiting,
   .is-out .home-org,
   .home-step__inner {
     opacity: 1;
