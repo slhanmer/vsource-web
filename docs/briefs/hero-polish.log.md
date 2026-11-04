@@ -152,3 +152,23 @@ the token, because the fold must look identical until the pointer moves.
 spark is an overlay that only appears after a deliberate shake, and the bend
 is an almost subliminal change in the plate's texture. During a shake both
 are active; the spark draws the eye, and the lines simply part under it.
+
+## Verify (production build, `next start -p 3130`, against the seeded preview branch)
+
+| Check | Result |
+|---|---|
+| `pnpm tsc --noEmit` | clean |
+| `pnpm lint` | only the known trailing comma in `next.config.ts:61` (see cms log) |
+| `pnpm test:ci` | 47 suites, 635 tests pass |
+| `pnpm build` | passes |
+| 1. Fold at four sizes | the §1 table, re-measured on the production build: identical numbers. The CTA is directly under the copy (28px; 18px at 1366×768). Screenshots in `C:\tmp\hero-polish\fold\`, light and dark |
+| 2. Doors | sampled every frame from the first (79ms): **all three at opacity 1 with no transform in all 356 samples**. Highlight: none at first paint → Software at 194ms → Robotics at 1,311ms → Websites at 2,461ms → none at 3,577ms, each as its word finishes. `C:\tmp\hero-polish\doors.json` |
+| 3. Websites door and row | `/media/nug.jpg` and `/media/snug.jpg` |
+| 4. Mill lines | §4 above: frames, 0 idle frames, no canvas under reduced motion or touch |
+| 5. Track | §5 above: 3× → 1.8×, 531 → 213px per stream at 1440×900, never two rows above 0.5 (the same on the production build) |
+| 6. axe on `/` | light and dark: **0 violations** |
+
+The 3200 dev server is up throughout. All commits are on `development` and
+pushed. Merging is Simon's.
+
+STATUS: done
