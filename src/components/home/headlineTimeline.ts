@@ -15,6 +15,11 @@
  *                                                         -------
  *                                                         3,240 ms
  *
+ * ⚠ THE DOORS RUN OFF THIS TIMELINE TOO. Each door in the fold arrives the
+ * moment its word finishes typing, and the highlight follows the word
+ * (HeroRun.tsx). Changing a hold, a speed or the word list changes the whole
+ * fold, not only the headline.
+ *
  * There are no recut beats. The slot is cut once, to the widest word, and
  * never changes width, so a new word is typed straight into it.
  *

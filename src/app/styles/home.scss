@@ -1747,25 +1747,35 @@
   }
 }
 
-.is-out .home-door {
-  opacity: 0.001;
-  transform: translateY(22px);
+/* THE DOORS ARRIVE WITH THEIR WORDS (HeroRun.tsx). `is-armed` is only ever
+   set after mount and never under reduced motion, so before hydration and
+   without JavaScript every door is simply there.
+
+   A waiting door is transparent, not gone: it is still a link that can be
+   clicked or focused, and focusing it brings it in at once (`shown`, with no
+   transition). An arriving one uses the site's standard entrance: 12px rise,
+   500ms, ease-out. */
+.home-doors.is-armed .home-door.is-waiting {
+  opacity: 0;
+  transform: translateY(12px);
 }
 
-.is-in .home-door {
+.home-doors.is-armed .home-door.is-arriving {
   opacity: 1;
   transform: none;
   transition:
-    opacity 0.7s ease,
-    transform 0.8s cubic-bezier(0.2, 0.8, 0.25, 1);
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
+}
 
-  &:nth-child(2) {
-    transition-delay: 0.11s;
-  }
-
-  &:nth-child(3) {
-    transition-delay: 0.22s;
-  }
+/* The door whose word is on screen. Cyan points: the kerf lights in
+   --route-active, the way hover lights it, so the eye joins the word to its
+   card. When the run ends no door has this, and the fold is still. */
+.home-door.is-active .home-door__cut::after {
+  box-shadow:
+    inset 0 3px 7px -2px var(--carve-dark),
+    inset 0 -1px 0 var(--home-plate-lip),
+    inset 0 0 0 1.5px var(--route-active);
 }
 
 /* ── reduced motion ─────────────────────────────────────────────────────── */
@@ -1776,7 +1786,7 @@
   }
 
   .is-out .home-line,
-  .is-out .home-door,
+  .home-doors.is-armed .home-door.is-waiting,
   .is-out .home-org,
   .home-step__inner {
     opacity: 1;

@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { CONTACT, CREW, PARTNERS, PHOTOS, STREAMS } from '@constants'
+import { CONTACT, CREW, PARTNERS, PHOTOS } from '@constants'
+import HeroDoors from '@/components/home/HeroDoors'
+import { HeroRunProvider } from '@/components/home/HeroRun'
 import Reveal from '@/components/home/Reveal'
 import RotatingHeadline from '@/components/home/RotatingHeadline'
 import StreamMoves from '@/components/home/StreamMoves'
@@ -49,49 +51,36 @@ export default function Home() {
       */}
       <section className="home-hero">
         <div className="home-plate">
-          <div className="home-hero__inner">
-            <div className="home-hero__say">
-              <RotatingHeadline />
+          {/* One timeline for the headline and the doors (HeroRun.tsx). */}
+          <HeroRunProvider>
+            <div className="home-hero__inner">
+              <div className="home-hero__say">
+                <RotatingHeadline />
 
-              <p className="home-hero__lede">
-                Most businesses bend themselves around tools that nearly fit.
-              </p>
-              <p className="home-hero__sub">
-                It starts with a conversation about what is actually going wrong. Then we build the
-                thing that fixes it, and stay on to run it.
-              </p>
+                <p className="home-hero__lede">
+                  Most businesses bend themselves around tools that nearly fit.
+                </p>
+                <p className="home-hero__sub">
+                  It starts with a conversation about what is actually going wrong. Then we build
+                  the thing that fixes it, and stay on to run it.
+                </p>
 
-              {/*
+                {/*
                 The doors are for someone who already knows which stream they
                 want. This is for everyone else — and since the copy above
                 promises a conversation, the fold has to offer one.
               */}
-              <p className="home-hero__cta">
-                <Link href="/contact" className="basic-button">
-                  Start a conversation
-                </Link>
-              </p>
-            </div>
+                <p className="home-hero__cta">
+                  <Link href="/contact" className="basic-button">
+                    Start a conversation
+                  </Link>
+                </p>
+              </div>
 
-            <Reveal as="div" className="home-doors">
-              {STREAMS.map((stream) => (
-                <a key={stream.id} className="home-door" href={stream.href}>
-                  <div className="home-door__cut">
-                    <CutPhoto
-                      photo={PHOTOS.streams[stream.id].door}
-                      sizes="(max-width: 480px) 64px, (max-width: 979px) 36vw, (max-width: 1440px) 17vw, 232px"
-                      className="home-door__photo"
-                    />
-                    <div className="home-door__body">
-                      <span className="home-door__name">{stream.name}</span>
-                      <span className="home-door__lede">{stream.door}</span>
-                      <span className="home-door__go">Learn more</span>
-                    </div>
-                  </div>
-                </a>
-              ))}
-            </Reveal>
-          </div>
+              {/* Arrive with their words: see HeroRun.tsx. */}
+              <HeroDoors />
+            </div>
+          </HeroRunProvider>
 
           {/*
             The plate's bottom edge. Two jobs: it stops a short content block
