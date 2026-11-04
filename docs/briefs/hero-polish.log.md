@@ -45,3 +45,14 @@ the viewport at every size (for example, its bottom is at 907 on a 900 screen).
 
 Screenshots: `C:\tmp\hero-polish\s1-before\` and `s1-after\`
 (`fold-<w>x<h>-<theme>.png`, `fold.json`).
+
+## §3 Websites photos — done in the seed, not photos.ts
+
+cms had already moved the photos into the database, so, as the brief allows,
+this was done **in the seed** (cms Stage D, `2fa7214`, which also closed
+robotics-content §2b). The Websites `doorPhoto` is the Nug media document and
+`stepPhoto` is Snug's, each the same document the `/built` venues use, with
+its `/built` alt text. `photos.ts` no longer exists. The two stock files
+(`public/photos/stock/websites-*.jpg`) were deleted in that same commit.
+Nothing else used them. Verified on `/`: the Websites door and its "What
+changes" row both show the venue screenshots.
