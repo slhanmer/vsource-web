@@ -512,3 +512,5 @@ cannot clear the tag. `src/data/index.ts` now keys the cache by
 `VERCEL_DEPLOYMENT_ID` (or a per-process id locally), so each deployment reads
 the database fresh. That is what makes DEPLOYMENT.md's "seed, then redeploy"
 actually work. Details are in `built-trim.log.md`.
+
+STATUS: done
