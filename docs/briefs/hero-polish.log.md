@@ -56,3 +56,45 @@ its `/built` alt text. `photos.ts` no longer exists. The two stock files
 (`public/photos/stock/websites-*.jpg`) were deleted in that same commit.
 Nothing else used them. Verified on `/`: the Websites door and its "What
 changes" row both show the venue screenshots.
+
+## §5 "What changes": a shorter pinned track
+
+Measured at 1440×900 (scroller 797px tall) on the dev server, with the stage
+pinned (`position: sticky`).
+
+| | Section height | Pinned travel | Per stream |
+|---|---|---|---|
+| Before | 3× = 2,391px | 1,594px | **531px** (0.67 screen) |
+| After | 1.8× = 1,435px | 638px | **213px** (0.27 screen) |
+
+**The brief's arithmetic doesn't match the code, so I followed its explicit
+number.** "1.8× in total, so each stream gets roughly 0.6 of a screen"
+divides the whole height by three. But the stage stays pinned for the height
+*minus one screen*, so per-stream travel is (1.8 − 1) / 3 = 0.27 screen, not
+0.6. Hitting 0.6 per stream would mean a 2.8× section, which is barely shorter
+than the 3× that read as stuck. I used 1.8×, which answers the complaint: 213px
+is two or three wheel notches. If it now feels too quick, 2.2× gives 0.4
+screen (≈ 319px) per stream.
+
+**Crossfade:** each stream owns a third of the pinned range. The outgoing row
+fades over 26→34% (and 59.67→67.67%); the incoming one over 32→40% (and
+65.67→73.67%). Everything else from moves-pin is unchanged: the activation
+media query, the `@supports` fallback to plain flow, reduced motion, and
+`MovesFocus`, which computes from the live section height, so it follows
+the new track.
+
+Opacity of the three rows every 5% of the pinned range (after):
+
+| % | Software | Robotics | Websites |
+|---|---|---|---|
+| 0–25 | 1 | 0 | 0 |
+| 30 | 0.51 | 0 | 0 |
+| 35 | 0 | 0.37 | 0 |
+| 40–55 | 0 | 1 | 0 |
+| 60 | 0 | 0.95 | 0 |
+| 65 | 0 | 0.32 | 0 |
+| 70 | 0 | 0 | 0.55 |
+| 75–100 | 0 | 0 | 1 |
+
+**Two rows are never above 0.5** at any step. Full data:
+`C:\tmp\hero-polish\moves-before.json` and `moves-after.json`.

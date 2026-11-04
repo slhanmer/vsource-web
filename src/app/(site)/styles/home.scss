@@ -1272,10 +1272,12 @@
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) and (min-width: ($breakpoint-desktop + 1px)) and (min-height: 860px) {
     .home-moves {
-      /* The track: one scroller-height per stream. The stage pins for the
-         track minus one screen, so each stream gets about two thirds of a
-         screen of scrolling — one comfortable flick. */
-      height: calc(3 * var(--scroller-h));
+      /* The track: 1.8 scroller-heights. The stage pins for the track minus
+         one screen, so the three streams share 0.8 of a screen — about a
+         quarter of a screen each, a flick or two of the wheel. It was 3×,
+         two thirds of a screen per stream, which read as stuck (Simon,
+         hero-polish, 5 November). */
+      height: calc(1.8 * var(--scroller-h));
       padding-block: 0;
       view-timeline: --moves block;
     }
@@ -1329,14 +1331,19 @@
   }
 }
 
+/* The swap. Each stream owns a third of the pinned range. The outgoing row
+   fades over the last 8% before its boundary's 34% (26→34, 59.67→67.67) and
+   the incoming one over 32→40 (65.67→73.67), so the change starts as soon as
+   a flick crosses a boundary. The midpoints are 6% apart, so two rows are
+   never above 0.5 at once. */
 @keyframes home-moves-first {
   0%,
-  30% {
+  26% {
     opacity: 1;
     pointer-events: auto;
   }
 
-  35%,
+  34%,
   100% {
     opacity: 0;
     pointer-events: none;
@@ -1345,20 +1352,20 @@
 
 @keyframes home-moves-middle {
   0%,
-  31.67% {
+  32% {
     opacity: 0;
     transform: translateY(12px);
     pointer-events: none;
   }
 
-  36.67%,
-  63.33% {
+  40%,
+  59.67% {
     opacity: 1;
     transform: none;
     pointer-events: auto;
   }
 
-  68.33%,
+  67.67%,
   100% {
     opacity: 0;
     transform: none;
@@ -1368,13 +1375,13 @@
 
 @keyframes home-moves-last {
   0%,
-  65% {
+  65.67% {
     opacity: 0;
     transform: translateY(12px);
     pointer-events: none;
   }
 
-  70%,
+  73.67%,
   100% {
     opacity: 1;
     transform: none;
