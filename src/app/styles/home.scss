@@ -370,6 +370,57 @@
   }
 }
 
+/* ── the cut slot ─────────────────────────────────────────────────────────
+   A word cut into the plate: the hero's rotating word, and each stream's name
+   in "What changes". One treatment, sized by whatever font-size it is given —
+   every measurement in it is in em. Static here; the typing, the caret and the
+   fixed width belong to the hero and stay in `.rotator`. */
+.cut-slot {
+  display: inline-block;
+  border-radius: 4px;
+  font-family: $font-family-read;
+  font-weight: 400;
+  /* Centred on the CAP BAND — cap height down to the baseline — because that
+     is the band the eye reads as "the word". Descenders hang below it and are
+     not counted; a box that centres the full ink box, descender included,
+     reads high, which is exactly what this one kept doing.
+
+     Getting there by hand is a losing game. The gap a line box leaves above
+     the cap is ascent-minus-cap plus half-leading, and the gap it leaves
+     below the baseline is the whole descent plus half-leading — an asymmetry
+     of about a quarter of an em in Newsreader, which also moves with the
+     optical size axis. Every value I calibrated held for one size and one
+     instance of the font and drifted everywhere else.
+
+     text-box-trim does it structurally instead: the content box is trimmed to
+     the cap top and the baseline, so equal padding IS equal space, on any
+     font at any size. The descender then hangs into the bottom padding, which
+     is why that padding has to clear it — 0.4em against a 0.256em descender
+     leaves about a seventh of an em under the tail of the g.
+
+     The fallback below it is the same geometry calibrated by hand against a
+     screenshot of the real thing, for engines without text-box-trim. It lands
+     close; it is not exact, and it does not need to be. */
+  padding: 0.348em 0.26em 0.101em;
+
+  @supports (text-box-edge: cap alphabetic) {
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+    padding-block: 0.4em;
+  }
+  /* An opening, so what shows through it is the page behind the plate. */
+  background: var(--surface-page);
+  box-shadow:
+    inset 0 3px 6px -2px var(--carve-dark),
+    inset 0 -1px 0 var(--home-plate-lip);
+  /* NOT overflow: hidden. An inline-block whose overflow is anything but
+     visible takes its baseline from the bottom margin edge rather than its
+     last line box (CSS 2.1 10.8.1), which lifted the word clear of the rest
+     of the line by the descender plus the bottom padding. clip-path clips
+     without touching layout, so the baseline stays the text's. */
+  clip-path: inset(0 round 4px);
+}
+
 /* ── the rotating headline ──────────────────────────────────────────────── */
 .rotator {
   /* One headline set as two lines, but only the first is in the h1. The
@@ -399,53 +450,14 @@
     margin-top: 0.12em;
   }
 
+  /* The cut itself — fill, edge, padding, type — is `.cut-slot`, shared with
+     the stream names in "What changes". What is the hero's alone is here: the
+     fixed width (set once in RotatingHeadline to the widest word), and shorter
+     words sitting at the left on the same baseline. */
   &__slot {
-    display: inline-block;
     vertical-align: baseline;
     position: relative;
-    border-radius: 4px;
-    /* Centred on the CAP BAND — cap height down to the baseline — because that
-       is the band the eye reads as "the word". Descenders hang below it and are
-       not counted; a box that centres the full ink box, descender included,
-       reads high, which is exactly what this one kept doing.
-
-       Getting there by hand is a losing game. The gap a line box leaves above
-       the cap is ascent-minus-cap plus half-leading, and the gap it leaves
-       below the baseline is the whole descent plus half-leading — an asymmetry
-       of about a quarter of an em in Newsreader, which also moves with the
-       optical size axis. Every value I calibrated held for one size and one
-       instance of the font and drifted everywhere else.
-
-       text-box-trim does it structurally instead: the content box is trimmed to
-       the cap top and the baseline, so equal padding IS equal space, on any
-       font at any size. The descender then hangs into the bottom padding, which
-       is why that padding has to clear it — 0.4em against a 0.256em descender
-       leaves about a seventh of an em under the tail of the g.
-
-       The fallback below it is the same geometry calibrated by hand against a
-       screenshot of the real thing, for engines without text-box-trim. It lands
-       close; it is not exact, and it does not need to be. */
-    padding: 0.348em 0.26em 0.101em;
-
-    @supports (text-box-edge: cap alphabetic) {
-      text-box-trim: trim-both;
-      text-box-edge: cap alphabetic;
-      padding-block: 0.4em;
-    }
-    /* An opening, so what shows through it is the page behind the plate. */
-    background: var(--surface-page);
-    box-shadow:
-      inset 0 3px 6px -2px var(--carve-dark),
-      inset 0 -1px 0 var(--home-plate-lip);
-    /* Fixed width, set once in RotatingHeadline to the widest word. Shorter
-       words sit at the left, on the same baseline. */
     text-align: left;
-    /* NOT overflow: hidden. An inline-block whose overflow is anything but
-       visible takes its baseline from the bottom margin edge rather than its
-       last line box (CSS 2.1 10.8.1), which lifted the word clear of the rest
-       of the line by the descender plus the bottom padding. clip-path clips
-       without touching layout, so the baseline stays the text's. */
-    clip-path: inset(0 round 4px);
   }
 
   /* Every character is in the DOM from the first frame; untyped ones are
@@ -454,7 +466,6 @@
     display: inline-block;
     white-space: pre;
     text-align: left;
-    font-weight: 400;
   }
 
   /* display:none, so the caret, which follows the last typed character, sits
@@ -949,13 +960,13 @@
 }
 
 /* ── the move ───────────────────────────────────────────────────────────────
-   Three streams, one at a time, arriving as the page scrolls. Nothing pins and
-   nothing leaves: each part appears once, in order, and stays, so the whole
-   argument is still behind you when you get to the bottom of it.
+   Three streams, one row each: where you are now and what you have instead on
+   the left, a photograph of the work on the right. The words are there from
+   the first paint; only the photographs arrive as the page scrolls.
 
    No panels anywhere in here. The problem is set at headline size with nothing
-   around it and the photograph arrives beside it; boxing either half turned the
-   section into a comparison table, which is the opposite of what it is for. */
+   around it; boxing either half turned the section into a comparison table,
+   which is the opposite of what it is for. */
 .home-moves {
   /* The same machined surface as the fold, and the only other section that
      gets it. The fold's plate is where the argument starts; this is where it is
@@ -1005,33 +1016,50 @@
   }
 }
 
-/* One step. No panels, no rules, no rail — the problem is set at headline size
-   with nothing around it, then the photograph and the sentence that answers it
-   arrive beside it together. Boxing either half turned
-   the page into a comparison table; this is meant to read as a statement and
-   then a reply. */
+/* One row per stream: the text on the left, the photograph on the right. No
+   panels, no rules, no rail. Boxing either half turned the section into a
+   comparison table, and it is meant to read as a statement and a reply.
+
+   Three areas rather than two columns, so the narrow layout can put the
+   photograph between the problem and the answer without the markup changing:
+
+     wide                     narrow
+     say     photo            say
+     answer  photo            photo
+                              answer
+
+   The photograph spans both rows and stretches to their height, so its top is
+   the "Now" line's and its bottom is the last line of the text. The answer
+   row is `1fr`, so when the photograph's 4:3 floor makes the row taller than
+   the text, the spare height goes under the answer rather than between the
+   problem and the answer. */
 .home-step {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-  gap: clamp(28px, 5vw, 80px);
-  /* start, not center: the situation begins at the top of its own section and
-     stays there. `align-items: start` is also what lets the sticky below work —
-     a stretched grid item fills its area and has nowhere to travel. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    'say photo'
+    'answer photo';
+  column-gap: clamp(28px, 5vw, 80px);
+  row-gap: clamp(22px, 2.6vw, 36px);
   align-items: start;
-  /* No min-height. The photograph and the answer under it are now most of a
-     screen on their own, and that height is what puts the scroll distance
-     between the two beats. The padding is the gap between steps, sized so the
-     next problem starts entering (SAY_MARGIN in StreamMoves.tsx) once the
-     current answer has scrolled fully into view. It also holds the "Now" line,
-     which sits above the problem on wide screens. */
-  padding-block: clamp(44px, 6vh, 64px) 0;
   max-width: 1240px;
   margin: 0 auto;
   color: inherit;
   /* See --scroll-clearance in shell.scss. */
   scroll-margin-top: var(--scroll-clearance);
 
-  /* One mono line, so the sentence beside it reads as the situation rather
+  /* One gap between rows, the same every time: enough that each row reads as
+     its own unit, not so much that there is a screen of nothing between them. */
+  & + & {
+    margin-top: clamp(56px, 7vw, 104px);
+  }
+
+  &__say {
+    grid-area: say;
+  }
+
+  /* One mono line, so the sentence under it reads as the situation rather
      than as something we are claiming about ourselves. */
   &__now {
     display: block;
@@ -1055,64 +1083,34 @@
     max-width: 18ch;
   }
 
-  /* The situation holds while its own answer scrolls up past it, and lets go
-     when the next step arrives — the sticky is scoped to this grid area, so the
-     step boundary releases it without anything having to measure it.
-
-     `top` is measured from the top of the scroller, and the header is outside
-     the scroller, so this is a gap under the chrome rather than a clearance
-     for it. */
-  &__say {
-    position: sticky;
-    top: clamp(24px, 7vh, 72px);
-  }
-
-  /* One row: the top of the problem is level with the top of the photograph.
-     So on wide screens the "Now" line hangs above the problem, in the step's
-     top padding, rather than pushing it down, and the problem's line box is
-     trimmed to its cap height so the ink starts where the photograph does. */
-  @media (min-width: ($breakpoint-desktop + 1px)) {
-    &__now {
-      position: absolute;
-      bottom: calc(100% + 14px);
-      left: 0;
-      margin: 0;
-    }
-
-    @supports (text-box-edge: cap alphabetic) {
-      &__problem {
-        text-box-trim: trim-start;
-        text-box-edge: cap alphabetic;
-      }
-    }
-  }
-
-  /* The answer sits directly under the photograph it belongs to. Pushing them to
-     opposite ends of the section to fill the height read as two unrelated
-     things with a fault between them — the distance the second beat needs is
-     the section's, not a hole inside the pair. */
-  &__reply {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: clamp(18px, 2.6vh, 34px);
+  /* Stretched over both rows. The container is what gives the photograph its
+     4:3 floor: `cqi` is this cell's width, so 75cqi is the height of a 4:3
+     box at whatever width the column has. As the photo's min-height it is
+     also this cell's contribution to the rows, so a short text column grows
+     to meet the photograph instead of flattening it. */
+  &__media {
+    grid-area: photo;
+    align-self: stretch;
+    container-type: inline-size;
   }
 
   &__answer {
+    grid-area: answer;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 12px;
   }
 
+  /* The stream's name in the hero's cut slot (`.cut-slot`), at about the size
+     the plain heading had. Static: the hero already types, and a second
+     typing word on the same screen would compete with it. */
   &__name {
-    font-family: $font-family-display;
     font-size: clamp(22px, 2.3vw, 32px);
-    font-weight: $font-weight-semibold;
     text-align: left;
     line-height: 1.1;
     color: var(--text-primary);
-    margin: clamp(10px, 1.4vw, 20px) 0 0;
+    margin: 0 0 4px;
   }
 
   &__solution {
@@ -1163,69 +1161,50 @@
     }
   }
 
-  /* Stacked, there is no second column for the situation to hold beside, and a
-     headline pinned over its own answer on a phone screen is just a lid. */
+  /* Stacked: the problem, then the photograph full width, then the name and
+     the answer. */
   @media (max-width: $breakpoint-desktop) {
-    grid-template-columns: 1fr;
-    gap: clamp(20px, 4vw, 34px);
-    min-height: 0;
-
-    &__say {
-      position: static;
-    }
-
-    &__reply {
-      gap: clamp(18px, 3vh, 30px);
-    }
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    grid-template-areas:
+      'say'
+      'photo'
+      'answer';
+    row-gap: clamp(20px, 4vw, 30px);
   }
 }
 
-/* The photograph of the work fills the reply column, at 3:2, cropped, so the
-   three steps match whatever shape the source is. */
+/* Free-standing, so it keeps the CutPhoto's own $radius-md (the review-1
+   corner rule). It fills its cell, cropped, and never goes below 4:3. The
+   image is taken out of flow so its own proportions cannot set the height:
+   the text column and the floor do that, and the photograph follows. */
 .home-step__photo {
-  align-self: stretch;
-  aspect-ratio: 3 / 2;
+  height: 100%;
+  min-height: 75cqi;
 
   .cut-photo__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
     height: 100%;
     object-fit: cover;
   }
 }
 
-/* Inside a step, the order is the argument: the problem first, then the
-   photograph and the answer together.
+/* The photograph is the one thing in a row that moves: a fade with a 12px
+   rise, 500ms, ease-out, once, when it scrolls into view. The text never
+   animates — it is on the page from the first paint.
 
-   Both beats arrive the same way: a fade with a 12px rise, 500ms, ease-out,
-   once. Opacity and movement share one duration and one curve. With the rise
-   running longer on a springier curve than the fade, the block was fully
-   opaque while still travelling, and read as popping in and then settling.
-   No clip-path wipes and no scale.
-
-   Beat one — is-in. The situation states itself. The photograph and the
-   answer are still waiting. */
-.home-step.is-out .home-step__say {
+   'waiting' is only ever set on a photograph below the fold, after mount, and
+   never under reduced motion (StreamMoves.tsx), so without JavaScript every
+   photograph is simply there. The transition is on 'revealed' alone, so being
+   hidden off screen does not itself animate. */
+.home-step__media.is-waiting {
   opacity: 0.001;
   transform: translateY(12px);
 }
 
-.home-step.is-in .home-step__say {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity 0.5s ease-out,
-    transform 0.5s ease-out;
-}
-
-/* Beat two — is-told, a scroll later: the photograph, heading and copy arrive
-   as one block. No transition-delay doing the waiting: the gap between the
-   beats is scroll distance, so it is the reader's pace rather than a number
-   we picked. */
-.home-step:not(.is-told) .home-step__reply {
-  opacity: 0.001;
-  transform: translateY(12px);
-}
-
-.home-step.is-told .home-step__reply {
+.home-step__media.is-revealed {
   opacity: 1;
   transform: none;
   transition:
@@ -1632,8 +1611,7 @@
   .is-out .home-line,
   .is-out .home-door,
   .is-out .home-org,
-  .is-out .home-step__say,
-  .home-step:not(.is-told) .home-step__reply {
+  .home-step__media.is-waiting {
     opacity: 1;
     transform: none;
     clip-path: none;

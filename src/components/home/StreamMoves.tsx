@@ -6,64 +6,46 @@ import { PHOTOS, STREAMS } from '@constants'
 import CutPhoto from '@/components/photos/CutPhoto'
 
 /**
- * The three streams, one at a time, arriving as you scroll.
+ * "What changes": the three streams, one row each.
  *
- * Each stream is two beats rather than one block. Scroll, and the situation
- * lands on the left. Scroll further and a photograph of that work fades in on
- * the right together with the answer under it, with the way through to that
- * stream's page. Scroll again and the next situation starts.
+ * Each row is two columns. The text is on the left: where you are now, the
+ * stream's name cut into the plate the way the hero's word is, what you have
+ * instead, and the way through to that stream's page. The photograph is on the
+ * right, from the top of the "Now" line to the bottom of the text, so neither
+ * column leaves a hole beside the other. The photograph is on the right in all
+ * three rows, because alternating sides makes the reader hunt for the text.
  *
- * Nothing leaves. An earlier version pinned the section and swapped one step
- * for the next in place, which read as a carousel: you could only ever see one,
- * and going back up meant watching things flip. Here the page simply scrolls
- * and each part appears once, in order, and stays — so the whole argument is
- * still on the page behind you.
- *
- * That is why both observers unobserve on their first hit. A reveal that undoes
- * itself when you scroll back up is the thing being avoided, not a feature.
+ * Only the photograph moves. The text is on the page from the first paint and
+ * never animates. The hero already types, and a page where every paragraph
+ * waits its turn is slower to read than one where the words are simply there.
+ * Each photograph fades in once, with a 12px rise, as it scrolls into view.
  *
  * Three things this has to get right.
  *
- *   1. **It has to work with the reveals switched off.** Before mount, with no
- *      JavaScript, and under prefers-reduced-motion, every part of every step is
- *      rendered visible. A crawler that does not run JS (per the SEO notes, most
- *      of the AI ones) reads all three in full, and a visitor who asked for less
- *      motion gets a plain page rather than a stack of empty screens.
+ *   1. **It has to work with the reveal switched off.** Before mount, with no
+ *      JavaScript, and under prefers-reduced-motion, every photograph is
+ *      rendered visible. Nothing is hidden until the observers are live.
  *   2. **The scroll source is the page container, not the window.** global.scss
  *      sets `html { overflow: hidden }` and gives scrolling to `#main`, so the
- *      observers' root has to be that element or they never fire.
- *   3. **The two beats need different trigger points, not a timer.** Both
- *      observers watch the same element; the second one's root is shortened
- *      from the bottom so it fires further down the scroll. The gap between them
- *      is scroll distance, which means it is the reader's pace, not ours.
+ *      observer's root has to be that element or it never fires.
+ *   3. **A photograph already on screen at load does not animate.** One that
+ *      fades in while you are looking straight at it reads as a glitch rather
+ *      than an entrance. Those are exempted before anything is hidden.
  */
 
-/** The step has entered far enough to state the problem. */
-const SAY_MARGIN = '0px 0px -22% 0px'
-/**
- * Further down again, for the photograph and the answer. This gap IS the
- * second scroll. It was -52% when the photograph was a 340px thumbnail; with
- * the photograph at the reply column's full width, -52% revealed the answer
- * below the bottom of the screen, so nobody saw it arrive.
- */
-const REPLY_MARGIN = '0px 0px -70% 0px'
+/** The photograph has come far enough up the screen to be worth arriving. */
+const PHOTO_MARGIN = '0px 0px -12% 0px'
+
+type Reveal = 'shown' | 'waiting' | 'revealed'
 
 export default function StreamMoves() {
-  const steps = useRef<Array<HTMLElement | null>>([])
-  // Whether the observers are live. Not the same question as "should the beats
-  // start hidden", which also depends on reduced motion — so `armed` is derived
-  // below rather than stored. Holding both in one flag meant the effect had to
-  // reset it in the reduced branch, which is a synchronous setState inside an
-  // effect and a cascading render (eslint react-hooks/set-state-in-effect).
-  const [observing, setObserving] = useState(false)
-  const [said, setSaid] = useState<boolean[]>(() => STREAMS.map(() => false))
-  const [replied, setReplied] = useState<boolean[]>(() => STREAMS.map(() => false))
+  const photos = useRef<Array<HTMLElement | null>>([])
+  // 'shown' is the resting state: visible, with no transition. Only a photo
+  // below the fold at mount goes to 'waiting' (hidden), and then 'revealed'
+  // (visible, transitioning) when it scrolls in.
+  const [reveal, setReveal] = useState<Reveal[]>(() => STREAMS.map(() => 'shown'))
 
   const reduced = useReducedMotion()
-
-  // Derived, not stored. If motion is turned off mid-session this flips back to
-  // false on the next render on its own, with nothing to reset.
-  const armed = observing && !reduced
 
   useEffect(() => {
     if (reduced) return
@@ -71,73 +53,56 @@ export default function StreamMoves() {
     const scroller = document.getElementById('main')
     if (!scroller || typeof IntersectionObserver === 'undefined') return
 
-    let sayIo: IntersectionObserver | null = null
-    let replyIo: IntersectionObserver | null = null
+    let io: IntersectionObserver | null = null
 
     /*
-     * ARMING IS DEFERRED BY ONE FRAME, and it has to be all of this together.
-     *
-     * Arming is what HIDES a step. Priming is what exempts the steps already
-     * on screen, which must not animate in — that reads as a glitch rather
-     * than an entrance. So the three updates have to land in the same batch,
-     * and the measurement has to happen after layout.
-     *
-     * Doing it synchronously in the effect body is the cascading render that
-     * react-hooks/set-state-in-effect names, and the rule reports only the
-     * FIRST such call — so fixing them one at a time just moves the error to
-     * the next line. A frame is the honest fix for all four at once.
-     *
-     * The frame costs nothing anyone can see. Until it lands nothing is armed,
-     * so every step is shown; and the only steps that could be caught un-hidden
-     * are the ones already on screen, which are exactly the ones that stay
-     * shown afterwards. The rest are below the fold by definition.
+     * ARMING IS DEFERRED BY ONE FRAME. Arming is what hides a photograph, and
+     * priming is what exempts the ones already on screen, so the two have to
+     * land in one update, measured after layout. Doing it synchronously in the
+     * effect body is the cascading render react-hooks/set-state-in-effect
+     * reports. Until the frame lands nothing is hidden, so the frame costs
+     * nothing anyone can see.
      */
     const frame = requestAnimationFrame(() => {
-      const onScreen = steps.current.map((node) => {
-        if (!node) return false
+      const onScreen = photos.current.map((node) => {
+        if (!node) return true
         const box = node.getBoundingClientRect()
         return box.top < window.innerHeight && box.bottom > 0
       })
 
-      setObserving(true)
-      setSaid((current) => current.map((was, i) => was || onScreen[i]))
-      setReplied((current) => current.map((was, i) => was || onScreen[i]))
+      setReveal((current) =>
+        current.map((was, i) => (was === 'shown' && !onScreen[i] ? 'waiting' : was))
+      )
 
-      const watch = (rootMargin: string, mark: (i: number) => void) => {
-        const io = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (!entry.isIntersecting) return
-              const index = Number((entry.target as HTMLElement).dataset.index)
-              if (!Number.isNaN(index)) mark(index)
-              // Once only: a reveal that undoes itself on the way back up is
-              // the thing this section is meant not to do.
-              io.unobserve(entry.target)
-            })
-          },
-          { root: scroller, rootMargin }
-        )
-        steps.current.forEach((node, i) => {
-          if (node && !onScreen[i]) io.observe(node)
-        })
-        return io
-      }
-
-      const flip = (setter: typeof setSaid) => (i: number) =>
-        setter((current) =>
-          current[i] ? current : current.map((was, n) => (n === i ? true : was))
-        )
-
-      sayIo = watch(SAY_MARGIN, flip(setSaid))
-      replyIo = watch(REPLY_MARGIN, flip(setReplied))
+      io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return
+            const index = Number((entry.target as HTMLElement).dataset.index)
+            if (!Number.isNaN(index)) {
+              setReveal((current) =>
+                current[index] === 'waiting'
+                  ? current.map((was, n) => (n === index ? 'revealed' : was))
+                  : current
+              )
+            }
+            // Once only. A photograph that hides again on the way back up is
+            // the thing this is meant not to do.
+            io?.unobserve(entry.target)
+          })
+        },
+        { root: scroller, rootMargin: PHOTO_MARGIN }
+      )
+      photos.current.forEach((node, i) => {
+        if (node && !onScreen[i]) io?.observe(node)
+      })
     })
 
     return () => {
-      // Cancel matters: without it, a component unmounted inside that one frame
-      // still arms and still builds two observers on detached nodes.
+      // Without the cancel, a component unmounted inside that one frame would
+      // still hide its photos and build an observer on detached nodes.
       cancelAnimationFrame(frame)
-      sayIo?.disconnect()
-      replyIo?.disconnect()
+      io?.disconnect()
     }
   }, [reduced])
 
@@ -152,20 +117,14 @@ export default function StreamMoves() {
       </div>
 
       {STREAMS.map((stream, i) => {
-        // Unarmed means every beat is shown: no JavaScript, reduced motion, or
-        // the frame before this component has mounted.
-        const shown = !armed || said[i]
-        const told = !armed || replied[i]
+        // Reduced motion overrides whatever state the observer left behind.
+        const state = reduced ? 'shown' : reveal[i]
 
         return (
           <article
             key={stream.id}
             id={stream.id}
-            data-index={i}
-            ref={(node) => {
-              steps.current[i] = node
-            }}
-            className={`home-step ${shown ? 'is-in' : 'is-out'} ${told ? 'is-told' : ''}`.trim()}
+            className="home-step"
             aria-labelledby={`${stream.id}-name`}
           >
             <div className="home-step__say">
@@ -173,27 +132,35 @@ export default function StreamMoves() {
               <p className="home-step__problem">{stream.problem}</p>
             </div>
 
-            <div className="home-step__reply">
+            <div
+              ref={(node) => {
+                photos.current[i] = node
+              }}
+              data-index={i}
+              className={`home-step__media${state === 'shown' ? '' : ` is-${state}`}`}
+            >
               <CutPhoto
                 photo={PHOTOS.streams[stream.id].step}
-                sizes="(max-width: 979px) 92vw, (max-width: 1440px) 40vw, 580px"
+                sizes="(max-width: 979px) 92vw, (max-width: 1440px) 44vw, 600px"
                 className="home-step__photo"
               />
-              <div className="home-step__answer">
-                <h3 id={`${stream.id}-name`} className="home-step__name">
-                  {stream.name}
-                </h3>
-                <p className="home-step__solution">{stream.solution}</p>
-                <p className="home-step__go">
-                  <span className="home-step__ask">Sounds familiar?</span>
-                  <span className="home-step__dot" aria-hidden="true">
-                    &middot;
-                  </span>
-                  <a className="home-step__link" href={stream.href}>
-                    See how it works
-                  </a>
-                </p>
-              </div>
+            </div>
+
+            <div className="home-step__answer">
+              {/* The box is styling on the heading, not a wrapper round it. */}
+              <h3 id={`${stream.id}-name`} className="home-step__name cut-slot">
+                {stream.name}
+              </h3>
+              <p className="home-step__solution">{stream.solution}</p>
+              <p className="home-step__go">
+                <span className="home-step__ask">Sounds familiar?</span>
+                <span className="home-step__dot" aria-hidden="true">
+                  &middot;
+                </span>
+                <a className="home-step__link" href={stream.href}>
+                  See how it works
+                </a>
+              </p>
             </div>
           </article>
         )

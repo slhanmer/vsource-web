@@ -160,7 +160,7 @@ export default function RotatingHeadline() {
           the word in its opening, then "built to fit." under it.
         */}
         <span className="rotator__cutline" aria-hidden="true">
-          <span ref={slotRef} className="rotator__slot">
+          <span ref={slotRef} className="cut-slot rotator__slot">
             <span ref={innerRef} className="rotator__inner">
               {caret && visible === 0 && <span className="rotator__caret" />}
               {Array.from(word).map((char, i) => (
