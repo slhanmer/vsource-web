@@ -42,13 +42,24 @@ word**, since it ties word to card without moving anything, and it still clears
 when the run ends. Delete the code and CSS for the entrance. Keep the shared
 timeline.
 
-## 3. Websites photos (this belongs to `robotics-content` §2b, which was missed)
+## 3. Websites photos: Snug on the door, Nug on the row, cropped for their slots
 
-In `photos.ts`: Websites `door` uses `/built/nug.jpg` and `step` uses
-`/built/snug.jpg`, each with its `/built` alt text, replacing the two stock
-files. Delete `public/photos/stock/websites-*.jpg` if nothing else uses them.
-If `cms` has already moved photos into the database, make the same change in
-the seed instead, and say which you did.
+Simon (5 November): Snug suits the site's colours, so it goes on the fold door,
+and the full screenshots were being cut badly by `object-fit: cover` (the Nug
+wordmark half gone, Snug's caption chopped). Claude has made purpose-cropped
+versions in `media-inbox/websites/`:
+
+- `snug-door.jpg` (1200×900, 4:3): Snug's wordmark, nav and room photo, with
+  its caption. Fold door. Alt: `The Snug website: its wordmark over a dark photograph of the room at night, captioned “a tiny café, a neighbourhood wine bar”.`
+- `nug-row.jpg` (864×858): the Nug wordmark, the Bakery Lane line and the
+  dining-room photo. The "What changes" Websites row. Alt: `The Nug General Store website: the NUG. wordmark above a photograph of a full dining room with a painted mural.`
+
+Both use `object-position: top` in their slots, so if `cover` trims anything,
+it trims the bottom and never the wordmarks. Put them in the same place the
+current Websites photos come from (media and seed if `cms` has landed, else
+`photos.ts`), replacing the stock files, and say which you did. Delete the
+`websites-*` stock photos if nothing else uses them. Screenshot both slots at
+1440 and 390 and confirm both wordmarks are whole.
 
 ## 4. Mill lines that bend around the cursor
 
@@ -112,7 +123,7 @@ pnpm build
    below logged, and the CTA directly under the copy.
 2. Doors are visible in frame 0 of a load capture; the highlight still follows
    the word and clears at the end.
-3. Websites door and row show Nug and Snug.
+3. Websites door shows Snug, row shows Nug, both wordmarks whole.
 4. Mill lines: a short screen recording or frame sequence of the pointer
    crossing the fold; idle frame count (zero) after it stops; under reduced
    motion and on a touch emulation, no canvas in the DOM.

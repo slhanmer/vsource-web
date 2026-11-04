@@ -1815,3 +1815,12 @@
     transform: none;
   }
 }
+
+/* The Websites photographs are website screenshots, cropped (hero-polish §3)
+   with the wordmark at the top. Anchored to the top, so if `cover` trims
+   anything it trims the bottom, never the wordmark. Scoped to Websites: the
+   other streams' photographs are framed for the centre. */
+.home-door--websites .cut-photo__img,
+#websites .home-step__photo .cut-photo__img {
+  object-position: top;
+}

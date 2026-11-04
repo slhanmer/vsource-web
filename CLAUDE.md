@@ -355,7 +355,8 @@ As of 5 November:
   `photos.ts` are gone.
 - Robotics copy is in (Simon, 4 November). Project Arachnid leads `/built`
   with The Huntsman's walking clip, and `spider-drones` is gone. Websites'
-  door and row are our own Nug and Snug sites.
+  door is our own Snug site and its row is Nug, each cropped for its slot
+  and anchored to the top so the wordmark is never cut.
 - `/built` is five cards, every one with a real image (built-trim, 5
   November): Project Arachnid (lead), the Aptium portal (its logo on a plate,
   media kind `logo`, because the screens are under NDA), Training

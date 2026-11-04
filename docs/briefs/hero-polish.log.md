@@ -46,16 +46,32 @@ the viewport at every size (for example, its bottom is at 907 on a 900 screen).
 Screenshots: `C:\tmp\hero-polish\s1-before\` and `s1-after\`
 (`fold-<w>x<h>-<theme>.png`, `fold.json`).
 
-## §3 Websites photos — done in the seed, not photos.ts
+## §3 Websites photos — in the seed (revised brief)
 
-cms had already moved the photos into the database, so, as the brief allows,
-this was done **in the seed** (cms Stage D, `2fa7214`, which also closed
-robotics-content §2b). The Websites `doorPhoto` is the Nug media document and
-`stepPhoto` is Snug's, each the same document the `/built` venues use, with
-its `/built` alt text. `photos.ts` no longer exists. The two stock files
-(`public/photos/stock/websites-*.jpg`) were deleted in that same commit.
-Nothing else used them. Verified on `/`: the Websites door and its "What
-changes" row both show the venue screenshots.
+**First pass (`a2e6942`, log only):** under the brief as first written (Nug
+door, Snug row), there was nothing to do. cms Stage D had already put the Nug
+and Snug media on Websites' door and row in the seed, and deleted the stock
+`websites-*` files.
+
+**Simon revised §3 during the run** (Snug on the door, Nug on the row,
+purpose-cropped). Done **in the seed and media**, since cms has landed:
+
+- `media-inbox/websites/snug-door.jpg` (1200×900) and `nug-row.jpg` (864×858)
+  moved to `src/seed/assets/websites/`, as new media documents with the alt
+  text the brief gives. Websites `doorPhoto` → `websites/snug-door`,
+  `stepPhoto` → `websites/nug-row`. Seed: 2 created, 1 updated. The full
+  Nug and Snug screenshots stay, used by the `/built` venues' sites.
+- `object-position: top` on just those two slots
+  (`.home-door--websites` and `#websites .home-step__photo`; the door now
+  carries a per-stream `home-door--<slug>` class). The Software and Robotics
+  photos keep their centred framing.
+- The stock `websites-*` photos were already gone (cms D).
+- Screenshots: `C:	mp\hero-polish\websites-door-{1440,390}.png` and
+  `websites-row-{1440,390}.png`. **Both wordmarks are whole at both widths:**
+  Snug's wordmark and nav at the top of the door, with the caption in view at
+  1440; and NUG. with "Handmade pasta" and the Bakery Lane line at the top of
+  the row. At 390 the door's photo is a 64px thumbnail, as it always is on a
+  phone, and the Snug wordmark sits along its top edge.
 
 ## §5 "What changes": a shorter pinned track
 
@@ -163,7 +179,7 @@ are active; the spark draws the eye, and the lines simply part under it.
 | `pnpm build` | passes |
 | 1. Fold at four sizes | the §1 table, re-measured on the production build: identical numbers. The CTA is directly under the copy (28px; 18px at 1366×768). Screenshots in `C:\tmp\hero-polish\fold\`, light and dark |
 | 2. Doors | sampled every frame from the first (79ms): **all three at opacity 1 with no transform in all 356 samples**. Highlight: none at first paint → Software at 194ms → Robotics at 1,311ms → Websites at 2,461ms → none at 3,577ms, each as its word finishes. `C:\tmp\hero-polish\doors.json` |
-| 3. Websites door and row | `/media/nug.jpg` and `/media/snug.jpg` |
+| 3. Websites door and row | door `/media/snug-door.jpg`, row `/media/nug-row.jpg`, both wordmarks whole (§3) |
 | 4. Mill lines | §4 above: frames, 0 idle frames, no canvas under reduced motion or touch |
 | 5. Track | §5 above: 3× → 1.8×, 531 → 213px per stream at 1440×900, never two rows above 0.5 (the same on the production build) |
 | 6. axe on `/` | light and dark: **0 violations** |

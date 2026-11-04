@@ -15,8 +15,8 @@
  *   - Craig's, Simon's and Ronan's stock stand-in portraits. Strangers' faces
  *     under real names; they show the terminal tile until the real
  *     photographs are uploaded.
- *   - The Websites stock photos. The door and row show our own sites, Nug and
- *     Snug (robotics-content §2b).
+ *   - The Websites stock photos. The door and row show our own sites: Snug on
+ *     the door, Nug on the row, each cropped for its slot (hero-polish §3).
  *   - STREAM_COMMON, landings, contact and the headline words, which stay in
  *     code (CLAUDE.md, CMS).
  *
@@ -28,6 +28,14 @@ import type { SeedContent } from './types'
 
 const content: SeedContent = {
   assets: {
+    'websites/snug-door': {
+      file: 'websites/snug-door.jpg',
+      alt: 'The Snug website: its wordmark over a dark photograph of the room at night, captioned “a tiny café, a neighbourhood wine bar”.',
+    },
+    'websites/nug-row': {
+      file: 'websites/nug-row.jpg',
+      alt: 'The Nug General Store website: the NUG. wordmark above a photograph of a full dining room with a painted mural.',
+    },
     'built/huntsman-walk': {
       file: 'built/huntsman-walk.mp4',
       alt: 'The Huntsman, an eight-legged black robot, walking across a timber floor under a single light.',
@@ -281,12 +289,12 @@ const content: SeedContent = {
       name: 'Websites',
       order: 30,
       door: 'Fast, accessible, and yours to edit.',
-      doorPhoto: 'built/nug',
+      doorPhoto: 'websites/snug-door',
       problem: 'Every change to your site is a quote and a fortnight.',
       instead: 'A site you can change yourself, the afternoon you decide to.',
       solution:
         'Fast, accessible and built for the people who use it. When the menu or the hours change, you change them, without a quote or a fortnight’s wait.',
-      stepPhoto: 'built/snug',
+      stepPhoto: 'websites/nug-row',
       promise: 'A site that loads fast, reads well, and that you can change yourself.',
       pageLede:
         'Designed and built here, on the same stack and the same hardware as everything else we run. Not a theme with your logo on it, and not something you have to ring us about every time a price changes.',

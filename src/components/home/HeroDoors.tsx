@@ -17,7 +17,7 @@ export default function HeroDoors({ streams }: { streams: Stream[] }) {
       {streams.map((stream, i) => (
         <a
           key={stream.slug}
-          className={`home-door${run?.active === i ? ' is-active' : ''}`}
+          className={`home-door home-door--${stream.slug}${run?.active === i ? ' is-active' : ''}`}
           href={stream.href}
         >
           <div className="home-door__cut">
