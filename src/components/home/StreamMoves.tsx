@@ -6,25 +6,37 @@ import { PHOTOS, STREAMS } from '@constants'
 import CutPhoto from '@/components/photos/CutPhoto'
 
 /**
- * "What changes": the three streams, one row each.
+ * "What changes": the three streams, one row each, as a before and an after.
  *
- * Each row is two columns. The text is on the left: where you are now, the
- * stream's name cut into the plate the way the hero's word is, what you have
- * instead, and the way through to that stream's page. The photograph is on the
- * right, from the top of the "Now" line to the bottom of the text, so neither
- * column leaves a hole beside the other. The photograph is on the right in all
- * three rows, because alternating sides makes the reader hunt for the text.
+ * The section heading promises exactly that ("Where you are now, and what you
+ * have instead"), so each row is built to show the change rather than describe
+ * it, in the site's own material:
+ *
+ *   1. The stream's name, cut into the plate the way the hero's word is. It is
+ *      the row's label and its <h3>.
+ *   2. "Now": the situation someone is in today, in a recessed plate, at
+ *      body-large size in the secondary colour. The past is cut in: darker
+ *      and quieter, but not hidden.
+ *   3. "Instead": the `instead` line on the surface, the largest text in the
+ *      row and the line the eye should land on. What they get is raised to
+ *      meet the light.
+ *   4. The `solution`, as body copy in a readable colour: the why behind it.
+ *   5. The way through to the stream's page.
+ *
+ * The photograph is on the right, from the top of the cut box to the bottom of
+ * the text, on the right in all three rows. Narrow screens stack it between
+ * the "Now" plate and "Instead", so the picture sits at the turn.
  *
  * Only the photograph moves. The text is on the page from the first paint and
  * never animates. The hero already types, and a page where every paragraph
  * waits its turn is slower to read than one where the words are simply there.
  * Each photograph fades in once, with a 12px rise, as it scrolls into view.
  *
- * Three things this has to get right.
+ * Three things the fade has to get right.
  *
  *   1. **It has to work with the reveal switched off.** Before mount, with no
  *      JavaScript, and under prefers-reduced-motion, every photograph is
- *      rendered visible. Nothing is hidden until the observers are live.
+ *      rendered visible. Nothing is hidden until the observer is live.
  *   2. **The scroll source is the page container, not the window.** global.scss
  *      sets `html { overflow: hidden }` and gives scrolling to `#main`, so the
  *      observer's root has to be that element or it never fires.
@@ -127,8 +139,13 @@ export default function StreamMoves() {
             className="home-step"
             aria-labelledby={`${stream.id}-name`}
           >
-            <div className="home-step__say">
-              <span className="home-step__now">Now</span>
+            {/* The box is styling on the heading, not a wrapper round it. */}
+            <h3 id={`${stream.id}-name`} className="home-step__name cut-slot">
+              {stream.name}
+            </h3>
+
+            <div className="home-step__past">
+              <span className="home-step__eyebrow">Now</span>
               <p className="home-step__problem">{stream.problem}</p>
             </div>
 
@@ -147,10 +164,8 @@ export default function StreamMoves() {
             </div>
 
             <div className="home-step__answer">
-              {/* The box is styling on the heading, not a wrapper round it. */}
-              <h3 id={`${stream.id}-name`} className="home-step__name cut-slot">
-                {stream.name}
-              </h3>
+              <span className="home-step__eyebrow">Instead</span>
+              <p className="home-step__instead">{stream.instead}</p>
               <p className="home-step__solution">{stream.solution}</p>
               <p className="home-step__go">
                 <span className="home-step__ask">Sounds familiar?</span>

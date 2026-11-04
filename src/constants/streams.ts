@@ -56,13 +56,19 @@ export interface Stream {
    *  and repeating a sentence verbatim a screen apart is most of what makes a
    *  page feel busy. The door says what it is; the row says what it changes. */
   door: string
-  /** Where someone is before they call. This is set at headline size with
-   *  nothing around it, so it has to be one short sentence — long enough to be
-   *  specific, short enough to read as a statement rather than a paragraph.
-   *  Written as a situation they would recognise, never as a failing: nobody
-   *  buys from a page that opens by telling them they got it wrong. */
+  /** Where someone is now: the past, in the "What changes" row. It sits in a
+   *  recessed plate at body-large size, quieter than what follows, so it has
+   *  to be one short sentence they would recognise. Written as a situation,
+   *  never as a failing: nobody buys from a page that opens by telling them
+   *  they got it wrong. */
   problem: string
-  /** What they have instead. One sentence, no capability list. */
+  /** What they have instead: the short, large line the row is built around.
+   *  It sits on the surface, under an "Instead" eyebrow, at the size the
+   *  problem used to have, and it is the line the eye should land on. One
+   *  line, no capability list. */
+  instead: string
+  /** The why behind `instead`: one or two sentences of body copy under it.
+   *  Rendered only in the "What changes" row on the home page. */
   solution: string
   /** ── for the stream pages, not rendered on the home page ─────────────── */
   /** One line: the situation, not the capability. */
@@ -133,8 +139,9 @@ export const STREAMS: Stream[] = [
     name: 'Software',
     door: 'Systems built to your process, not someone else’s platform.',
     problem: 'Your process lives in a spreadsheet and three people’s heads.',
+    instead: 'One system, built around how you actually work.',
     solution:
-      'One system that follows the process you actually use, and can show what happened when someone asks.',
+      'Off-the-shelf platforms make you work their way. We build to the process you already run, so nothing lives in a side spreadsheet, and when someone asks what happened, the system can show them.',
     lede: 'The thing your business actually does — not the nearest platform that almost does it.',
     caps: [
       'Business systems, portals and internal tools, built to your process rather than around someone else’s',
@@ -197,8 +204,9 @@ export const STREAMS: Stream[] = [
     name: 'Robotics',
     door: 'Legged robots for places people can’t go.',
     problem: 'The places survivors are trapped are the places rescuers can’t safely go.',
+    instead: 'Robots that walk where wheels stop.',
     solution:
-      'Legged robots that walk where wheels stop, carrying eyes and sensors into the gaps between the rubble.',
+      'Each foot picks its own ground, so the robot can step over debris, keep its footing on loose material and carry its sensors into gaps people can’t safely reach.',
     lede: 'Bio-inspired legged robots for terrain too dangerous, too unstable or too confined for people or conventional machines.',
     caps: [
       'Eight-legged platforms with a gait that keeps the body supported at all times',
@@ -262,8 +270,9 @@ export const STREAMS: Stream[] = [
     name: 'Websites',
     door: 'Fast, accessible, and yours to edit.',
     problem: 'Every change to your site is a quote and a fortnight.',
+    instead: 'A site you can change yourself, the afternoon you decide to.',
     solution:
-      'A site that loads fast, reads well, and that you can change yourself the afternoon you decide to.',
+      'Fast, accessible and built for the people who use it. When the menu or the hours change, you change them, without a quote or a fortnight’s wait.',
     lede: 'A site that loads fast, reads well, and that you can actually edit without calling us.',
     caps: [
       'Marketing sites and web applications, designed and built in house',

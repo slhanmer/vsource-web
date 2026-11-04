@@ -1016,32 +1016,37 @@
   }
 }
 
-/* One row per stream: the text on the left, the photograph on the right. No
-   panels, no rules, no rail. Boxing either half turned the section into a
-   comparison table, and it is meant to read as a statement and a reply.
+/* One row per stream, as a before and an after: the name, then where you are
+   now cut into the plate, then what you have instead on the surface. The past
+   is recessed (darker, quieter) and what you get is raised to the light — the
+   site's own material carrying the change the heading promises. No panels
+   round the after, and no rules or rail: it is a statement and a reply, not a
+   comparison table.
 
-   Three areas rather than two columns, so the narrow layout can put the
-   photograph between the problem and the answer without the markup changing:
+   Four areas, so the narrow layout can put the photograph at the turn, between
+   the past and the after, without the markup changing:
 
      wide                     narrow
-     say     photo            say
+     name    photo            name
+     past    photo            past
      answer  photo            photo
                               answer
 
-   The photograph spans both rows and stretches to their height, so its top is
-   the "Now" line's and its bottom is the last line of the text. The answer
-   row is `1fr`, so when the photograph's 4:3 floor makes the row taller than
-   the text, the spare height goes under the answer rather than between the
-   problem and the answer. */
+   The photograph spans all three rows and stretches to their height, so its
+   top is the cut box's and its bottom is the last line of the text. The answer
+   row is `1fr`, so when the photograph's 4:3 floor makes the rows taller than
+   the text, the spare height goes under the answer rather than between parts
+   of it. */
 .home-step {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto auto 1fr;
   grid-template-areas:
-    'say photo'
+    'name photo'
+    'past photo'
     'answer photo';
   column-gap: clamp(28px, 5vw, 80px);
-  row-gap: clamp(22px, 2.6vw, 36px);
+  row-gap: clamp(18px, 2vw, 28px);
   align-items: start;
   max-width: 1240px;
   margin: 0 auto;
@@ -1055,36 +1060,65 @@
     margin-top: clamp(56px, 7vw, 104px);
   }
 
-  &__say {
-    grid-area: say;
+  /* The stream's name in the hero's cut slot (`.cut-slot`), at about the size
+     a plain h3 had: the row's label. Static: the hero already types, and a
+     second typing word on the same screen would compete with it. */
+  &__name {
+    grid-area: name;
+    justify-self: start;
+    font-size: clamp(22px, 2.3vw, 32px);
+    text-align: left;
+    line-height: 1.1;
+    color: var(--text-primary);
+    margin: 0;
   }
 
-  /* One mono line, so the sentence under it reads as the situation rather
-     than as something we are claiming about ourselves. */
-  &__now {
+  /* "Now" and "Instead". One mono line each, the same style, so the two halves
+     read as a pair. Eyebrows, not headings: the row's heading is the name. */
+  &__eyebrow {
     display: block;
     font-family: $font-family-mono;
     font-size: 10.5px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--text-subtle);
-    margin-bottom: clamp(12px, 1.4vw, 18px);
+    margin-bottom: 10px;
   }
 
-  /* Headline scale, same face as the hero. Deliberately not as large as the
-     hero itself — this answers to it, it does not compete with it. */
+  /* The past, cut into the plate: the home page's well fill, darker than the
+     plate in both themes, with the recessed edge from the design language —
+     shadow on the upper inner rim, light catching the lower one. */
+  &__past {
+    grid-area: past;
+    padding: clamp(16px, 1.8vw, 24px) clamp(18px, 2vw, 28px);
+    border-radius: $radius-md;
+    background: var(--home-well);
+    box-shadow:
+      inset 0 3px 8px -3px var(--carve-dark),
+      inset 0 -1px 0 var(--carve-lip);
+
+    /* The well is darker than the plate, and `--text-subtle` on it fails AA in
+       the light theme. The secondary colour passes there (4.66:1), and the
+       eyebrow still reads as a label by its face and case. */
+    .home-step__eyebrow {
+      color: var(--text-secondary);
+    }
+  }
+
+  /* Body-large, in the secondary colour: it reads as the past, quieter than
+     what follows, and still easy to read. */
   &__problem {
     font-family: $font-family-read;
-    font-weight: 300;
-    font-size: clamp(27px, 3.6vw, 50px);
-    line-height: 1.15;
-    color: var(--text-primary);
+    font-weight: 400;
+    font-size: clamp(18px, 1.45vw, 21px);
+    line-height: 1.4;
+    color: var(--text-secondary);
     margin: 0;
-    max-width: 18ch;
+    max-width: 44ch;
   }
 
-  /* Stretched over both rows. The container is what gives the photograph its
-     4:3 floor: `cqi` is this cell's width, so 75cqi is the height of a 4:3
+  /* Stretched over all three rows. The container is what gives the photograph
+     its 4:3 floor: `cqi` is this cell's width, so 75cqi is the height of a 4:3
      box at whatever width the column has. As the photo's min-height it is
      also this cell's contribution to the rows, so a short text column grows
      to meet the photograph instead of flattening it. */
@@ -1099,27 +1133,29 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    padding-top: clamp(6px, 1vw, 14px);
   }
 
-  /* The stream's name in the hero's cut slot (`.cut-slot`), at about the size
-     the plain heading had. Static: the hero already types, and a second
-     typing word on the same screen would compete with it. */
-  &__name {
-    font-size: clamp(22px, 2.3vw, 32px);
-    text-align: left;
-    line-height: 1.1;
+  /* What you have instead: the largest text in the row, at the size and face
+     the problem used to have, in the primary colour. */
+  &__instead {
+    font-family: $font-family-read;
+    font-weight: 300;
+    font-size: clamp(27px, 3.6vw, 50px);
+    line-height: 1.15;
     color: var(--text-primary);
-    margin: 0 0 4px;
+    margin: 0;
+    max-width: 18ch;
   }
 
+  /* The why, as body copy: readable, not the muted grey it used to be. */
   &__solution {
     font-family: $font-family-read;
     font-size: clamp(16px, 1.25vw, 19px);
-    line-height: 1.45;
-    color: var(--text-secondary);
-    max-width: 40ch;
-    margin: 0;
+    line-height: 1.5;
+    color: var(--text-primary);
+    max-width: 62ch;
+    margin: clamp(14px, 1.6vw, 20px) 0 0;
   }
 
   /* The question does the work the layout cannot: it names what just happened
@@ -1130,7 +1166,7 @@
     flex-wrap: wrap;
     align-items: baseline;
     gap: 10px;
-    margin: 4px 0 0;
+    margin: 16px 0 0;
     font-family: $font-family-mono;
     font-size: 10.5px;
     letter-spacing: 0.16em;
@@ -1161,16 +1197,21 @@
     }
   }
 
-  /* Stacked: the problem, then the photograph full width, then the name and
-     the answer. */
+  /* Stacked: the name, the past, the photograph full width at the turn, then
+     what you have instead. */
   @media (max-width: $breakpoint-desktop) {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto;
     grid-template-areas:
-      'say'
+      'name'
+      'past'
       'photo'
       'answer';
-    row-gap: clamp(20px, 4vw, 30px);
+    row-gap: clamp(16px, 4vw, 26px);
+
+    &__answer {
+      padding-top: 0;
+    }
   }
 }
 
