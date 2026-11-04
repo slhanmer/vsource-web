@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { CONTACT } from '@constants'
 import { getCrew, getPartners, getSite, getStreams } from '@/data'
 import HeroDoors from '@/components/home/HeroDoors'
+import MillLines from '@/components/home/MillLines'
 import { HeroRunProvider } from '@/components/home/HeroRun'
 import Reveal from '@/components/home/Reveal'
 import RotatingHeadline from '@/components/home/RotatingHeadline'
@@ -59,6 +60,9 @@ export default async function Home() {
       */}
       <section className="home-hero">
         <div className="home-plate">
+          {/* Behind everything on the plate; renders nothing on touch or
+              under reduced motion, where the CSS lines stay. */}
+          <MillLines />
           {/* One timeline for the headline and the doors (HeroRun.tsx). */}
           <HeroRunProvider>
             <div className="home-hero__inner">

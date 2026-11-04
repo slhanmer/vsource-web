@@ -98,3 +98,57 @@ Opacity of the three rows every 5% of the pinned range (after):
 
 **Two rows are never above 0.5** at any step. Full data:
 `C:\tmp\hero-polish\moves-before.json` and `moves-after.json`.
+
+## §4 Mill lines that bend around the cursor
+
+`src/components/home/MillLines.tsx`: a `<canvas>` inside `.home-plate`,
+behind the content (`z-index` 0 under the content's 1), `aria-hidden`,
+`pointer-events: none`. It draws the same lines as the CSS (1px of
+`--home-mill` at offset 3 of every 4px), then adds `.has-mill-canvas`, which
+leaves only the slab gradient in CSS. `.home-moves` is untouched.
+
+**Values (tuned for the shape; see the caveat below):**
+
+| | |
+|---|---|
+| Peak displacement | 6px, at ±80px from the pointer |
+| Gaussian sigma | 80px, so the reach is about 160px (2.5px left at ±160, ~0.5 at ±220) |
+| Shape | dipole: lines above the pointer go up, below go down, so they part round it |
+| Follow (centre lerp per frame) | 0.22 |
+| Ease (strength lerp per frame) | 0.12, no overshoot, so no bounce |
+| "Stopped" | 140ms without a move. The lines then relax to straight |
+| DPR | capped at 2 |
+
+Measured from the canvas pixels at 1440×900 (each line's position in a column
+through the bend, against a column far from it). Line offset from the
+pointer: vertical shift.
+
+`-160: -2.5 · -120: -4.5 · -80: -6 · -40: -4 · 0: 0 · +40: +4.5 · +80: +6 · +120: +4.5 · +160: +2.5`
+
+| Check | Result |
+|---|---|
+| Identical to the CSS lines until the pointer moves | the same page with the canvas, then with it removed and the CSS layer back: lines on **exactly the same rows**. The canvas line is 1/255 fainter, and the slab gradient's dithering differs by ≤4/255. Nothing visible |
+| Frame time (rAF callback), pointer crossing the fold | **0.29ms mean, 0.4 p95, 1.0 max**. With CPU throttled 4× (a stand-in for a mid laptop): **1.3 mean, 1.7 p95, 1.8 max**, against a 16.7ms frame |
+| Idle | **0 rAF calls** in the 2s after the pointer stops, at 1× and 4× |
+| Hidden tab | the loop is cancelled on `visibilitychange`, and resumes only if the lines are still bent |
+| Reduced motion | no canvas in the DOM, and the CSS lines are on |
+| Touch (`hasTouch`, `isMobile`, 1024×1366) | no canvas in the DOM, and the CSS lines are on |
+| Before hydration / without JS | the component renders nothing on the server, so the CSS lines show as before |
+| Theme switch | redraws in the new `--home-mill` (MutationObserver on `data-theme`) |
+
+Frames as the pointer crosses the fold: `C:\tmp\hero-polish\mill\frame-00…05.png`
+and `frame-settled.png`. The numbers are in `mill.json` and `bend-profile.json`.
+
+**Caveat, and the one call for Simon:** `--home-mill` is a whisper: 2% black
+on light and 1.4% white on dark. At that strength **I could not see the bend
+in any screenshot, even contrast-stretched**; the slab gradient's dither
+swamps it, which is why the evidence above is measured, not pictured. It may
+be just as hard to see on a real screen. If it is, the lever is visibility,
+not shape: raise `PEAK` (it is a constant at the top of the file), or let the
+canvas draw the lines slightly stronger near the pointer. I have not changed
+the token, because the fold must look identical until the pointer moves.
+
+**CursorSpark** (the shake easter egg) is unchanged. They don't compete: the
+spark is an overlay that only appears after a deliberate shake, and the bend
+is an almost subliminal change in the plate's texture. During a shake both
+are active; the spark draws the eye, and the lines simply part under it.

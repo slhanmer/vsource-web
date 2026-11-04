@@ -120,6 +120,30 @@
   box-shadow: inset 0 1px 0 var(--home-plate-lip);
 }
 
+/* The mill lines, bending round the pointer (MillLines.tsx). Only ever in the
+   DOM on a fine, hovering pointer without reduced motion. Once it has drawn
+   the lines it adds `.has-mill-canvas`, which takes the CSS line layer off so
+   they are not drawn twice. The slab gradient stays in CSS. */
+.home-plate__mill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.home-plate.has-mill-canvas {
+  background: linear-gradient(180deg, var(--home-plate-top), var(--home-plate-bottom));
+}
+
+/* The content sits above the canvas. */
+.home-plate > .home-hero__inner,
+.home-plate > .home-plate__foot {
+  position: relative;
+  z-index: 1;
+}
+
 
 /* ── the plate's bottom edge ────────────────────────────────────────────────
    A hairline, the marks of people who have actually paid us, and the way down.
