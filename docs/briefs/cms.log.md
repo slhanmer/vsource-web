@@ -436,3 +436,22 @@ in Blob. Either:
 
 Production starts from an empty database, so seeding it with its own token
 set avoids the problem from the start (docs/DEPLOYMENT.md).
+
+## Stage E — docs
+
+- `CLAUDE.md`: a CMS section (what lives where and why, the blast-radius
+  line, editors vs admins, drafts, migrations only, `pnpm user`, `pnpm seed`,
+  the module-format traps). "How the content is wired", the commands, the
+  deployment env vars, the content-rules flag wording and "Current state" are
+  updated.
+- `docs/DEPLOYMENT.md` is replaced with the Vercel + Neon + Blob setup: env
+  vars per environment, the rule that preview never points at the production
+  database, migrations on deploy, media, DNS (apex and `www` only, Resend's
+  records stay), and the Resend section kept as it was.
+- **The first-deploy order differs from the brief, for a reason.** The brief's
+  order is env → deploy → seed → user → portraits. But every public page is
+  rendered statically from Payload at build time, so a build against an empty
+  production database fails, on purpose, on the first missing required photo.
+  The documented order is env → migrate production from a laptop → seed it
+  (with the production Blob token, so files go straight into Blob) → deploy
+  → `pnpm user` → portraits.

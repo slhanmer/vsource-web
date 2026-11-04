@@ -32,7 +32,14 @@ pnpm build        # the real check
 pnpm lint         # eslint
 pnpm test:ci      # jest, non-watch
 pnpm verify       # install --frozen-lockfile && lint:ci && test:ci && build
+pnpm seed         # load src/seed/content.ts into DATABASE_URL (idempotent)
+pnpm user <email> [admin|editor] --generate   # create an /admin account
+pnpm payload ...  # the Payload CLI (migrate:create, generate:types, run)
 ```
+
+`pnpm build` reads the database: every public page is rendered from Payload.
+It needs `DATABASE_URL` (in `.env.local`, the Neon preview branch) and a
+seeded database.
 
 `dev` and `build` both pass **`--webpack`** deliberately. Next 16 defaults to
 Turbopack; this project cannot use it, because the SCSS token injection in
@@ -66,8 +73,12 @@ Enforced in `.claude/settings.json`; this is the plain-English version.
 - **Vercel**, from GitHub. Production branch is `main`; every push to
   `development` gets a preview deploy. Promotion is Simon merging
   `development` into `main`, and nobody else.
-- Env vars live in Vercel, not the repo: `RESEND_API_KEY`, `CONTACT_TO_EMAIL`,
-  `CONTACT_FROM_EMAIL`, `TURNSTILE_SECRET_KEY`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`.
+- Env vars live in Vercel, not the repo: `DATABASE_URL`, `PAYLOAD_SECRET`,
+  `BLOB_READ_WRITE_TOKEN`, `NEXT_PUBLIC_SITE_URL`, `RESEND_API_KEY`,
+  `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL`, `TURNSTILE_SECRET_KEY`,
+  `NEXT_PUBLIC_TURNSTILE_SITE_KEY`. **Preview never points at the production
+  database.** The full setup, and the first-deploy order, is in
+  `docs/DEPLOYMENT.md`.
   `NEXT_PUBLIC_*` values are compiled in at build. After changing one,
   redeploy, then check the Turnstile widget actually renders on `/contact`. A
   missing key errors nowhere; the widget is simply absent.
@@ -199,40 +210,86 @@ problem, not a style note.
   because three copies of one number on a screen is clutter, not availability —
   not because the number is secret. It is also in the Organization JSON-LD in
   `layout.tsx`, which is correct for local search. Do not add it to a page body.
-- Copy marked `pending: true` or `placeholder: true` in a constants file is
-  **unverified copy I invented**. It renders a visible marker. Do not remove the
+- Copy marked `pending` or `placeholder` (a checkbox in `/admin`, or a flag in
+  `src/seed/content.ts` and `landings.ts`) is **unverified copy I invented**. It renders a visible marker. Do not remove the
   flag without replacing the words with something someone has confirmed.
 
 ---
 
 # How the content is wired
 
-The site is data-driven. Pages are templates; the words live in `src/constants/`.
+The site is data-driven. Pages are templates. Most of the words and every
+photograph are in **Payload** (see CMS below), and a few are in code.
 
-| File | Drives |
+| Where | Drives |
 |---|---|
-| `streams.ts` | the home page moves **and** all three stream pages |
-| `built.ts` | `/built` index, every project page, the "Coming" rail |
-| `partners.ts` | the partners band |
-| `crew.ts` | home team section and `/team` |
-| `contact.ts` | header contacts, footer, contact page |
+| `streams` collection | the home page doors and "What changes" rows, **and** all three stream pages |
+| `projects` collection | `/built`, every project page, the projects under each stream |
+| `crew` collection | home team section and `/team` |
+| `partners` collection | the fold's "Working with" strip and the partners band |
+| `site` global | the home "why" photo, the `/team` group photo, the "Coming" row |
+| `src/constants/contact.ts` | header contacts, footer, contact page |
+| `src/constants/landings.ts` | `/regulated` and `/accessibility` |
+| `src/constants/streams.ts` | `STREAM_COMMON` only |
 
-**Adding a fourth stream is a data change, not a new page.** `app/[stream]/`
-generates all three from `STREAMS` with `dynamicParams = false`.
+Pages read content through `src/data/`, never Payload directly: cached getters
+that return plain shapes (`src/data/types.ts`), with every image as a `Photo`
+(`src`, `alt`, `width`, `height`).
+
+**Adding a fourth stream is a data change, not a new page.** `app/(site)/[stream]/`
+generates every stream from the `streams` collection, but with
+`dynamicParams = false`, so a new one needs a **redeploy**, and a stream mark
+in `StreamMark`, which is drawn in code.
 
 `STREAM_COMMON` in `streams.ts` is deliberate: hosting and ongoing support are
 the same offer through any stream, so they are one shared list rather than the
 same three paragraphs on three pages. Three near-identical pages compete with
 each other for one search result. Do not "helpfully" expand it per stream.
 
-`sitemap.ts` is generated from `STREAMS` and `BUILT`, so it stays true on its
-own. Do not hand-maintain a URL list.
+`sitemap.ts` is generated from the same getters, so it stays true on its own.
+Do not hand-maintain a URL list.
 
-**Moving to Payload (cms brief, in progress).** Streams, projects, crew,
-partners and the site photos are becoming Payload collections. These **stay in
-code**, because a bad edit to them is a factual or legal problem rather than
-bad copy: `landings.ts` (`/regulated`, `/accessibility`), `STREAM_COMMON`,
-`contact.ts`, and the headline words.
+## CMS — Payload
+
+`/admin`, Payload 3 on Neon Postgres, media in Vercel Blob. Config is
+`payload.config.ts` and the collections are in `src/collections/`.
+
+- **What lives where, and why.** Copy and photographs are in the database, so
+  they change without a deploy. **What stays in code is the blast-radius
+  line:** anything where a bad edit is a factual or legal problem rather than
+  bad copy. That covers `landings.ts` (the regulatory and accessibility
+  claims), `STREAM_COMMON` (the hosting claim), `contact.ts`, and the
+  headline words. Keep it that way. Do not move them into the admin.
+- **Editors vs admins.** Editors change words and photographs on what exists.
+  Admins also create and delete streams, projects, people and partners,
+  change slugs, and manage accounts ("composition is ours, content is
+  theirs"). Media delete is admin-only.
+- **Drafts.** Projects have drafts. A draft is in the admin only, and a
+  published project appears on `/built` and at `/built/<slug>` without a
+  deploy (`dynamicParams` is on there).
+- **Saves are live on the next load.** Every collection but `users`, and the
+  `site` global, clears the `content` cache tag on save
+  (`src/lib/revalidate.ts`).
+- **Migrations only.** Schema changes go through
+  `pnpm payload migrate:create <name>` into `src/db/migrations`, and deploys
+  apply them (`pnpm build:deploy`). Dev push is off unless `PAYLOAD_PUSH=1`,
+  for a throwaway database only. Never set it here: local and preview share
+  one Neon branch.
+- **`pnpm user`** creates accounts on whatever `DATABASE_URL` names. It prints
+  a generated password once and never stores it.
+- **`pnpm seed`** loads `src/seed/content.ts`, with files from
+  `src/seed/assets/`. It is idempotent: it writes only what differs. It
+  **refuses** to overwrite a row edited in `/admin` since it last wrote it,
+  and lists the rows (`--force` overrides). Once the site has been edited
+  in the admin, the database is the source of truth and `content.ts` is
+  history.
+- **Module format.** The repo is CommonJS (`next.config.ts` uses
+  `__dirname`), but the Payload CLI needs ESM. So `src/lib`, `src/db`,
+  `src/seed` and `src/collections` each carry a `{"type": "module"}`
+  `package.json`, and CLI scripts load the config through
+  `src/db/load-config.ts`. Code those folders import from Next must import
+  `next/cache.js`, not `next/cache`. There is no rich-text editor:
+  `richtext-lexical` uses top-level await, which this setup cannot load.
 
 ## Routes
 
@@ -284,22 +341,27 @@ Each of these cost real time. They look like style nits and are not.
 
 # Current state — read before starting
 
-As of 4 November:
+As of 5 November:
 
 - All work is on `development`. The live site is still the 4 August build
-  until the Vercel cutover.
-- Robotics copy is in (Simon, 4 November): the `/robotics` page, the home page
-  door and row, and Project Arachnid, which now leads `/built` with The
-  Huntsman's walking clip. `spider-drones` is gone.
+  until the Vercel cutover, and that cutover now needs the database steps in
+  `docs/DEPLOYMENT.md` §4.
+- **Content is in Payload** (cms brief, stages A–E). The preview Neon branch is
+  migrated and seeded. `src/constants/built.ts`, `crew.ts`, `partners.ts` and
+  `photos.ts` are gone.
+- Robotics copy is in (Simon, 4 November). Project Arachnid leads `/built`
+  with The Huntsman's walking clip, and `spider-drones` is gone. Websites'
+  door and row are our own Nug and Snug sites.
 - Invented copy still showing a marker: two `/built` entries,
-  `training-professionals` and `qut-capstones`. Nothing else carries
-  `placeholder` or `pending`. Both partner entries were confirmed by Simon on
-  3 November (review-1).
-- The CMS brief (`docs/briefs/cms.md`) is blocked until `DATABASE_URL` points
-  at a local database. Content still lives in `src/constants/`.
-- Photos from the 2 November shoot are coming. Tom has no portrait,
-  permanently. Group and working shots go in `src/constants/photos.ts`.
-- Next after relaunch: Payload CMS (Neon Postgres, Vercel Blob media).
+  `training-professionals` and `qut-capstones`. Nothing else is flagged
+  `placeholder` or `pending`.
+- Craig, Simon and Ronan show the terminal tile until their real portraits are
+  uploaded in `/admin`. The stock stand-ins are deleted. Tom has no portrait,
+  permanently.
+- Preview deployments will show broken images until the seeded media is in the
+  preview Blob store (`docs/DEPLOYMENT.md` §5).
+- Photos from the 2 November shoot go in through `/admin`: portraits on Crew,
+  and the group and working shots on Site.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
