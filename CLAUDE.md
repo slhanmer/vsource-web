@@ -356,9 +356,14 @@ As of 5 November:
 - Robotics copy is in (Simon, 4 November). Project Arachnid leads `/built`
   with The Huntsman's walking clip, and `spider-drones` is gone. Websites'
   door and row are our own Nug and Snug sites.
-- Invented copy still showing a marker: two `/built` entries,
-  `training-professionals` and `qut-capstones`. Nothing else is flagged
-  `placeholder` or `pending`.
+- `/built` is five cards, every one with a real image (built-trim, 5
+  November): Project Arachnid (lead), the Aptium portal (its logo on a plate,
+  media kind `logo`, because the screens are under NDA), Training
+  Professionals, SAUCE (a Storybook sheet, `Showcase/Overview`), and Five
+  Brisbane venues, which lists the five venue sites on its page. The grid is
+  two columns, so four cards never leave an orphan. Recheck it when the count
+  changes.
+- Nothing is flagged `placeholder` or `pending` anywhere.
 - Craig, Simon and Ronan show the terminal tile until their real portraits are
   uploaded in `/admin`. The stock stand-ins are deleted. Tom has no portrait,
   permanently.

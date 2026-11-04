@@ -7,8 +7,8 @@ import type { ProjectMedia as Spec } from '@/data/types'
 import StreamMark from '@/components/home/StreamMark'
 
 /**
- * One piece of showpiece media: a clip, a still, or a stream mark where the
- * work cannot be shown at all.
+ * One piece of showpiece media: a clip, a still, a client's logo on a plate
+ * (work under NDA), or a stream mark (unused since built-trim).
  *
  * The clip is the interesting case, and the rules it follows are the ones that
  * keep a media-led page from being a liability:
@@ -90,6 +90,25 @@ export default function ProjectMedia({ spec, priority = false, className = '', s
       <div className={`built-media built-media--mark ${className}`.trim()}>
         {spec.markId && <StreamMark id={spec.markId} className="built-media__mark" />}
         <p className="built-media__note">{spec.alt}</p>
+      </div>
+    )
+  }
+
+  /* A client's logo on a light raised plate — work under NDA, where the name
+     can be shown and the screens cannot. The plate fills the frame at the
+     normal ratio, so this card is the same size as its neighbours. */
+  if (spec.kind === 'logo') {
+    return (
+      <div className={`built-media built-media--logo ${className}`.trim()}>
+        <Image
+          src={spec.src ?? ''}
+          alt={spec.alt}
+          width={spec.width}
+          height={spec.height}
+          sizes="320px"
+          priority={priority}
+          className="built-media__logo"
+        />
       </div>
     )
   }

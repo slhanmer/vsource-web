@@ -34,6 +34,13 @@
      keeps one teal in the light theme instead of two that nearly match. */
   --state-info: var(--brand-highlight);
 
+  /* ── Logo plate ─────────────────────────────────────────────────────── */
+  /* The ground supplied logos sit on: partner logos on the home page, and a
+     client logo on /built (kind 'logo'). LIGHT IN BOTH THEMES, so there is no
+     dark override: the artwork is drawn for white, and recolouring someone
+     else's mark is not ours to do. */
+  --logo-plate: #f4f7f5;
+
   /* ── Wordmark ───────────────────────────────────────────────────────── */
   --wordmark-ink: #c3d0c8;
   --wordmark-lip: rgba(255, 255, 255, 0.4);

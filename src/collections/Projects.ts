@@ -106,6 +106,36 @@ export const Projects: CollectionConfig = {
       admin: { description: 'The live site, if there is one to visit.' },
     },
     {
+      /*
+       * Several live sites under one project (the five Brisbane venues). Each
+       * renders as a small card on the project page, linking out. Empty
+       * renders nothing, so other projects are unaffected.
+       */
+      name: 'sites',
+      type: 'array',
+      admin: {
+        description:
+          'Several live sites under one project. Each shows as a small linked card on the project page.',
+      },
+      fields: [
+        {
+          type: 'row',
+          fields: [
+            { name: 'name', type: 'text', required: true },
+            { name: 'url', type: 'text', required: true },
+            { name: 'where', type: 'text', required: true },
+          ],
+        },
+        {
+          name: 'screenshot',
+          type: 'upload',
+          relationTo: 'media',
+          required: true,
+          admin: { description: 'The media document’s alt text is used for this screenshot.' },
+        },
+      ],
+    },
+    {
       name: 'media',
       type: 'group',
       fields: [
@@ -117,6 +147,16 @@ export const Projects: CollectionConfig = {
           options: [
             { label: 'Image', value: 'image' },
             { label: 'Video clip', value: 'video' },
+            /*
+             * A client's logo on a light raised plate, for work under NDA:
+             * the screens cannot be shown, the name can. Fills the card's
+             * media box at its normal ratio, so the card matches the others.
+             */
+            { label: 'Logo on a plate (work under NDA)', value: 'logo' },
+            /*
+             * Unused since built-trim (5 November): every card now has a real
+             * image. Kept so the option and the component path stay working.
+             */
             { label: 'Stream mark (work that cannot be shown)', value: 'mark' },
           ],
         },
@@ -125,7 +165,7 @@ export const Projects: CollectionConfig = {
           type: 'upload',
           relationTo: 'media',
           admin: {
-            description: 'The image, or the mp4 clip.',
+            description: 'The image, the mp4 clip, or (for a logo) the logo artwork.',
             condition: (_, sibling) => sibling?.kind !== 'mark',
           },
         },

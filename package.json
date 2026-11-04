@@ -105,7 +105,7 @@
     "local-ssl-proxy": "^2.0.5",
     "playwright": "^1.64.1",
     "prettier": "^3.9.5",
-    "storybook": "^10.4.6",
+    "storybook": "^10.6.5",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5",

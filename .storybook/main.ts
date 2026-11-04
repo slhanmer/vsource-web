@@ -34,7 +34,10 @@ const config: StorybookConfig = {
     config.css = {
       preprocessorOptions: {
         scss: {
-          additionalData: `@use "${path.resolve(__dirname, '../src/styles/_tokens.scss').replace(/\\/g, '/')}" as *;\n`,
+          // A load path, not an absolute @use: on Windows "C:/…" parses as a
+          // URL scheme and every SCSS file fails with "Can't find stylesheet".
+          loadPaths: [path.resolve(__dirname, '../src/styles')],
+          additionalData: `@use "tokens" as *;\n`,
         },
       },
     }

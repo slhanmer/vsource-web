@@ -53,7 +53,9 @@ export interface Stream {
   href: string
 }
 
-export type MediaKind = 'video' | 'image' | 'mark'
+/** `logo`: a client's logo on a light plate, for work under NDA. `mark`: a
+ *  stream mark; unused since built-trim, kept working. */
+export type MediaKind = 'video' | 'image' | 'logo' | 'mark'
 
 export interface ProjectMedia {
   kind: MediaKind
@@ -84,6 +86,15 @@ export interface Project {
   media: ProjectMedia
   featured?: boolean
   placeholder?: boolean
+  /** Several live sites under one project, each a linked card on its page. */
+  sites?: ProjectSite[]
+}
+
+export interface ProjectSite {
+  name: string
+  url: string
+  where: string
+  screenshot: Photo
 }
 
 export interface CrewMember {

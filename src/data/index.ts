@@ -69,11 +69,23 @@ const slugOf = (stream: number | StreamDoc | null | undefined) =>
   stream && typeof stream === 'object' ? stream.slug : ''
 
 /*
+ * ⚠ ONE CACHE PER DEPLOYMENT. `unstable_cache` keeps its entries in the Data
+ * Cache (.next/cache locally), which OUTLIVES A BUILD, and nothing outside a
+ * Next request can clear its tag. So a seed, or any write made from a
+ * laptop, followed by a new build used to bake the PREVIOUS content into the
+ * pages: the build read its own stale cache. Found by built-trim's verify.
+ * The epoch in the key makes every deployment (VERCEL_DEPLOYMENT_ID) or, off
+ * Vercel, every server process start with a cold cache, read from the
+ * database. Inside one deployment, saves still clear the tag as before.
+ *
  * `unstable_cache` serialises its result to JSON, so `undefined` keys vanish
  * and nothing here may be a class instance. Plain objects only.
  */
+const CACHE_EPOCH =
+  process.env.VERCEL_DEPLOYMENT_ID ?? `local-${Date.now().toString(36)}-${process.pid}`
+
 const cached = <A extends unknown[], R>(key: string, fn: (...args: A) => Promise<R>) =>
-  unstable_cache(fn, ['content', key], { tags: [CONTENT_CACHE_TAG] })
+  unstable_cache(fn, ['content', key, CACHE_EPOCH], { tags: [CONTENT_CACHE_TAG] })
 
 function toStream(doc: StreamDoc): Stream {
   return {
@@ -149,6 +161,16 @@ function toProject(doc: ProjectDoc): Project {
     },
     ...(doc.featured ? { featured: true } : {}),
     ...(doc.placeholder ? { placeholder: true } : {}),
+    ...(doc.sites?.length
+      ? {
+          sites: doc.sites.map((site) => ({
+            name: site.name,
+            url: site.url,
+            where: site.where,
+            screenshot: must(site.screenshot, `Project "${doc.slug}" site "${site.name}"`),
+          })),
+        }
+      : {}),
   }
 }
 

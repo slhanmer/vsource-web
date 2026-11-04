@@ -369,10 +369,25 @@ export interface Project {
    * The live site, if there is one to visit.
    */
   url?: string | null;
+  /**
+   * Several live sites under one project. Each shows as a small linked card on the project page.
+   */
+  sites?:
+    | {
+        name: string;
+        url: string;
+        where: string;
+        /**
+         * The media document’s alt text is used for this screenshot.
+         */
+        screenshot: number | Media;
+        id?: string | null;
+      }[]
+    | null;
   media: {
-    kind: 'image' | 'video' | 'mark';
+    kind: 'image' | 'video' | 'logo' | 'mark';
     /**
-     * The image, or the mp4 clip.
+     * The image, the mp4 clip, or (for a logo) the logo artwork.
      */
     upload?: (number | null) | Media;
     /**
@@ -732,6 +747,15 @@ export interface ProjectsSelect<T extends boolean = true> {
         id?: T;
       };
   url?: T;
+  sites?:
+    | T
+    | {
+        name?: T;
+        url?: T;
+        where?: T;
+        screenshot?: T;
+        id?: T;
+      };
   media?:
     | T
     | {

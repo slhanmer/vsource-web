@@ -64,6 +64,12 @@ export function projectData(p: SeedProject, media: Resolve, stream: Resolve) {
       alt: p.media.alt,
       long: p.media.long,
     },
+    sites: p.sites.map((site) => ({
+      name: site.name,
+      url: site.url,
+      where: site.where,
+      screenshot: media(site.screenshot),
+    })),
     _status: p.draft ? 'draft' : 'published',
   }
 }

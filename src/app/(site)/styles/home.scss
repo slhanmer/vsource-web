@@ -24,8 +24,9 @@
   --home-mill: rgba(47, 58, 52, 0.02);
   --home-engrave: rgba(47, 58, 52, 0.3);
   /* The ground partner logos sit on, in the fold strip and the partners band.
-     Light in both themes: supplied artwork is drawn for white. */
-  --home-logo-plate: #f4f7f5;
+     Light in both themes: supplied artwork is drawn for white. Global now
+     (global.scss), because /built's logo media uses the same plate. */
+  --home-logo-plate: var(--logo-plate);
 }
 
 [data-theme='dark'] .home {

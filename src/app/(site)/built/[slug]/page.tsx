@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getProject, getProjects, getStream } from '@/data'
@@ -122,6 +123,39 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           </div>
         </dl>
       </div>
+
+      {/*
+        Several live sites under one project. Each card is one link, to the
+        live site, in the same tab — these are the work, so going to them is
+        the point. Nothing renders when a project has none.
+      */}
+      {project.sites && project.sites.length > 0 && (
+        <section className="built-sites" aria-labelledby="built-sites-heading">
+          <h2 id="built-sites-heading" className="built-sites__heading">
+            The sites
+          </h2>
+          <ul className="built-sites__list">
+            {project.sites.map((site) => (
+              <li key={site.url} className="built-sites__item">
+                <a href={site.url} rel="noopener" className="built-site">
+                  <span className="built-site__shot">
+                    <Image
+                      src={site.screenshot.src}
+                      alt={site.screenshot.alt}
+                      width={site.screenshot.width}
+                      height={site.screenshot.height}
+                      sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 260px"
+                      className="built-site__img"
+                    />
+                  </span>
+                  <span className="built-site__name">{site.name}</span>
+                  <span className="built-site__where">{site.where}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <p className="built-project__cta">
         <Link href="/contact" className="basic-button">

@@ -52,6 +52,28 @@ describe('document data', () => {
     })
   })
 
+  it('turns a project’s sites into rows with the screenshot resolved', () => {
+    const project = {
+      slug: 'v',
+      stream: 'websites',
+      body: [],
+      facts: [],
+      media: { kind: 'image', upload: 'built/v', poster: null, markId: null, alt: 'a', long: {} },
+      sites: [
+        {
+          name: 'Snug',
+          url: 'https://goodsnug.com/',
+          where: 'Coorparoo',
+          screenshot: 'built/snug',
+        },
+      ],
+      draft: false,
+    } as unknown as SeedProject
+    expect(projectData(project, ids, ids).sites).toEqual([
+      { name: 'Snug', url: 'https://goodsnug.com/', where: 'Coorparoo', screenshot: 10 },
+    ])
+  })
+
   it('publishes a project unless the seed marks it a draft', () => {
     const project = {
       slug: 'x',
@@ -59,6 +81,7 @@ describe('document data', () => {
       body: [],
       facts: [],
       media: { kind: 'mark', upload: null, poster: null, markId: 'software', alt: 'a', long: {} },
+      sites: [],
       draft: false,
     } as unknown as SeedProject
     expect(projectData(project, ids, ids)._status).toBe('published')

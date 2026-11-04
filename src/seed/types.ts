@@ -59,13 +59,15 @@ export interface SeedProject {
   facts: Array<{ label: string; value: string }>
   url: string | null
   media: {
-    kind: 'image' | 'video' | 'mark'
+    kind: 'image' | 'video' | 'logo' | 'mark'
     upload: Key | null
     poster: Key | null
     markId: 'software' | 'robotics' | 'websites' | null
     alt: string
     long: Link
   }
+  /** Several live sites under one project. `screenshot` is an asset key. */
+  sites: Array<{ name: string; url: string; where: string; screenshot: Key }>
   /** Seeded as a draft: in the admin, not on the site. */
   draft: boolean
 }

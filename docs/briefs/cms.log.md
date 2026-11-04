@@ -501,3 +501,14 @@ redeploy, only its `StreamMark`.
 - Commits A–E and this one are on `development`. Merging is yours.
 
 STATUS: done
+
+---
+
+# Follow-up from built-trim (5 November)
+
+built-trim found a cms defect: a build after a seed served the **previous**
+content, because `unstable_cache`'s Data Cache outlives a build and a seed
+cannot clear the tag. `src/data/index.ts` now keys the cache by
+`VERCEL_DEPLOYMENT_ID` (or a per-process id locally), so each deployment reads
+the database fresh. That is what makes DEPLOYMENT.md's "seed, then redeploy"
+actually work. Details are in `built-trim.log.md`.
