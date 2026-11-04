@@ -1038,26 +1038,39 @@
    the text, the spare height goes under the answer rather than between parts
    of it. */
 .home-step {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  grid-template-rows: auto auto 1fr;
-  grid-template-areas:
-    'name photo'
-    'past photo'
-    'answer photo';
-  column-gap: clamp(28px, 5vw, 80px);
-  row-gap: clamp(18px, 2vw, 28px);
-  align-items: start;
+  /* ONE SCREEN PER ROW: the scroller's visible height (--scroller-h, set in
+     shell.scss from the scroller itself, so the header outside it is already
+     taken off). The content is centred in it. The row height is the spacing
+     between rows now; there is no margin between them. On a narrow screen a
+     row whose content is taller than that simply grows: min-height, never
+     height, so nothing is ever clipped. */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: var(--scroller-h);
+  padding-block: clamp(24px, 4vh, 48px);
   max-width: 1240px;
   margin: 0 auto;
   color: inherit;
   /* See --scroll-clearance in shell.scss. */
   scroll-margin-top: var(--scroll-clearance);
+  /* The row is the timeline its content fades on (see the bottom of this
+     section). The row, not the content, because the row is exactly one screen
+     tall, so its position maps onto "which one is being read" the same way for
+     all three, whatever each one's content height. */
+  view-timeline: --step block;
 
-  /* One gap between rows, the same every time: enough that each row reads as
-     its own unit, not so much that there is a screen of nothing between them. */
-  & + & {
-    margin-top: clamp(56px, 7vw, 104px);
+  &__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas:
+      'name photo'
+      'past photo'
+      'answer photo';
+    column-gap: clamp(28px, 5vw, 80px);
+    row-gap: clamp(18px, 2vw, 28px);
+    align-items: start;
   }
 
   /* The stream's name in the hero's cut slot (`.cut-slot`), at about the size
@@ -1200,14 +1213,16 @@
   /* Stacked: the name, the past, the photograph full width at the turn, then
      what you have instead. */
   @media (max-width: $breakpoint-desktop) {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto;
-    grid-template-areas:
-      'name'
-      'past'
-      'photo'
-      'answer';
-    row-gap: clamp(16px, 4vw, 26px);
+    &__inner {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto;
+      grid-template-areas:
+        'name'
+        'past'
+        'photo'
+        'answer';
+      row-gap: clamp(16px, 4vw, 26px);
+    }
 
     &__answer {
       padding-top: 0;
@@ -1232,25 +1247,67 @@
   }
 }
 
-/* The photograph is the one thing in a row that moves: a fade with a 12px
-   rise, 500ms, ease-out, once, when it scrolls into view. The text never
-   animates — it is on the page from the first paint.
+/* ONE ROW IN FOCUS. Each row's content fades in as the row arrives, holds at
+   full opacity while it is the row on screen, and fades out as the next one
+   comes up. Driven by scroll position alone — the page scrolls exactly as it
+   would without this (no pinning, no snapping), and only opacity responds.
 
-   'waiting' is only ever set on a photograph below the fold, after mount, and
-   never under reduced motion (StreamMoves.tsx), so without JavaScript every
-   photograph is simply there. The transition is on 'revealed' alone, so being
-   hidden off screen does not itself animate. */
-.home-step__media.is-waiting {
-  opacity: 0.001;
-  transform: translateY(12px);
+   The timeline is the row's `cover` range on #main, the nearest scroll
+   container: 0% when the row's top meets the bottom of the scroller, 100%
+   when its bottom leaves the top. A row is one screen tall, so the next row
+   is always exactly 50% of `cover` behind this one. The keyframes are chosen
+   so that two rows can never both be past half opacity:
+
+     0–16%   hidden          (still entering, below the one being read)
+     16–36%  fade in, with the 12px rise
+     36–64%  held at 1       (50% is the row filling the screen exactly)
+     64–84%  fade out, no movement
+     84–100% hidden
+
+   Opacity is above 0.5 only between 26% and 74%, a window 48% wide, so with
+   rows 50% apart the next row crosses 0.5 just after this one has dropped
+   below it. As cover percentages of entry/exit: the fade in runs from 32% to
+   72% of the entry range, the fade out from 28% to 68% of the exit range.
+
+   Only where scroll-driven animations exist and motion is allowed. Without
+   them (Firefox today) or under reduced motion, every row is simply at full
+   opacity. No JavaScript is involved, so turning it off changes nothing. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .home-step__inner {
+      animation: home-step-focus linear both;
+      animation-timeline: --step;
+      animation-range: cover 0% cover 100%;
+    }
+
+    /* A keyboard user who tabs to a row's link is reading that row. The
+       browser scrolls the link into view, but only as far as it has to, which
+       can leave the row mid-fade; this puts it at full opacity regardless. */
+    .home-step:focus-within .home-step__inner {
+      animation: none;
+      opacity: 1;
+    }
+  }
 }
 
-.home-step__media.is-revealed {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity 0.5s ease-out,
-    transform 0.5s ease-out;
+@keyframes home-step-focus {
+  0%,
+  16% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  36%,
+  64% {
+    opacity: 1;
+    transform: none;
+  }
+
+  84%,
+  100% {
+    opacity: 0;
+    transform: none;
+  }
 }
 
 /* ── why we work this way ───────────────────────────────────────────────── */
@@ -1652,7 +1709,7 @@
   .is-out .home-line,
   .is-out .home-door,
   .is-out .home-org,
-  .home-step__media.is-waiting {
+  .home-step__inner {
     opacity: 1;
     transform: none;
     clip-path: none;

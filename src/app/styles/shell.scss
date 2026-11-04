@@ -35,6 +35,26 @@
   flex: 1 1 auto;
   min-height: 0;
   display: flex;
+  // A size container, so `100cqh` inside it is the scroller's visible height —
+  // the screen minus the header, whatever the header's height is today. Safe
+  // here because this box takes its size from the frame, never from its
+  // content (flex: 1 1 auto inside a 100dvh column).
+  container-type: size;
+}
+
+// The visible height of the scroller, for anything that has to be "one
+// screen" tall (the "What changes" rows). Registered as a <length>, so it is
+// resolved to pixels HERE, against .site-scroll, and inherited as a number —
+// unregistered, `100cqh` would be re-resolved wherever it is used, against
+// whichever container is nearest there.
+@property --scroller-h {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 100svh;
+}
+
+.page-container.site-shell {
+  --scroller-h: 100cqh;
 }
 
 .page-container.site-shell {
