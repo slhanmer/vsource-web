@@ -960,9 +960,9 @@
 }
 
 /* ── the move ───────────────────────────────────────────────────────────────
-   Three streams, one row each: where you are now and what you have instead on
-   the left, a photograph of the work on the right. The words are there from
-   the first paint; only the photographs arrive as the page scrolls.
+   Three streams, swapped in place on a stage that holds still while the page
+   scrolls past (see "THE PINNED STAGE" below). Where that cannot run, three
+   rows one after another in normal flow.
 
    No panels anywhere in here. The problem is set at headline size with nothing
    around it; boxing either half turned the section into a comparison table,
@@ -1038,27 +1038,17 @@
    the text, the spare height goes under the answer rather than between parts
    of it. */
 .home-step {
-  /* ONE SCREEN PER ROW: the scroller's visible height (--scroller-h, set in
-     shell.scss from the scroller itself, so the header outside it is already
-     taken off). The content is centred in it. The row height is the spacing
-     between rows now; there is no margin between them. On a narrow screen a
-     row whose content is taller than that simply grows: min-height, never
-     height, so nothing is ever clipped. */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: var(--scroller-h);
-  padding-block: clamp(24px, 4vh, 48px);
   max-width: 1240px;
   margin: 0 auto;
   color: inherit;
   /* See --scroll-clearance in shell.scss. */
   scroll-margin-top: var(--scroll-clearance);
-  /* The row is the timeline its content fades on (see the bottom of this
-     section). The row, not the content, because the row is exactly one screen
-     tall, so its position maps onto "which one is being read" the same way for
-     all three, whatever each one's content height. */
-  view-timeline: --step block;
+
+  /* Plain flow — the fallback, and the layout wherever the stage is not
+     pinned: one row after another, one gap between them. */
+  & + & {
+    margin-top: clamp(56px, 7vw, 104px);
+  }
 
   &__inner {
     display: grid;
@@ -1247,66 +1237,145 @@
   }
 }
 
-/* ONE ROW IN FOCUS. Each row's content fades in as the row arrives, holds at
-   full opacity while it is the row on screen, and fades out as the next one
-   comes up. Driven by scroll position alone — the page scrolls exactly as it
-   would without this (no pinning, no snapping), and only opacity responds.
+/* THE PINNED STAGE. The section becomes a tall track; a stage one screen tall
+   sticks to the top of the scroller while the track passes underneath, and the
+   three rows, stacked in one grid cell on it, swap by scroll position. The
+   heading is on the stage, directly above the rows, at its normal spacing.
 
-   The timeline is the row's `cover` range on #main, the nearest scroll
-   container: 0% when the row's top meets the bottom of the scroller, 100%
-   when its bottom leaves the top. A row is one screen tall, so the next row
-   is always exactly 50% of `cover` behind this one. The keyframes are chosen
-   so that two rows can never both be past half opacity:
+   The timeline is the section's own `view-timeline`. The section is taller
+   than the scroller, so its `contain` range runs from the section's top
+   reaching the top of the scroller to its bottom reaching the bottom — which
+   is exactly the stretch the sticky stage is pinned for. Each row animates
+   across all of `contain`; its keyframes say which part of it is that row's.
+   The rows are descendants of the section, so the timeline is visible to them
+   without `timeline-scope`.
 
-     0–16%   hidden          (still entering, below the one being read)
-     16–36%  fade in, with the 12px rise
-     36–64%  held at 1       (50% is the row filling the screen exactly)
-     64–84%  fade out, no movement
-     84–100% hidden
+   Thirds, with a short crossfade at each boundary (B = 33.3%, 66.7%): the
+   outgoing row fades out over B-3.3% → B+1.7%, opacity only; the incoming one
+   fades in over B-1.7% → B+3.3% with the 12px rise. Outgoing is above 0.5
+   until B-0.8%, incoming only from B+0.8%, so two rows are never both past
+   half. `pointer-events` flips with them, at the midpoint of each fade, so a
+   row that is not showing cannot be clicked. Before the stage pins Software is
+   already showing (fill: both), and after it unpins Websites stays.
 
-   Opacity is above 0.5 only between 26% and 74%, a window 48% wide, so with
-   rows 50% apart the next row crosses 0.5 just after this one has dropped
-   below it. As cover percentages of entry/exit: the fade in runs from 32% to
-   72% of the entry range, the fade out from 28% to 68% of the exit range.
-
-   Only where scroll-driven animations exist and motion is allowed. Without
-   them (Firefox today) or under reduced motion, every row is simply at full
-   opacity. No JavaScript is involved, so turning it off changes nothing. */
+   ONLY WHERE IT FITS AND IS ALLOWED. Everything here is inside
+   `@supports (animation-timeline: view())` — Firefox today gets plain flow —
+   and a media query: motion allowed, the desktop layout (two columns; the
+   stacked narrow layout makes a row taller than any phone screen), and a
+   scroller tall enough for the heading plus the tallest row. The 860px floor
+   on viewport height is measured, not guessed: see moves-pin.log.md. Below
+   it, or under reduced motion, nothing in this block applies and the rows are
+   in plain flow, all visible. */
 @supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .home-step__inner {
-      animation: home-step-focus linear both;
-      animation-timeline: --step;
-      animation-range: cover 0% cover 100%;
+  @media (prefers-reduced-motion: no-preference) and (min-width: ($breakpoint-desktop + 1px)) and (min-height: 860px) {
+    .home-moves {
+      /* The track: one scroller-height per stream. The stage pins for the
+         track minus one screen, so each stream gets about two thirds of a
+         screen of scrolling — one comfortable flick. */
+      height: calc(3 * var(--scroller-h));
+      padding-block: 0;
+      view-timeline: --moves block;
     }
 
-    /* A keyboard user who tabs to a row's link is reading that row. The
-       browser scrolls the link into view, but only as far as it has to, which
-       can leave the row mid-fade; this puts it at full opacity regardless. */
-    .home-step:focus-within .home-step__inner {
-      animation: none;
-      opacity: 1;
+    .home-moves__stage {
+      position: sticky;
+      top: 0;
+      height: var(--scroller-h);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Full width, as in plain flow. As a flex item its `margin: 0 auto` would
+       otherwise shrink-wrap the heading and centre it over the rows. */
+    .home-moves__head {
+      width: 100%;
+    }
+
+    /* One cell, three rows in it, each aligned to the top. The cell is as tall
+       as the tallest row. */
+    .home-moves__rows {
+      width: 100%;
+      display: grid;
+      align-items: start;
+    }
+
+    .home-step {
+      grid-area: 1 / 1;
+      width: 100%;
+      animation: linear both;
+      animation-timeline: --moves;
+      animation-range: contain 0% contain 100%;
+
+      & + & {
+        margin-top: 0;
+      }
+
+      &:nth-child(1) {
+        animation-name: home-moves-first;
+      }
+
+      &:nth-child(2) {
+        animation-name: home-moves-middle;
+      }
+
+      &:nth-child(3) {
+        animation-name: home-moves-last;
+      }
     }
   }
 }
 
-@keyframes home-step-focus {
+@keyframes home-moves-first {
   0%,
-  16% {
+  30% {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  35%,
+  100% {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+@keyframes home-moves-middle {
+  0%,
+  31.67% {
     opacity: 0;
     transform: translateY(12px);
+    pointer-events: none;
   }
 
-  36%,
-  64% {
+  36.67%,
+  63.33% {
     opacity: 1;
     transform: none;
+    pointer-events: auto;
   }
 
-  84%,
+  68.33%,
   100% {
     opacity: 0;
     transform: none;
+    pointer-events: none;
+  }
+}
+
+@keyframes home-moves-last {
+  0%,
+  65% {
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+  }
+
+  70%,
+  100% {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
   }
 }
 
