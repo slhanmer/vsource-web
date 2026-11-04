@@ -89,14 +89,25 @@
 .home-plate {
   position: relative;
   /* One screen, always: the fold sits between the plate and everything else,
-     at every viewport. align-content centres the content within it rather than
-     stretching the grid rows. */
+     at every viewport.
+
+     THE SLACK IS SPLIT 45/55, not centred. Rows: space, content, space, foot.
+     The two fr rows share whatever the content does not use, 45 above and 55
+     below, which sits the block a little above optical centre — centred
+     exactly, it reads low. The foot stays on the bottom edge. (hero-polish,
+     5 November: centring it in one 1fr row left ~270px above and ~250px
+     below at 1680×1143, which read as dead space at both ends.) */
   min-height: calc(100svh - var(--home-fold-trim));
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  /* Less at the top than before: the masthead row that needed the room is gone,
-     and the header above the plate is now doing that job. */
-  padding-block: clamp(24px, 3vw, 56px) clamp(18px, 2vw, 28px);
+  /* The top air is the first row's MINIMUM, not padding: as padding it sat
+     outside the split and made the space above bigger than the space below. */
+  --home-fold-air: clamp(24px, 3vw, 56px);
+  grid-template-rows:
+    minmax(var(--home-fold-air), 45fr)
+    auto
+    minmax(var(--home-fold-air), 55fr)
+    auto;
+  padding-block: 0 clamp(18px, 2vw, 28px);
   padding-inline: var(--home-gutter);
   background:
     repeating-linear-gradient(
@@ -114,6 +125,7 @@
    A hairline, the marks of people who have actually paid us, and the way down.
    Hidden on short viewports, where the fold matters more than the flourish. */
 .home-plate__foot {
+  grid-row: 4;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -262,19 +274,14 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: clamp(32px, 6vw, 96px);
-    /* Both columns start at the same line. Centring them meant the shorter
-       column floated and read as two unrelated blocks rather than as two
-       columns of one thing. Note this is the columns against each other —
-       align-self below is the whole block against the plate. */
-    /* stretch, not start: the two columns start level either way, because the
-       content inside each begins at its top — but stretch makes them the same
-       HEIGHT, which is what lets the call to action drop to the bottom of the
-       left column and finish level with the last door. */
-    align-items: stretch;
-    /* Vertically centred in the plate. With the masthead gone there is nothing
-       to hang the block from the top edge for, and on a tall viewport pinning
-       it there left the bottom third as bare plate. */
-    align-self: center;
+    /* The copy is centred against the door stack: the middle of the copy
+       block lines up with the middle door. It used to be stretched to the
+       doors' height with the call to action pushed to the bottom, level with
+       the last door, which stranded the button ~150px below the paragraph it
+       finishes (hero-polish, 5 November). The copy is not stretched to fill. */
+    align-items: center;
+    /* Its place in the plate: the content row, between the 45/55 slack. */
+    grid-row: 2;
     /* width as well as max-width: auto side margins on a grid item shrink it
        to its content, and the doors' 40% photo column is a percentage that
        content cannot size. Without this the doors narrowed to fit their copy. */
@@ -310,10 +317,7 @@
     margin: clamp(22px, 2.4vw, 32px) 0 0;
   }
 
-  /* A flex column purely so the call to action can take the slack. Everything
-     above it sits at the top as it always did; `margin-top: auto` on the CTA
-     puts whatever height is left over between the paragraph and the button,
-     which lands the button level with the bottom of the last door. */
+  /* A flex column so every line starts at the left edge at its own width. */
   &__say {
     display: flex;
     flex-direction: column;
@@ -333,13 +337,10 @@
     flex-wrap: wrap;
     align-items: center;
     gap: clamp(14px, 1.8vw, 24px);
-    /* auto, not a fixed gap: the column is stretched to the height of the doors
-       beside it, and this is where that extra height goes. The minimum keeps a
-       sane gap when there is no slack to take — a short viewport, or stacked on
-       a phone where the column is content-sized and auto resolves to zero. */
-    margin: clamp(20px, 2.2vw, 30px) 0 0;
-    margin-top: auto;
-    padding-top: clamp(20px, 2.2vw, 30px);
+    /* Directly under the copy, at the paragraph-to-button spacing the page
+       uses elsewhere (`.home-close__cta`, 28px). It finishes the paragraph
+       above it; it is not a separate object at the bottom of the column. */
+    margin: clamp(22px, 2.2vw, 28px) 0 0;
 
     .basic-button {
       /* The kit centres its label with flex — on the `button` ELEMENT rule.
@@ -685,7 +686,8 @@
    that only works on a 900px-tall desktop is not a fold. */
 @media (max-width: $breakpoint-mobile), (max-height: 820px) {
   .home-plate {
-    padding-block: clamp(20px, 3.4vh, 40px);
+    --home-fold-air: clamp(20px, 3.4vh, 40px);
+    padding-block: 0 clamp(20px, 3.4vh, 40px);
   }
 
   .home-hero__lede {
@@ -704,7 +706,7 @@
   }
 
   .home-hero__cta {
-    padding-top: 14px;
+    margin-top: 18px;
     gap: 14px;
 
     .basic-button {
