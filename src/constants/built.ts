@@ -1,9 +1,10 @@
 /**
  * The showpiece — what is on /built.
  *
- * ⚠ THREE ENTRIES ARE STILL INVENTED: spider-drones, training-professionals and
- * qut-capstones carry `placeholder: true` and render a marker. They are Craig's
- * to write. Everything else was approved by Simon on 3 November 2026.
+ * ⚠ TWO ENTRIES ARE STILL INVENTED: training-professionals and qut-capstones
+ * carry `placeholder: true` and render a marker. Everything else was approved
+ * by Simon on 3 November 2026, and Project Arachnid's copy and footage were
+ * supplied by him on 4 November.
  *
  * What is actually known, and is reflected here:
  *
@@ -12,14 +13,10 @@
  *     gets that in writing.
  *   - **"Class A" appears nowhere on this site.** TGA-regulated is the claim.
  *     The device classification is the client's to disclose, not ours.
- *   - **The spider drones are the reason this page carries video at all.** Whose
- *     project it is and whether the footage is ours to publish are Craig's to
- *     answer; the clip in /public/built is a six-second throwaway, not the real
- *     thing.
- *   - **Robotics has no delivered work of its own.** The QUT partnership and
- *     the two WIL capstones are what that stream can honestly point at. If the
- *     drones turn out not to be ours to show, that gap should be stated rather
- *     than filled.
+ *   - **Project Arachnid leads the page, and it is still being built.** Its
+ *     status is `building` and its facts say "first prototype complete": the
+ *     copy claims what The Huntsman does today and labels the second generation
+ *     as in development. Keep it that way as it moves on.
  *   - **This site is on the list deliberately.** A web shop whose own site is
  *     a template has already answered the question.
  *
@@ -87,34 +84,35 @@ export interface Project {
 
 export const BUILT: Project[] = [
   {
-    slug: 'spider-drones',
-    title: 'Spider drones',
-    client: 'Placeholder',
+    slug: 'project-arachnid',
+    title: 'Project Arachnid',
+    client: 'V Source',
     stream: 'robotics',
     year: '2026',
     status: 'building',
-    line: 'A walking platform, and the control loop that keeps it walking.',
-    lede: 'Placeholder — Craig has this one.',
+    line: 'Bio-inspired legged robots for places people can’t go.',
+    lede: 'After an earthquake, a building collapse or a landslide, the first hours matter most — and they are the hours when rescue teams face the most danger. Project Arachnid builds legged robots to go where people can’t.',
     body: [
-      'Placeholder. This is where the drones get written up properly: what the machine is for, what was hard about it, and what was learned that is worth someone else knowing.',
-      'The clip above is a throwaway I generated to exercise the video path — muted, six seconds, self-hosted. Replace it with the real footage and the page needs no other change.',
+      'Collapsed structures, unstable rubble, smoke and confined voids make many of the places survivors are trapped too dangerous for people to enter. Project Arachnid builds legged robots for these human-denied environments: terrain too dangerous, too unstable or too confined for people or conventional machines.',
+      'The aim is to put eyes, sensors and eventually supplies into the spaces between the rubble, so rescue teams can find survivors sooner and with less risk.',
+      'Our flagship platform, The Huntsman, takes its cues from the huntsman spider and its distant cousin the wolf spider — fast, low-slung and agile hunters. It walks on eight legs using an alternating gait drawn from arthropod locomotion, so its body stays supported at all times.',
+      'The first prototype stands, walks, turns, detects obstacles and climbs. The second generation, now in development, adds stronger joints for heavier payloads, pressure-sensing feet, body-orientation sensing, simulated training environments for machine learning, and an onboard mesh network to restore communications in a blackout.',
     ],
     facts: [
       { label: 'Stream', value: 'Robotics' },
-      { label: 'Status', value: 'Placeholder' },
-      { label: 'Media', value: 'Clip on our own hardware' },
-      { label: 'Rights', value: 'Unconfirmed' },
+      { label: 'Platform', value: 'The Huntsman, eight legs' },
+      { label: 'Stage', value: 'First prototype complete' },
+      { label: 'Next', value: 'Second generation in development' },
     ],
     media: {
       kind: 'video',
-      src: '/built/placeholder-drone.mp4',
-      poster: '/built/placeholder-drone.jpg',
-      alt: 'Placeholder animation: a six-legged platform stepping, with a scanning line passing across it.',
-      width: 960,
-      height: 540,
+      src: '/built/huntsman-walk.mp4',
+      poster: '/built/huntsman-walk-poster.jpg',
+      alt: 'The Huntsman, an eight-legged black robot, walking across a timber floor under a single light.',
+      width: 1280,
+      height: 720,
     },
     featured: true,
-    placeholder: true,
   },
   {
     slug: 'aptium-portal',

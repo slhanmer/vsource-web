@@ -43,20 +43,17 @@ interface Props {
 
 export default function ProjectMedia({ spec, priority = false, className = '', sizes }: Props) {
   const video = useRef<HTMLVideoElement>(null)
-  // What the VIDEO ELEMENT last told us it was doing. Not the same question as
-  // "is this clip playing", which also depends on whether motion is allowed and
-  // whether the viewer has paused it — so that one is derived below rather than
-  // stored. Keeping both in one piece of state meant the effect had to reset it
-  // on every change of either, which is a synchronous setState inside an effect
-  // and a cascading render (eslint react-hooks/set-state-in-effect).
-  const [videoPlaying, setVideoPlaying] = useState(false)
-  const [wanted, setWanted] = useState(true)
+  // Two different pauses, kept apart on purpose. `stopped` is the viewer's
+  // choice, made with the button, and it holds until they choose again.
+  // `hovering` is the courtesy pause while the pointer is over the clip. They
+  // were one flag, so the hover set it, the click flipped it back, and leaving
+  // the clip reset it: a mouse user could never make the pause stick, which
+  // fails WCAG 2.2.2 for a clip that loops past five seconds.
+  const [stopped, setStopped] = useState(false)
+  const [hovering, setHovering] = useState(false)
+  const wanted = !stopped && !hovering
 
   const reduced = useReducedMotion()
-
-  // Derived, not stored: it cannot be playing if motion is off or the viewer
-  // stopped it, whatever the element last reported.
-  const playing = videoPlaying && !reduced && wanted
 
   useEffect(() => {
     const node = video.current
@@ -64,8 +61,6 @@ export default function ProjectMedia({ spec, priority = false, className = '', s
 
     if (reduced || !wanted) {
       node.pause()
-      // No setState here. `playing` already reads false in this branch because
-      // it is derived from these same two values.
       return
     }
 
@@ -77,13 +72,9 @@ export default function ProjectMedia({ spec, priority = false, className = '', s
           if (entry.isIntersecting) {
             // A rejected play() is normal — a browser can refuse, and the
             // control is the answer to that rather than a retry loop.
-            node.play().then(
-              () => setVideoPlaying(true),
-              () => setVideoPlaying(false)
-            )
+            node.play().catch(() => {})
           } else {
             node.pause()
-            setVideoPlaying(false)
           }
         })
       },
@@ -122,8 +113,8 @@ export default function ProjectMedia({ spec, priority = false, className = '', s
   return (
     <div
       className={`built-media ${className}`.trim()}
-      onMouseEnter={() => setWanted(false)}
-      onMouseLeave={() => setWanted(true)}
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
     >
       <video
         ref={video}
@@ -143,11 +134,24 @@ export default function ProjectMedia({ spec, priority = false, className = '', s
       <button
         type="button"
         className="built-media__toggle"
-        aria-pressed={!playing}
-        aria-label={playing ? 'Pause this clip' : 'Play this clip'}
-        onClick={() => setWanted((value) => !value)}
+        // The button reports the viewer's own choice, not the hover pause, so
+        // its label does not flip just because the pointer is over the clip.
+        // Under reduced motion nothing plays, so it reads as stopped there.
+        aria-pressed={stopped || reduced}
+        aria-label={stopped || reduced ? 'Play this clip' : 'Pause this clip'}
+        // On /built the whole card is a link, so without this a click on the
+        // button bubbled to it and navigated to the project page instead of
+        // pausing. Next's <Link> skips navigation for a default-prevented click.
+        onClick={(event) => {
+          event.preventDefault()
+          event.stopPropagation()
+          setStopped((value) => !value)
+        }}
       >
-        <span className={`built-media__glyph ${playing ? '' : 'is-play'}`} aria-hidden="true" />
+        <span
+          className={`built-media__glyph ${stopped || reduced ? 'is-play' : ''}`}
+          aria-hidden="true"
+        />
       </button>
 
       {spec.long && (

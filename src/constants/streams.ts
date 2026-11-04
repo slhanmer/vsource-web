@@ -35,12 +35,11 @@
  * degrees; Simon holds computer science; Tom a diploma plus eight years. Nobody
  * here is RPEQ-registered, and Queensland regulates who may provide
  * "professional engineering services" (Professional Engineers Act 2002, BPEQ).
- * So nothing on this site calls anyone a qualified engineer, and stream 03 was
- * renamed from Engineering to Robotics in November 2026 for the same reason:
+ * So nothing on this site calls anyone a qualified engineer, and the Robotics
+ * stream was renamed from Engineering in November 2026 for the same reason:
  * offering "engineering" is offering the regulated service. Revisit the
- * wording when Craig and Ronan finish, not before. The scope of what that
- * stream actually sells is still Craig's to define; this copy is mine and
- * unverified.
+ * wording when Craig and Ronan finish, not before. The Robotics copy is
+ * Simon's, supplied on 4 November 2026 (Project Arachnid), and is final.
  */
 /** The streams, as a closed set. A union rather than `string` so anything
  *  keyed by stream — the home page photographs in photos.ts — fails the type
@@ -196,48 +195,64 @@ export const STREAMS: Stream[] = [
   {
     id: 'robotics',
     name: 'Robotics',
-    door: 'Machines that move, and the software that keeps them moving.',
-    problem: 'The hardware works on the bench and nowhere else.',
+    door: 'Legged robots for places people can’t go.',
+    problem: 'The places survivors are trapped are the places rescuers can’t safely go.',
     solution:
-      'The machine, its control loop and the software around it, built by the people who have to make it work in the field.',
-    lede: 'Robotics and automation — the mechanism, the control loop and the software, worked out together rather than handed between teams.',
+      'Legged robots that walk where wheels stop, carrying eyes and sensors into the gaps between the rubble.',
+    lede: 'Bio-inspired legged robots for terrain too dangerous, too unstable or too confined for people or conventional machines.',
     caps: [
-      'Computer systems and mechatronics backgrounds, with two engineering degrees in progress',
-      'Control software for platforms that walk, roll or fly',
-      'Sensors, embedded hardware and the code that reads them',
-      'Systems where the software and the hardware have to agree with each other',
+      'Eight-legged platforms with a gait that keeps the body supported at all times',
+      'Sensor, camera and compute payloads carried at the centre',
+      'Wireless control with live diagnostics and over-the-air updates',
+      'Simulated training environments for machine-learned gaits',
     ],
-    who: 'For work where the software has to drive something physical.',
+    who: 'For search and rescue, emergency services, and anyone who needs to see inside places people can’t safely enter.',
     proof: {
-      label: 'Partnership',
-      body: 'Full industry partner with QUT, with two Work Integrated Learning capstones running — one on the drone work, one on SAUCE.',
-      pending: true,
+      label: 'Current work',
+      body: 'Project Arachnid: The Huntsman, our first eight-legged prototype, stands, walks, turns, detects obstacles and climbs.',
     },
     pricing: {
-      value: 'Priced per engagement',
-      note: 'Placeholder. Scope is Craig\u2019s to define, and the price follows the scope.',
+      value: 'Scoped per project',
+      note: 'Robotics work is research-led. We scope it with you against what the robot has to reach and what it has to bring back.',
     },
-    promise: 'Machines that move, and the software that keeps them moving — built together.',
+    promise: 'Robots that go where people can’t, so rescuers don’t have to.',
     pageLede:
-      'Placeholder — this page needs Craig. Every word of this stream is written blind and none of it has been checked against what is actually being sold.',
+      'After an earthquake, a building collapse or a landslide, the first hours matter most. We build legged robots to put eyes, sensors and eventually supplies into the places rescuers can’t safely reach.',
     sections: [
       {
-        id: 'scope',
-        title: 'What this stream actually is',
+        id: 'why-legs',
+        title: 'Why legs, not wheels',
         body: [
-          'Placeholder. Craig defines the scope here: what kind of robotics work is being taken on, at what stage of a project, and for whom.',
-          'One thing constrains whatever goes in: nobody here is RPEQ-registered, and Queensland regulates who may provide "professional engineering services" under the Professional Engineers Act 2002. That is why this stream is called Robotics, and why this page describes work, not titles.',
+          'Wheels and tracks work well on roads and open ground. Disaster zones offer neither. Debris fields are broken and uneven, with gaps, steps and loose material that can stop a wheeled platform outright.',
+          'Legged robots move differently, and go where wheels and rotors can’t. Each foot picks its own contact point, so the robot can step over obstacles, keep its footing on uneven ground and spread its weight across many points of support. An eight-legged design adds redundancy: the robot always has several feet planted, which keeps it stable while carrying a load, and it can hold its position on very little power, so it can stop, wait and listen.',
         ],
-        pending: true,
       },
       {
-        id: 'proof',
-        title: 'What we can point at',
+        id: 'by-evolution',
+        title: 'Designed by evolution',
         body: [
-          'Placeholder, and the honest gap on this site. Software has Aptium and Websites has the venue sites; this stream has a QUT partnership with two capstones running and no delivered work of its own.',
-          'This stream is new. The QUT partnership and the two capstones are what it can point at today; delivered work will be listed here as it lands.',
+          'Rather than invent locomotion from scratch, we look to the most successful walkers on Earth. Arthropods — insects, spiders and their relatives — have refined their movement over more than 380 million years, and today thrive almost everywhere, from rainforest canopies and desert sand to caves, cliff faces and the gaps beneath fallen debris. Their gaits, body proportions and reflexes are field-tested solutions to the same problems our robots face.',
         ],
-        pending: true,
+        includes: [
+          'Carries a payload at its centre, built to hold sensors, cameras and onboard computers',
+          'Senses what is ahead, with room for environmental sensor packages',
+          'Climbs using a dedicated wave gait that lifts the body over obstacles',
+          'Operates wirelessly, with live diagnostics and over-the-air software updates',
+        ],
+      },
+      {
+        id: 'next',
+        title: 'Where we’re heading',
+        body: [
+          'The Huntsman has completed its first prototype stage. The second generation, now in development, is built toward a robot that can enter a disaster zone, move through it on its own and send back what it finds — giving rescuers the information they need without putting more lives at risk.',
+        ],
+        includes: [
+          'Stronger joints for heavier payloads',
+          'Pressure-sensing feet, so the robot can feel the ground beneath it',
+          'Body-orientation sensing, so it can keep its balance on unstable terrain',
+          'Simulated playgrounds for machine learning, so it can choose its own path over rough ground',
+          'An onboard mesh network to reconnect communications in a blackout',
+        ],
       },
     ],
     href: '/robotics',

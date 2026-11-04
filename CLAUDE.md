@@ -278,14 +278,19 @@ Each of these cost real time. They look like style nits and are not.
 
 # Current state — read before starting
 
-As of 2 November:
+As of 4 November:
 
 - All work is on `development`. The live site is still the 4 August build
   until the Vercel cutover.
-- Invented copy still showing a marker: every `/built` entry and
-  `/robotics` (Craig's). Both partner entries were confirmed by Simon on
-  3 November (review-1). The full list is the Stage 4 audit in
-  `docs/briefs/launch-ready.log.md`.
+- Robotics copy is in (Simon, 4 November): the `/robotics` page, the home page
+  door and row, and Project Arachnid, which now leads `/built` with The
+  Huntsman's walking clip. `spider-drones` is gone.
+- Invented copy still showing a marker: two `/built` entries,
+  `training-professionals` and `qut-capstones`. Nothing else carries
+  `placeholder` or `pending`. Both partner entries were confirmed by Simon on
+  3 November (review-1).
+- The CMS brief (`docs/briefs/cms.md`) is blocked until `DATABASE_URL` points
+  at a local database. Content still lives in `src/constants/`.
 - Photos from the 2 November shoot are coming. Tom has no portrait,
   permanently. Group and working shots go in `src/constants/photos.ts`.
 - Next after relaunch: Payload CMS (Neon Postgres, Vercel Blob media).

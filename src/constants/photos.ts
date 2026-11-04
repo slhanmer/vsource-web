@@ -10,7 +10,8 @@
  *   - `group`   — the team together. Full width under the /team page head.
  *                 Renders nothing while unset.
  *
- * ⚠ STOCK UNTIL THE SHOOT. The stream photos and `working` are stand-ins from
+ * ⚠ STOCK UNTIL THE SHOOT. The Software and Websites stream photos and
+ * `working` are stand-ins from
  * Unsplash, in `public/photos/stock/`, each with its `credit` so it can be
  * found and swapped. The Unsplash License needs no attribution; the credit is
  * kept for us, not rendered. None of the people in them is on the team, and
@@ -66,20 +67,19 @@ export const PHOTOS: {
         credit: { name: 'Cabri Caldwell', url: 'https://unsplash.com/photos/6jg8KPfEOtU' },
       },
     },
+    // Our own photographs of The Huntsman (Project Arachnid), not stock.
     robotics: {
       door: {
-        src: '/photos/stock/robotics-door.jpg',
-        alt: 'An older man’s hands at a worn wooden bench, working a metal plate held down in a jig, with hand tools and a lamp around him.',
-        width: 2000,
-        height: 1333,
-        credit: { name: 'Hasan Mrad', url: 'https://unsplash.com/photos/9Foi-h8zmIU' },
+        src: '/photos/robotics/huntsman-top.jpg',
+        alt: 'The Huntsman from above on a stone bench, its controller board and battery mounted at the centre.',
+        width: 1600,
+        height: 1217,
       },
       step: {
-        src: '/photos/stock/robotics-step.jpg',
-        alt: 'Hands twisting red wires together at a paint-marked workbench, beside wire strippers, a battery and a printed wiring guide.',
-        width: 2000,
-        height: 1331,
-        credit: { name: 'Eric Stoynov', url: 'https://unsplash.com/photos/y25LI38cd9w' },
+        src: '/photos/robotics/huntsman-studio.jpg',
+        alt: 'The Huntsman from the side, legs raised mid-step, on a workbench.',
+        width: 1800,
+        height: 1097,
       },
     },
     websites: {
