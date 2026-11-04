@@ -82,3 +82,65 @@ Recorded now so the next run does not rediscover them:
   site.
 
 STATUS: blocked
+
+---
+
+# Re-run from Stage A — 4 November (evening)
+
+Brief updated by Simon: `DATABASE_URL` is the Neon **preview** branch on
+purpose; no Docker. That cleared the earlier block. Started from `f5c1926`.
+
+## Done so far (uncommitted, in the working tree)
+
+- **Before screenshots** of 11 routes × 2 sizes × 2 themes:
+  `C:\tmp\cms\before\` (44 files), from the build at `f5c1926`.
+- **A.1 dependencies**, at the starter's resolved versions: `payload` and the
+  four `@payloadcms/*` packages at 3.88.0 (spec `^3.88.0`, as the starter),
+  `@vercel/blob` 2.3.1, `sharp` 0.35.4 (`^0.35.4`), `next` 16.3.3,
+  `react`/`react-dom` 19.2.8.
+- **The drizzle patch applies**, but not from where the starter keeps it.
+  This repo runs pnpm 11, which no longer reads `pnpm.patchedDependencies` in
+  `package.json` (the starter is pnpm 10). It is in `pnpm-workspace.yaml`
+  instead, beside this repo's other pnpm settings. Verified: `insertArrays.js`
+  in the installed `@payloadcms/drizzle` now carries the `uuidMap` line.
+  `patches/` is copied with its README.
+- **A.2 route groups:** everything except `robots.ts`, `sitemap.ts` and
+  `api/` moved to `src/app/(site)/` with `git mv`. The document (fonts,
+  `<html>`, theme script, JSON-LD, header, scroller, footer) is now
+  `components/layouts/SiteDocument.tsx` (+ `fonts.ts`, `SiteProviders.tsx`),
+  rendered by both `(site)/layout.tsx` and a new `app/global-not-found.tsx`,
+  so an unmatched URL gets our 404 with our chrome. `(payload)/` copied from
+  the starter.
+- Checked: `withPayload` preserves our webpack function — it calls it first
+  and spreads the result, extending only `externals`, `plugins` and `resolve`
+  (`@payloadcms/next/dist/withPayload/withPayload.js:143`), so the SCSS token
+  injection and svgr rule survive.
+
+## Why it stopped: `next.config.ts` cannot be edited
+
+A.3 needs `next.config.ts` wrapped in `withPayload`, plus the Blob
+`remotePatterns` entry and `experimental.globalNotFound`. Both the shell edit
+and the Edit tool were **refused by the permission settings**: the file is on
+the deny list in `.claude/settings.json`, which I may not change. CLAUDE.md
+says "`next.config.ts` only when the task is explicitly about it", and this
+one is, but the settings don't make that exception. Without `withPayload`
+there is no working `/admin`, so nothing after A.3 can be verified, and a
+Stage A commit would not build and pass on its own. **Nothing is committed.**
+
+The public site still runs from this tree on the 3200 dev server (Next
+16.3.3): `/`, `/team`, `/built`, `/robotics`, `/built/project-arachnid` all
+200; an unknown URL 404s (Next's default page until `globalNotFound` is on).
+
+## What Simon needs to do (either)
+
+1. Allow `Edit(next.config.ts)` in `.claude/settings.json` for this run, or
+2. make the change by hand: import `withPayload` from
+   `@payloadcms/next/withPayload`, `export default withPayload(nextConfig)`,
+   and add to `nextConfig`:
+   `images: { remotePatterns: [{ protocol: 'https', hostname: '*.public.blob.vercel-storage.com' }] }`
+   and `experimental: { globalNotFound: true }`.
+
+Then re-run from A.3; A.1 and A.2 are in the working tree and do not need
+redoing.
+
+STATUS: blocked
