@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { BUILT, STREAMS, STREAM_COMMON } from '@constants'
+import { STREAM_COMMON } from '@constants'
+import { getProjects, getStream, getStreams } from '@/data'
 import StreamMark from '@/components/home/StreamMark'
 import '../styles/pages.scss'
 import '../styles/stream.scss'
@@ -21,8 +22,8 @@ import '../styles/stream.scss'
  */
 export const dynamicParams = false
 
-export function generateStaticParams() {
-  return STREAMS.map((stream) => ({ stream: stream.id }))
+export async function generateStaticParams() {
+  return (await getStreams()).map((stream) => ({ stream: stream.slug }))
 }
 
 export async function generateMetadata({
@@ -30,8 +31,8 @@ export async function generateMetadata({
 }: {
   params: Promise<{ stream: string }>
 }): Promise<Metadata> {
-  const { stream: id } = await params
-  const stream = STREAMS.find((item) => item.id === id)
+  const { stream: slug } = await params
+  const stream = await getStream(slug)
   if (!stream) return {}
 
   return {
@@ -43,13 +44,13 @@ export async function generateMetadata({
 }
 
 export default async function StreamPage({ params }: { params: Promise<{ stream: string }> }) {
-  const { stream: id } = await params
-  const stream = STREAMS.find((item) => item.id === id)
+  const { stream: slug } = await params
+  const stream = await getStream(slug)
   if (!stream) notFound()
 
   // Anything on /built that belongs to this stream, so the offer and the proof
   // are one click apart in both directions.
-  const projects = BUILT.filter((project) => project.stream === stream.id)
+  const projects = (await getProjects()).filter((project) => project.stream === stream.slug)
 
   const schema = {
     '@context': 'https://schema.org',
@@ -74,13 +75,13 @@ export default async function StreamPage({ params }: { params: Promise<{ stream:
           <h1 className="page__title">{stream.promise}</h1>
           <p className="page__lede">{stream.pageLede}</p>
         </div>
-        <StreamMark id={stream.id} className="stream__mark" />
+        <StreamMark id={stream.slug} className="stream__mark" />
       </div>
 
       <p className="stream__who">{stream.who}</p>
 
       {stream.sections.map((section) => (
-        <section key={section.id} id={section.id} className="stream__section">
+        <section key={section.slug} id={section.slug} className="stream__section">
           <h2 className="stream__title">
             {section.title}
             {section.pending && (

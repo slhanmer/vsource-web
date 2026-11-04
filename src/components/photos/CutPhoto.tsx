@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import type { Photo } from '@constants'
+import type { Photo } from '@/data/types'
 import './styles/cutPhoto.scss'
 
 /**

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from '@hooks'
 import Image from 'next/image'
-import type { ProjectMedia as Spec } from '@constants'
+import type { ProjectMedia as Spec } from '@/data/types'
 import StreamMark from '@/components/home/StreamMark'
 
 /**

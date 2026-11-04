@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { BUILT, COMING_SOON } from '@constants'
+import { getProjects, getSite } from '@/data'
 import ProjectMedia from '@/components/built/ProjectMedia'
 import '../styles/pages.scss'
 import '../styles/built.scss'
@@ -23,9 +23,10 @@ export const metadata: Metadata = {
  * Every card is a link to the project's own page, so each project is an
  * indexable URL that can carry its own detail and its own search surface.
  */
-export default function BuiltPage() {
-  const featured = BUILT.find((project) => project.featured)
-  const rest = BUILT.filter((project) => !project.featured)
+export default async function BuiltPage() {
+  const [projects, site] = await Promise.all([getProjects(), getSite()])
+  const featured = projects.find((project) => project.featured)
+  const rest = projects.filter((project) => project !== featured)
 
   return (
     <main className="page built">
@@ -106,7 +107,7 @@ export default function BuiltPage() {
           Coming
         </h2>
         <ul className="built-soon__list">
-          {COMING_SOON.map((item) => (
+          {site.comingSoon.map((item) => (
             <li key={item.name} className="built-soon__item">
               <span className="built-soon__name">{item.name}</span>
               <span className="built-soon__stream">{item.stream}</span>

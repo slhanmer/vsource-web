@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
-import { BUILT, LANDINGS, STREAMS } from '@constants'
+import { LANDINGS } from '@constants'
+import { getProjects, getStreams } from '@/data'
 
 const BASE = 'https://www.vsource.dev'
 
@@ -9,19 +10,22 @@ const BASE = 'https://www.vsource.dev'
  * hand-maintained list of ten routes is a hand-maintained list that is wrong
  * within a month.
  *
- * `lastModified` is stamped at build, which is honest for a site that only
- * changes when it is redeployed.
+ * Streams and projects come from Payload through the same cached getters the
+ * pages use, so publishing a project in the admin puts it here too (the save
+ * clears the `content` tag this is rendered under). `lastModified` is stamped
+ * when it is rendered.
  *
  * Renamed routes are deliberately absent. /services, /crew and /work all 301
  * now (see next.config.ts), and a sitemap that advertises a redirect is telling
  * a crawler to take the long way round on purpose.
  */
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date()
+  const [streams, projects] = await Promise.all([getStreams(), getProjects()])
 
   return [
     { url: `${BASE}/`, lastModified, changeFrequency: 'monthly', priority: 1 },
-    ...STREAMS.map((stream) => ({
+    ...streams.map((stream) => ({
       url: `${BASE}${stream.href}`,
       lastModified,
       changeFrequency: 'monthly' as const,
@@ -34,7 +38,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     })),
     { url: `${BASE}/built`, lastModified, changeFrequency: 'monthly', priority: 0.8 },
-    ...BUILT.map((project) => ({
+    ...projects.map((project) => ({
       url: `${BASE}/built/${project.slug}`,
       lastModified,
       changeFrequency: 'yearly' as const,

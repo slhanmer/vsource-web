@@ -1,4 +1,4 @@
-import { PHOTOS, STREAMS } from '@constants'
+import type { Stream } from '@/data/types'
 import CutPhoto from '@/components/photos/CutPhoto'
 import MovesFocus from './MovesFocus'
 
@@ -47,7 +47,7 @@ import MovesFocus from './MovesFocus'
  * a stacked row that is not the one showing is scrolled to that row's third
  * of the track, so the focused link is never sitting under another row.
  */
-export default function StreamMoves() {
+export default function StreamMoves({ streams }: { streams: Stream[] }) {
   return (
     <section id="what-changes" className="home-moves" aria-labelledby="moves-heading">
       <div className="home-moves__stage">
@@ -60,17 +60,17 @@ export default function StreamMoves() {
         </div>
 
         <div className="home-moves__rows">
-          {STREAMS.map((stream, i) => (
+          {streams.map((stream, i) => (
             <article
-              key={stream.id}
-              id={stream.id}
+              key={stream.slug}
+              id={stream.slug}
               className="home-step"
               data-index={i}
-              aria-labelledby={`${stream.id}-name`}
+              aria-labelledby={`${stream.slug}-name`}
             >
               <div className="home-step__inner">
                 {/* The box is styling on the heading, not a wrapper round it. */}
-                <h3 id={`${stream.id}-name`} className="home-step__name cut-slot">
+                <h3 id={`${stream.slug}-name`} className="home-step__name cut-slot">
                   {stream.name}
                 </h3>
 
@@ -81,7 +81,7 @@ export default function StreamMoves() {
 
                 <div className="home-step__media">
                   <CutPhoto
-                    photo={PHOTOS.streams[stream.id].step}
+                    photo={stream.stepPhoto}
                     sizes="(max-width: 979px) 92vw, (max-width: 1440px) 44vw, 600px"
                     className="home-step__photo"
                   />
@@ -106,7 +106,7 @@ export default function StreamMoves() {
           ))}
         </div>
       </div>
-      <MovesFocus count={STREAMS.length} />
+      <MovesFocus count={streams.length} />
     </section>
   )
 }

@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { LANDINGS, STREAMS } from '@constants'
+import { LANDINGS } from '@constants'
+import { getStream } from '@/data'
 import StreamMark from '@/components/home/StreamMark'
 import '@/app/(site)/styles/pages.scss'
 import '@/app/(site)/styles/stream.scss'
@@ -36,11 +37,11 @@ export function landingMetadata(slug: string): Metadata {
   }
 }
 
-export default function Landing({ slug }: { slug: string }) {
+export default async function Landing({ slug }: { slug: string }) {
   const landing = LANDINGS.find((item) => item.slug === slug)
   if (!landing) notFound()
 
-  const stream = STREAMS.find((item) => item.id === landing.stream)
+  const stream = await getStream(landing.stream)
   if (!stream) notFound()
 
   const url = `${BASE}/${landing.slug}`
@@ -95,7 +96,7 @@ export default function Landing({ slug }: { slug: string }) {
             )}
           </p>
         </div>
-        <StreamMark id={stream.id} className="stream__mark" />
+        <StreamMark id={stream.slug} className="stream__mark" />
       </div>
 
       {landing.sections.map((section) => (

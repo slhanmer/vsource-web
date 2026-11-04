@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { BUILT, STREAMS } from '@constants'
+import { getProject, getProjects, getStream } from '@/data'
 import ProjectMedia from '@/components/built/ProjectMedia'
 import '../../styles/pages.scss'
 import '../../styles/built.scss'
@@ -9,18 +9,21 @@ import '../../styles/built.scss'
 /**
  * One project.
  *
- * Statically generated at build time — there are three of these and they change
- * when somebody writes copy, not when somebody loads the page. `dynamicParams`
- * off means a slug that is not in BUILT is a 404 rather than a rendered empty
- * page, which is what you want for a fixed set.
+ * Statically generated from Payload at build time, and again after a save in
+ * the admin (src/data/, the `content` tag).
+ *
+ * `dynamicParams` is ON, so a project published after the deploy works at its
+ * URL without another deploy: the first request renders it and caches it. A
+ * slug that is not a published project still 404s, because the page calls
+ * notFound() — drafts included, since src/data/ never reads them.
  *
  * Each page names the stream it belongs to and links back to it, so the
  * showpiece feeds the offer rather than sitting beside it.
  */
-export const dynamicParams = false
+export const dynamicParams = true
 
-export function generateStaticParams() {
-  return BUILT.map((project) => ({ slug: project.slug }))
+export async function generateStaticParams() {
+  return (await getProjects()).map((project) => ({ slug: project.slug }))
 }
 
 export async function generateMetadata({
@@ -29,7 +32,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const project = BUILT.find((item) => item.slug === slug)
+  const project = await getProject(slug)
   if (!project) return {}
 
   return {
@@ -42,10 +45,10 @@ export async function generateMetadata({
 
 export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const project = BUILT.find((item) => item.slug === slug)
+  const project = await getProject(slug)
   if (!project) notFound()
 
-  const stream = STREAMS.find((item) => item.id === project.stream)
+  const stream = await getStream(project.stream)
 
   return (
     <main className="page built-project">

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import { CREW, PHOTOS } from '@constants'
+import { type CrewMember, getCrew, getSite } from '@/data'
 import CutPhoto from '@/components/photos/CutPhoto'
 import TerminalTile from '@/components/photos/TerminalTile'
 import '../styles/pages.scss'
@@ -30,23 +30,25 @@ export const metadata: Metadata = {
  * is the thing the eye goes to first. The home team row uses the same tile.
  */
 
-const CREW_SCHEMA = {
+const crewSchema = (crew: CrewMember[]) => ({
   '@context': 'https://schema.org',
-  '@graph': CREW.map((person) => ({
+  '@graph': crew.map((person) => ({
     '@type': 'Person',
-    '@id': `https://www.vsource.dev/team#${person.id}`,
+    '@id': `https://www.vsource.dev/team#${person.slug}`,
     name: person.name,
     jobTitle: person.role,
     worksFor: { '@id': 'https://www.vsource.dev/#organisation' },
   })),
-}
+})
 
-export default function TeamPage() {
+export default async function TeamPage() {
+  const [crew, site] = await Promise.all([getCrew(), getSite()])
+
   return (
     <main className="page">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(CREW_SCHEMA) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(crewSchema(crew)) }}
       />
       <p className="page__eyebrow">Who you get</p>
       <h1 className="page__title">A small team, and you talk to all of them.</h1>
@@ -57,18 +59,18 @@ export default function TeamPage() {
       </p>
 
       {/* The group photograph, full width under the head. Renders nothing until
-          one is set in constants/photos.ts. */}
-      {PHOTOS.group && (
+          one is set in /admin (Site → groupPhoto). */}
+      {site.groupPhoto && (
         <CutPhoto
-          photo={PHOTOS.group}
+          photo={site.groupPhoto}
           sizes="(max-width: 1320px) 100vw, 1320px"
           className="crew-group"
         />
       )}
 
       <div className="crew">
-        {CREW.map((member) => (
-          <article key={member.id} id={member.id} className="crew__card">
+        {crew.map((member) => (
+          <article key={member.slug} id={member.slug} className="crew__card">
             {/*
               The portrait box is the same size and shape whether there is a
               photograph in it or not, so the page does not reflow on the day
@@ -78,10 +80,10 @@ export default function TeamPage() {
             <div className="crew__portrait" aria-hidden="true">
               {member.portrait ? (
                 <Image
-                  src={member.portrait}
+                  src={member.portrait.src}
                   alt=""
-                  width={1200}
-                  height={1500}
+                  width={member.portrait.width}
+                  height={member.portrait.height}
                   sizes="(max-width: 860px) 100vw, (max-width: 1320px) 30vw, 380px"
                   className="crew__portrait-img"
                 />

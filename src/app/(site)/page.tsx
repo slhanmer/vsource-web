@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { CONTACT, CREW, PARTNERS, PHOTOS } from '@constants'
+import { CONTACT } from '@constants'
+import { getCrew, getPartners, getSite, getStreams } from '@/data'
 import HeroDoors from '@/components/home/HeroDoors'
 import { HeroRunProvider } from '@/components/home/HeroRun'
 import Reveal from '@/components/home/Reveal'
@@ -37,7 +38,14 @@ export const metadata: Metadata = {
  * are the rotating headline, the stream bands and the Reveal wrappers, and the
  * copy inside a Reveal is still rendered on the server.
  */
-export default function Home() {
+export default async function Home() {
+  const [streams, partners, crew, site] = await Promise.all([
+    getStreams(),
+    getPartners(),
+    getCrew(),
+    getSite(),
+  ])
+
   return (
     <main className="home">
       {/*
@@ -78,7 +86,7 @@ export default function Home() {
               </div>
 
               {/* Arrive with their words: see HeroRun.tsx. */}
-              <HeroDoors />
+              <HeroDoors streams={streams} />
             </div>
           </HeroRunProvider>
 
@@ -94,13 +102,13 @@ export default function Home() {
                 Working with
               </span>
               <ul className="home-plate__logos" aria-labelledby="home-trust-label">
-                {PARTNERS.map((partner) => (
-                  <li key={partner.id} className="home-plate__logo">
+                {partners.map((partner) => (
+                  <li key={partner.slug} className="home-plate__logo">
                     <Image
-                      src={partner.logo}
+                      src={partner.logo.src}
                       alt={partner.name}
-                      width={partner.width}
-                      height={partner.height}
+                      width={partner.logo.width}
+                      height={partner.logo.height}
                       className="home-plate__logo-img"
                     />
                   </li>
@@ -125,12 +133,12 @@ export default function Home() {
         </div>
       </section>
 
-      <StreamMoves />
+      <StreamMoves streams={streams} />
 
       <Reveal id="why" className="home-why">
         <div className="home-why__grid">
           <CutPhoto
-            photo={PHOTOS.working}
+            photo={site.workingPhoto}
             sizes="(max-width: 979px) 100vw, 580px"
             className="home-why__photo"
           />
@@ -161,14 +169,14 @@ export default function Home() {
           <p className="home-eyebrow">Clients &amp; partners</p>
         </div>
         <div className="home-orgs">
-          {PARTNERS.map((partner) => (
-            <div key={partner.id} className="home-org">
+          {partners.map((partner) => (
+            <div key={partner.slug} className="home-org">
               <div className="home-org__plate">
                 <Image
-                  src={partner.logo}
+                  src={partner.logo.src}
                   alt={partner.name}
-                  width={partner.width}
-                  height={partner.height}
+                  width={partner.logo.width}
+                  height={partner.logo.height}
                   sizes="210px"
                   className="home-org__logo"
                 />
@@ -196,17 +204,17 @@ export default function Home() {
           <p className="home-eyebrow">Everyone you will actually deal with</p>
         </div>
         <div className="home-people">
-          {CREW.map((member) => (
-            <figure key={member.id} className="home-person">
+          {crew.map((member) => (
+            <figure key={member.slug} className="home-person">
               <div className="home-face">
                 {member.portrait ? (
                   /* In colour, with no tone layer. The edge below is drawn
                      over it. */
                   <Image
-                    src={member.portrait}
+                    src={member.portrait.src}
                     alt=""
-                    width={1200}
-                    height={1500}
+                    width={member.portrait.width}
+                    height={member.portrait.height}
                     sizes="(max-width: 560px) 100vw, (max-width: 979px) 33vw, 240px"
                     className="home-face__img"
                   />

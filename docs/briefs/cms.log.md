@@ -352,3 +352,35 @@ Choices worth knowing:
   variant. It imports `next/cache.js`, because the Payload CLI loads it as
   ESM and Next has no exports map. Its test is ported to jest (5 tests).
 - `CLAUDE.md` now says what stays in code. The full CMS section comes in Stage E.
+
+## Stage C — the site reads from Payload
+
+- `src/data/` has one `unstable_cache`d getter per collection plus the
+  global, all under the tag `content`. They return the old constants' shapes
+  (`src/data/types.ts`), with `id` → `slug` and every image as a `Photo`
+  (`src`, `alt`, `width`, `height` from the media document). Slug lookups
+  (`getStream`, `getProject`) filter the cached lists.
+- Saves revalidate through `withContentRevalidation` and
+  `withGlobalRevalidation`, as the starter's `withPageRevalidation` does.
+- Pages stay static/SSG. `[stream]` and `built/[slug]` take
+  `generateStaticParams` from the database. `built/[slug]` has
+  `dynamicParams = true` and still 404s on an unknown or draft slug.
+  `[stream]` keeps `dynamicParams = false`, so a **new stream needs a
+  redeploy** (and a `StreamMark`, which is drawn in code).
+- `sitemap.ts` reads streams and projects from the same getters.
+- `HeroDoors` (a client component) and `StreamMoves` take `streams` as a prop.
+  Client components import types only, from `@/data/types`, so no Payload
+  code reaches the browser bundle.
+- **Order of work:** Stage C builds against a seeded database, so the seed
+  (Stage D's code) was written and run before Stage C was committed. Stage C's
+  commit has the pages and the data layer only; the seed is in Stage D's.
+- **Diff against the pre-Payload baseline** (`C:\tmp\cms\after-c\`): `/built`,
+  `/software`, `/robotics` and `/websites` are 0.00% at both widths and in
+  both themes. `/team` and `/` differ only where the brief says they should:
+  Craig, Simon and Ronan now show terminal tiles. `/` also differs because
+  the Websites door and row are now Nug and Snug (robotics-content §2b, which
+  was waiting on the seed).
+- One process note: stopping a background `next start` did not stop its node
+  child, so one capture run hit the stale server while `.next` was being
+  replaced. I killed that PID and captured again; the numbers above are from
+  the clean run.
