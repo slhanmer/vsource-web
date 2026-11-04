@@ -1,84 +1,14 @@
-import type { Metadata } from 'next'
-import { Chakra_Petch, IBM_Plex_Sans, IBM_Plex_Mono, Newsreader } from 'next/font/google'
 import { CONTACT } from '@constants'
-import { Providers } from './providers'
-import SiteHeader from '@components/layouts/SiteHeader'
-import SiteFooter from '@components/layouts/SiteFooter'
-import CursorSpark from '@components/layouts/CursorSpark'
+import CursorSpark from './CursorSpark'
+import { fontVariables } from './fonts'
+import SiteFooter from './SiteFooter'
+import SiteHeader from './SiteHeader'
+import { Providers } from './SiteProviders'
 import '@styles/global.scss'
-import './styles/shell.scss'
+import '@/app/(site)/styles/shell.scss'
 import '@configs/fontawesome'
 
-/**
- * Self-hosted at build time. Do not go back to a CSS @import — that cost four
- * serial round trips before text could paint.
- *
- * DEPLOY: the build machine needs internet access to fonts.googleapis.com.
- * Runtime does not.
- */
-const display = Chakra_Petch({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-display',
-  display: 'swap',
-})
-
-const ui = IBM_Plex_Sans({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-ui',
-  display: 'swap',
-})
-
-const mono = IBM_Plex_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500'],
-  variable: '--font-mono',
-  display: 'swap',
-})
-
-/**
- * The reading face. Everything else here is an engineered sans, which is a
- * large part of why the marketing pages read cold — a serif at a comfortable
- * measure is the single cheapest thing that makes them feel written rather
- * than specified. Optical sizing is variable, so this is one file.
- */
-const read = Newsreader({
-  subsets: ['latin'],
-  weight: ['300', '400'],
-  style: ['normal', 'italic'],
-  variable: '--font-read',
-  display: 'swap',
-})
-
-const SITE = 'https://www.vsource.dev'
-
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE),
-  title: {
-    default: 'V Source — Custom Software Development, Brisbane',
-    template: '%s · V Source',
-  },
-  description:
-    'Custom software built and run by the people who wrote it. A small Brisbane team covering design, build, accessibility and hosting on our own Australian hardware.',
-  alternates: { canonical: '/' },
-  openGraph: {
-    type: 'website',
-    locale: 'en_AU',
-    siteName: 'V Source Development',
-    url: SITE,
-    title: 'V Source — Custom Software Development, Brisbane',
-    description:
-      'Custom software built and run by the people who wrote it. Design, build, accessibility and Australian hosting, from one small Brisbane team.',
-    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'V Source Development, Brisbane' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'V Source — Custom Software Development, Brisbane',
-    description: 'Custom software built and run by the people who wrote it. Brisbane, Australia.',
-    images: ['/og.png'],
-  },
-}
+export const SITE_URL = 'https://www.vsource.dev'
 
 /**
  * Structured data. Tells a crawler — and an LLM answering "who builds custom
@@ -88,9 +18,9 @@ export const metadata: Metadata = {
 const ORGANISATION = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
-  '@id': `${SITE}/#organisation`,
+  '@id': `${SITE_URL}/#organisation`,
   name: 'V Source Development',
-  url: SITE,
+  url: SITE_URL,
   description:
     'Custom software development, design, accessibility and Australian hosting for regulated and technical industries.',
   areaServed: 'AU',
@@ -117,29 +47,36 @@ const ORGANISATION = {
 const WEBSITE = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  '@id': `${SITE}/#website`,
-  url: SITE,
+  '@id': `${SITE_URL}/#website`,
+  url: SITE_URL,
   name: 'V Source Development',
-  publisher: { '@id': `${SITE}/#organisation` },
+  publisher: { '@id': `${SITE_URL}/#organisation` },
   inLanguage: 'en-AU',
 }
 
 /**
- * Root layout.
+ * The whole public document: <html>, the theme script, the header, the
+ * scroller, the footer.
+ *
+ * Its own component because two roots render it. `app/(site)/layout.tsx` is
+ * the root layout for every public page, and `app/global-not-found.tsx`
+ * renders a URL that matches no route at all with NO layout above it — the
+ * app has two root layouts, (site) and (payload), so nothing sits over both.
+ * Sharing this is what makes that 404 the same page, with the same chrome, as
+ * a notFound() inside the site.
  *
  * `data-theme="dark"` is set server-side so the dark ground is the default and
  * there is no flash of light theme before hydration. The inline script below
  * only overrides it when the visitor has explicitly chosen a theme — it runs
  * before paint, which is why it is inline and not a component.
  */
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function SiteDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en-AU"
-      data-theme="dark"
-      className={`${display.variable} ${ui.variable} ${mono.variable} ${read.variable}`}
-      suppressHydrationWarning
-    >
+    <html lang="en-AU" data-theme="dark" className={fontVariables} suppressHydrationWarning>
+      {/* This is an App Router root document (rendered by app/(site)/layout.tsx
+          and app/global-not-found.tsx), where <head> is correct. The lint rule
+          only recognises a file named app/layout as one. */}
+      {/* eslint-disable-next-line @next/next/no-head-element */}
       <head>
         <script
           dangerouslySetInnerHTML={{

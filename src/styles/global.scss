@@ -4,7 +4,7 @@
    mark, warm gold glow. Light (:root) and dark ([data-theme='dark']) blocks
    are kept in the SAME order so they read side by side.
 
-   Dark is the default (see <html data-theme="dark"> in app/layout.tsx) — the
+   Dark is the default (see <html data-theme="dark"> in components/layouts/SiteDocument.tsx) — the
    logo carries a glow, and glow only reads on a dark ground.
 
    Contrast is measured, not eyeballed. The logo green (#215c30) is AAA on the

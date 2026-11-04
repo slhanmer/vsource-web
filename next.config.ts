@@ -1,3 +1,4 @@
+import { withPayload } from '@payloadcms/next/withPayload'
 import type { NextConfig } from 'next'
 import path from 'path'
 
@@ -5,6 +6,17 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   reactStrictMode: false,
   serverExternalPackages: ['canvas'],
+
+  // Media is served from Vercel Blob when BLOB_READ_WRITE_TOKEN is set.
+  images: {
+    remotePatterns: [{ protocol: 'https', hostname: '*.public.blob.vercel-storage.com' }],
+  },
+
+  // Two root layouts, (site) and (payload), so an unmatched URL has no layout
+  // above it. global-not-found.tsx renders our 404 for those.
+  experimental: {
+    globalNotFound: true,
+  },
 
   /**
    * Permanent redirects for routes that have been renamed on a live site.
@@ -36,11 +48,18 @@ const nextConfig: NextConfig = {
   },
 
   webpack: (config, { isServer }) => {
-    config.module.rules.push({
-      test: /\.svg$/i,
-      issuer: /\.[jt]sx?$/,
-      use: ['@svgr/webpack'],
-    })
+    config.module.rules.push(
+      {
+        test: /\.svg$/i,
+        issuer: /\.[jt]sx?$/,
+        exclude: /node_modules/,
+        use: ['@svgr/webpack'],
+      },
+      // Package SVGs (Payload's admin assets) are files, not components. Next
+      // drops .svg from its own image loader once a custom svg rule exists, so
+      // without this they have no loader at all and the build fails.
+      { test: /\.svg$/i, include: /node_modules/, type: 'asset/resource' },
+    )
 
     config.resolve.alias = {
       ...config.resolve.alias,
@@ -92,4 +111,4 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default nextConfig
+export default withPayload(nextConfig)

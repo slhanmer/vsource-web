@@ -20,10 +20,12 @@ its explanatory comments. What is *not* copied is the starter's page builder:
 no `pages` collection, no blocks, no skins, no `site.config`. V Source's pages
 stay as they are, written in code. Only their content moves to the database.
 
-**Before starting:** Simon must have put a local `DATABASE_URL` and a
-`PAYLOAD_SECRET` in `.env.local`. You do not touch `.env*`. If either is
-missing, stop and log it. `docker-compose.yml` (copied in A.5) gives a local
-Postgres 17, which is what the starter uses for development.
+**Before starting:** `.env.local` has `DATABASE_URL` and `PAYLOAD_SECRET`. You
+do not touch `.env*`. **`DATABASE_URL` is the Neon `preview` branch, on
+purpose** (Simon, 4 November). That is how all his sites work: local development
+and Vercel Preview share the preview database, and production has its own.
+Migrating and seeding it is expected. It is never the production branch. Do not
+add Docker or a local Postgres. Skip `docker-compose.yml` in A.5.
 
 Where the brief does not match the code, stop and log it.
 
@@ -62,8 +64,7 @@ Where the brief does not match the code, stop and log it.
      the starter's config needs it, log it and adapt.
 5. **Migrations and deploy**, copied from the starter: `scripts/deploy-build.mjs`,
    `scripts/lib/deploy.mjs`, `src/db/deploy-migrate.ts`, `src/db/deploy-plan.ts`,
-   `scripts/user.mjs`, `docker-compose.yml` (with the service and volume renamed
-   for this repo), and `vercel.json` with `"buildCommand": "pnpm build:deploy"`.
+   `scripts/user.mjs`, and `vercel.json` with `"buildCommand": "pnpm build:deploy"`.
    Add the `build:deploy`, `user` and `payload` scripts. The starter's tests for
    these are vitest. **Port the pure-helper tests to jest**; skip the rest and
    say which.

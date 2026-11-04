@@ -3,8 +3,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { LANDINGS, STREAMS } from '@constants'
 import StreamMark from '@/components/home/StreamMark'
-import '@/app/styles/pages.scss'
-import '@/app/styles/stream.scss'
+import '@/app/(site)/styles/pages.scss'
+import '@/app/(site)/styles/stream.scss'
 
 const BASE = 'https://www.vsource.dev'
 

@@ -173,7 +173,7 @@ $heading-desktop: 2rem;
 $heading-tablet: 1.75rem;
 $heading-mobile: 1rem;
 
-// Fonts load in app/layout.tsx via next/font. Do NOT add @import back: this
+// Fonts load in components/layouts/fonts.ts via next/font. Do NOT add @import back: this
 // file is injected into every SCSS file by next.config.ts, and CSS @import cost
 // four serial round trips before text could paint (8s LCP when throttled).
 

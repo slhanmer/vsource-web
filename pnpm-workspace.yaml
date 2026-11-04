@@ -1,5 +1,6 @@
 allowBuilds:
   '@parcel/watcher': true
+  '@swc/core': true
   core-js: true
   core-js-pure: true
   esbuild: true
@@ -13,3 +14,8 @@ overrides:
   immutable: '>=5.1.5'
   sharp: '>=0.35.0'
   'next>postcss': '>=8.5.18'
+# The starter's drizzle fix (patches/README.md). In the starter this is
+# `pnpm.patchedDependencies` in package.json; pnpm 11 reads it only from here.
+# Deliberately unversioned, so a minor bump does not silently drop it.
+patchedDependencies:
+  '@payloadcms/drizzle': patches/@payloadcms__drizzle.patch
