@@ -322,3 +322,33 @@ are made with `--no-verify`, after I ran tsc, lint, tests and build myself.
 - tsc clean, 44 suites / 616 tests pass.
 
 Stage A committed.
+
+## Stage B — collections
+
+`streams`, `projects`, `crew`, `partners` (in `src/collections/`, under an ESM
+marker like `src/lib`) and the global `site`. Field names are the constants'
+names, `id` → `slug`. Every collection has `order`; editors update, only
+admins create or delete (`contentAccess` in `src/collections/fields.ts`), and
+only an admin can change a `slug`. `projects` has `versions.drafts`, and an
+anonymous read sees published rows only. Migration
+`20261104_223452_content_collections`, applied to the preview branch through
+`deploy-migrate.ts`. `payload-types.ts` is regenerated.
+
+Choices worth knowing:
+
+- **Lists of strings** (`body`, `caps`, `includes`, `bio`) are arrays of
+  `{ text }` rows, not `hasMany` text, which the admin renders as chips.
+  `src/data/` flattens them back to `string[]`.
+- **Stream references are relationships** to `streams` (`projects.stream`,
+  `site.comingSoon[].stream`), so a fourth stream stays a data change.
+- **`StreamSection.id` → `slug` too**, since array rows reserve `id` as well.
+- **`site.groupPhoto`** is added beside `workingPhoto` and `comingSoon`. The
+  old `PHOTOS.group` slot on /team had nowhere else to go.
+- **`projects.status` has `enumName: 'enum_projects_project_status'`.** By
+  default Payload names it `enum_projects_status`, the same name as drafts'
+  `_status`. The first migration failed creating it twice; that run rolled
+  back cleanly (checked: no tables, no migration recorded).
+- `src/lib/revalidate.ts` is the starter's, with tag `content` and a global
+  variant. It imports `next/cache.js`, because the Payload CLI loads it as
+  ESM and Next has no exports map. Its test is ported to jest (5 tests).
+- `CLAUDE.md` now says what stays in code. The full CMS section comes in Stage E.

@@ -69,6 +69,10 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    streams: Stream;
+    projects: Project;
+    crew: Crew;
+    partners: Partner;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +82,10 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    streams: StreamsSelect<false> | StreamsSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    crew: CrewSelect<false> | CrewSelect<true>;
+    partners: PartnersSelect<false> | PartnersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -87,8 +95,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    site: Site;
+  };
+  globalsSelect: {
+    site: SiteSelect<false> | SiteSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -193,6 +205,272 @@ export interface Media {
   };
 }
 /**
+ * The three lines of work. Each one is a home page door, a row, and its own page.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "streams".
+ */
+export interface Stream {
+  id: number;
+  /**
+   * Plain, searchable.
+   */
+  name: string;
+  /**
+   * Used in the URL and as the anchor. Changing it breaks existing links.
+   */
+  slug: string;
+  /**
+   * Lower comes first, on the site and here.
+   */
+  order: number;
+  /**
+   * One short line for the door in the hero. Not the same sentence as anything in the row below it.
+   */
+  door: string;
+  /**
+   * Fills the door on the home page fold.
+   */
+  doorPhoto: number | Media;
+  /**
+   * Where someone is now. One short sentence they would recognise — a situation, never a failing.
+   */
+  problem: string;
+  /**
+   * What they have instead. One line, the one the eye lands on.
+   */
+  instead: string;
+  /**
+   * The why behind "instead": one or two sentences.
+   */
+  solution: string;
+  /**
+   * Sits beside the stream’s "What changes" row.
+   */
+  stepPhoto: number | Media;
+  /**
+   * The h1. A promise, not a label.
+   */
+  promise: string;
+  pageLede: string;
+  /**
+   * Specific to this stream. Anything true of all three belongs in the shared list, which is in code.
+   */
+  sections?:
+    | {
+        /**
+         * Anchor. Changing it breaks links to this section.
+         */
+        slug: string;
+        title: string;
+        body: {
+          text: string;
+          id?: string | null;
+        }[];
+        includes?:
+          | {
+              text: string;
+              id?: string | null;
+            }[]
+          | null;
+        /**
+         * One optional onward link after the last paragraph.
+         */
+        link?: {
+          href?: string | null;
+          label?: string | null;
+        };
+        /**
+         * Shows a visible marker on the page. Untick only when the words have been confirmed.
+         */
+        pending?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  lede: string;
+  /**
+   * What a client actually gets.
+   */
+  caps: {
+    text: string;
+    id?: string | null;
+  }[];
+  who: string;
+  proof: {
+    label: string;
+    body: string;
+    /**
+     * Shows a visible marker on the page. Untick only when the words have been confirmed.
+     */
+    pending?: boolean | null;
+  };
+  pricing: {
+    value: string;
+    note: string;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * The /built page. A draft is not on the site until it is published.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
+  title: string;
+  /**
+   * Used in the URL and as the anchor. Changing it breaks existing links.
+   */
+  slug: string;
+  /**
+   * Lower comes first, on the site and here.
+   */
+  order: number;
+  /**
+   * Leads /built at full width. Exactly one project should have it.
+   */
+  featured?: boolean | null;
+  /**
+   * Invented copy: shows a [placeholder] marker. Untick only when the real words are in.
+   */
+  placeholder?: boolean | null;
+  /**
+   * Who it was for. "—" where there is no client to name.
+   */
+  client: string;
+  stream: number | Stream;
+  year: string;
+  status: 'live' | 'building' | 'starting';
+  /**
+   * One line, for /built.
+   */
+  line: string;
+  /**
+   * The page opener.
+   */
+  lede: string;
+  body: {
+    text: string;
+    id?: string | null;
+  }[];
+  /**
+   * Standards, hardware, scale. Two columns on the page.
+   */
+  facts?:
+    | {
+        label: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * The live site, if there is one to visit.
+   */
+  url?: string | null;
+  media: {
+    kind: 'image' | 'video' | 'mark';
+    /**
+     * The image, or the mp4 clip.
+     */
+    upload?: (number | null) | Media;
+    /**
+     * Video only. Shown until the clip plays, and under reduced motion.
+     */
+    poster?: (number | null) | Media;
+    markId?: ('software' | 'robotics' | 'websites') | null;
+    /**
+     * What it shows, for anyone who cannot see it. Written by someone who has looked at it.
+     */
+    alt: string;
+    /**
+     * Optional: the full-length version, off-site, behind a click.
+     */
+    long?: {
+      href?: string | null;
+      label?: string | null;
+    };
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * The team. Adding or removing someone changes the grid: tell whoever looks after the site.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "crew".
+ */
+export interface Crew {
+  id: number;
+  name: string;
+  /**
+   * Used in the URL and as the anchor. Changing it breaks existing links.
+   */
+  slug: string;
+  /**
+   * Lower comes first, on the site and here.
+   */
+  order: number;
+  /**
+   * Shows a visible marker on the page. Untick only when the words have been confirmed.
+   */
+  pending?: boolean | null;
+  /**
+   * Job title. Nobody here is called an engineer (CLAUDE.md).
+   */
+  role: string;
+  /**
+   * One line, for the home page teaser.
+   */
+  summary: string;
+  /**
+   * The /team bio, one row per paragraph.
+   */
+  bio: {
+    text: string;
+    id?: string | null;
+  }[];
+  /**
+   * 4:5, at least 1200×1500, in colour, of this person. Leave empty for the terminal tile.
+   */
+  portrait?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners".
+ */
+export interface Partner {
+  id: number;
+  name: string;
+  /**
+   * Used in the URL and as the anchor. Changing it breaks existing links.
+   */
+  slug: string;
+  /**
+   * Lower comes first, on the site and here.
+   */
+  order: number;
+  /**
+   * Shows a visible marker on the page. Untick only when the words have been confirmed.
+   */
+  pending?: boolean | null;
+  /**
+   * Client, Industry partner, and so on.
+   */
+  kind: string;
+  /**
+   * Their own artwork, as supplied. Shown on a light plate.
+   */
+  logo: number | Media;
+  body: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -223,6 +501,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'streams';
+        value: number | Stream;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: number | Project;
+      } | null)
+    | ({
+        relationTo: 'crew';
+        value: number | Crew;
+      } | null)
+    | ({
+        relationTo: 'partners';
+        value: number | Partner;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -344,6 +638,157 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "streams_select".
+ */
+export interface StreamsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  order?: T;
+  door?: T;
+  doorPhoto?: T;
+  problem?: T;
+  instead?: T;
+  solution?: T;
+  stepPhoto?: T;
+  promise?: T;
+  pageLede?: T;
+  sections?:
+    | T
+    | {
+        slug?: T;
+        title?: T;
+        body?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        includes?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        link?:
+          | T
+          | {
+              href?: T;
+              label?: T;
+            };
+        pending?: T;
+        id?: T;
+      };
+  lede?: T;
+  caps?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  who?: T;
+  proof?:
+    | T
+    | {
+        label?: T;
+        body?: T;
+        pending?: T;
+      };
+  pricing?:
+    | T
+    | {
+        value?: T;
+        note?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  order?: T;
+  featured?: T;
+  placeholder?: T;
+  client?: T;
+  stream?: T;
+  year?: T;
+  status?: T;
+  line?: T;
+  lede?: T;
+  body?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  facts?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        id?: T;
+      };
+  url?: T;
+  media?:
+    | T
+    | {
+        kind?: T;
+        upload?: T;
+        poster?: T;
+        markId?: T;
+        alt?: T;
+        long?:
+          | T
+          | {
+              href?: T;
+              label?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "crew_select".
+ */
+export interface CrewSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  order?: T;
+  pending?: T;
+  role?: T;
+  summary?: T;
+  bio?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  portrait?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners_select".
+ */
+export interface PartnersSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  order?: T;
+  pending?: T;
+  kind?: T;
+  logo?: T;
+  body?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -381,6 +826,51 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site".
+ */
+export interface Site {
+  id: number;
+  /**
+   * People at work, in the home page’s "why we work this way" section. Only people who are on the team, or alt text that says they are not.
+   */
+  workingPhoto: number | Media;
+  /**
+   * The team together, full width under the /team heading. Empty renders nothing.
+   */
+  groupPhoto?: (number | null) | Media;
+  /**
+   * Named, real, not started. The quiet "Coming" row on /built. Move one to Projects once there is something to show.
+   */
+  comingSoon?:
+    | {
+        name: string;
+        stream: number | Stream;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site_select".
+ */
+export interface SiteSelect<T extends boolean = true> {
+  workingPhoto?: T;
+  groupPhoto?: T;
+  comingSoon?:
+    | T
+    | {
+        name?: T;
+        stream?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

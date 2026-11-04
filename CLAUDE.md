@@ -228,6 +228,12 @@ each other for one search result. Do not "helpfully" expand it per stream.
 `sitemap.ts` is generated from `STREAMS` and `BUILT`, so it stays true on its
 own. Do not hand-maintain a URL list.
 
+**Moving to Payload (cms brief, in progress).** Streams, projects, crew,
+partners and the site photos are becoming Payload collections. These **stay in
+code**, because a bad edit to them is a factual or legal problem rather than
+bad copy: `landings.ts` (`/regulated`, `/accessibility`), `STREAM_COMMON`,
+`contact.ts`, and the headline words.
+
 ## Routes
 
 `/` · `/software` · `/robotics` · `/websites` · `/built` · `/built/[slug]` ·

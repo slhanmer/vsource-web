@@ -4,7 +4,13 @@ import path from 'path'
 import { buildConfig, type CollectionConfig } from 'payload'
 import sharp from 'sharp'
 
+import { Crew } from './src/collections/Crew'
+import { Partners } from './src/collections/Partners'
+import { Projects } from './src/collections/Projects'
+import { Site } from './src/collections/Site'
+import { Streams } from './src/collections/Streams'
 import { isAdmin, isAdminField, isAdminOrSelf, isSignedIn, ROLES } from './src/lib/access'
+import { withContentRevalidation, withGlobalRevalidation } from './src/lib/revalidate'
 
 /*
  * Payload for the V Source site, modelled on the starter's payload.config.ts.
@@ -58,93 +64,105 @@ export default buildConfig({
    * version; add `editor: lexicalEditor()` back the day a richText field is
    * needed, and solve the module question then.
    */
-  collections: [
-    {
-      slug: 'users',
-      auth: true,
-      admin: { useAsTitle: 'email' },
-      /*
-       * read and update are scoped to self for anyone who is not an admin.
-       * Left at Payload's default they permit any signed-in user, which lets an
-       * editor open the other accounts on the site.
-       */
-      access: {
-        create: isAdmin,
-        delete: isAdmin,
-        read: isAdminOrSelf,
-        update: isAdminOrSelf,
-      },
-      fields: [
-        {
-          name: 'role',
-          type: 'select',
-          required: true,
-          defaultValue: 'editor',
-          options: [...ROLES],
-          // Self-update would otherwise be a promotion route.
-          access: { create: isAdminField, update: isAdminField },
-          admin: {
-            description:
-              'admin creates and deletes entries and manages accounts. editor changes copy and images only.',
-          },
+  /*
+   * Every collection goes through withContentRevalidation, which leaves
+   * `users` alone and makes a save anywhere else clear the site's `content`
+   * cache. See src/lib/revalidate.ts.
+   */
+  collections: (
+    [
+      {
+        slug: 'users',
+        auth: true,
+        admin: { useAsTitle: 'email' },
+        /*
+         * read and update are scoped to self for anyone who is not an admin.
+         * Left at Payload's default they permit any signed-in user, which lets an
+         * editor open the other accounts on the site.
+         */
+        access: {
+          create: isAdmin,
+          delete: isAdmin,
+          read: isAdminOrSelf,
+          update: isAdminOrSelf,
         },
-      ],
-    },
-    {
-      slug: 'media',
-      /*
-       * ⚠️ DELETE IS ADMIN-ONLY. Left at Payload's default, any signed-in user
-       * could delete a photograph a page is showing, and the page would
-       * carry on pointing at nothing. An editor replaces a photograph by
-       * uploading a new one and choosing it; the old one stays until an admin
-       * tidies up.
-       */
-      access: { read: () => true, create: isSignedIn, update: isSignedIn, delete: isAdmin },
-      /*
-       * WHERE THE FILES LIVE, AND WHY THERE ARE TWO ANSWERS.
-       *
-       * With BLOB_READ_WRITE_TOKEN set (every Vercel deployment), the
-       * vercelBlobStorage plugin below takes over: uploads go to the project's
-       * Blob store and `url` is the Blob CDN address. That is what makes an
-       * upload in the admin work on Vercel at all — a serverless function's
-       * filesystem is read-only and gone after the request, so a file written
-       * to public/media there never existed for the next one.
-       *
-       * Without the token (local dev, CI), files go to public/media and this
-       * hook rewrites Payload's /api/media/file/<name> to /media/<name>, so they
-       * are served as static files rather than through a function. On a Blob
-       * site the URLs are absolute and the hook is a no-op.
-       */
-      hooks: {
-        afterRead: [
-          ({ doc }) => {
-            const staticUrl = (url: unknown) =>
-              typeof url === 'string' ? url.replace(/^\/api\/media\/file\//, '/media/') : url
-
-            doc.url = staticUrl(doc.url)
-            for (const size of Object.values(doc.sizes ?? {})) {
-              if (size && typeof size === 'object') {
-                ;(size as { url?: unknown }).url = staticUrl((size as { url?: unknown }).url)
-              }
-            }
-            return doc
+        fields: [
+          {
+            name: 'role',
+            type: 'select',
+            required: true,
+            defaultValue: 'editor',
+            options: [...ROLES],
+            // Self-update would otherwise be a promotion route.
+            access: { create: isAdminField, update: isAdminField },
+            admin: {
+              description:
+                'admin creates and deletes entries and manages accounts. editor changes copy and images only.',
+            },
           },
         ],
       },
-      upload: {
-        staticDir: path.resolve(dirname, 'public/media'),
-        // The starter's image-only list, plus mp4: /built carries short,
-        // muted, self-hosted clips (see the media rule in the projects data).
-        mimeTypes: ['image/*', 'video/mp4'],
-        imageSizes: [
-          { name: 'thumb', width: 400 },
-          { name: 'card', width: 900 },
-          { name: 'wide', width: 1800 },
-        ],
+      {
+        slug: 'media',
+        /*
+         * ⚠️ DELETE IS ADMIN-ONLY. Left at Payload's default, any signed-in user
+         * could delete a photograph a page is showing, and the page would
+         * carry on pointing at nothing. An editor replaces a photograph by
+         * uploading a new one and choosing it; the old one stays until an admin
+         * tidies up.
+         */
+        access: { read: () => true, create: isSignedIn, update: isSignedIn, delete: isAdmin },
+        /*
+         * WHERE THE FILES LIVE, AND WHY THERE ARE TWO ANSWERS.
+         *
+         * With BLOB_READ_WRITE_TOKEN set (every Vercel deployment), the
+         * vercelBlobStorage plugin below takes over: uploads go to the project's
+         * Blob store and `url` is the Blob CDN address. That is what makes an
+         * upload in the admin work on Vercel at all — a serverless function's
+         * filesystem is read-only and gone after the request, so a file written
+         * to public/media there never existed for the next one.
+         *
+         * Without the token (local dev, CI), files go to public/media and this
+         * hook rewrites Payload's /api/media/file/<name> to /media/<name>, so they
+         * are served as static files rather than through a function. On a Blob
+         * site the URLs are absolute and the hook is a no-op.
+         */
+        hooks: {
+          afterRead: [
+            ({ doc }) => {
+              const staticUrl = (url: unknown) =>
+                typeof url === 'string' ? url.replace(/^\/api\/media\/file\//, '/media/') : url
+
+              doc.url = staticUrl(doc.url)
+              for (const size of Object.values(doc.sizes ?? {})) {
+                if (size && typeof size === 'object') {
+                  ;(size as { url?: unknown }).url = staticUrl((size as { url?: unknown }).url)
+                }
+              }
+              return doc
+            },
+          ],
+        },
+        upload: {
+          staticDir: path.resolve(dirname, 'public/media'),
+          // The starter's image-only list, plus mp4: /built carries short,
+          // muted, self-hosted clips (see the media rule in the projects data).
+          mimeTypes: ['image/*', 'video/mp4'],
+          imageSizes: [
+            { name: 'thumb', width: 400 },
+            { name: 'card', width: 900 },
+            { name: 'wide', width: 1800 },
+          ],
+        },
+        fields: [{ name: 'alt', type: 'text', required: true }],
       },
-      fields: [{ name: 'alt', type: 'text', required: true }],
-    },
-  ] satisfies CollectionConfig[],
+      Streams,
+      Projects,
+      Crew,
+      Partners,
+    ] satisfies CollectionConfig[]
+  ).map((collection) => withContentRevalidation(collection)),
+  globals: [withGlobalRevalidation(Site)],
   admin: {
     user: 'users',
     /*

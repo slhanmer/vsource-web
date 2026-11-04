@@ -1,0 +1,4 @@
+{
+  "//": "ESM for the Payload CLI (swc-node decides a .ts file's format from the nearest package.json). See CLAUDE.md, CMS.",
+  "type": "module"
+}
