@@ -66,7 +66,7 @@ purpose-cropped). Done **in the seed and media**, since cms has landed:
   carries a per-stream `home-door--<slug>` class). The Software and Robotics
   photos keep their centred framing.
 - The stock `websites-*` photos were already gone (cms D).
-- Screenshots: `C:	mp\hero-polish\websites-door-{1440,390}.png` and
+- Screenshots: `C:\tmp\hero-polish\websites-door-{1440,390}.png` and
   `websites-row-{1440,390}.png`. **Both wordmarks are whole at both widths:**
   Snug's wordmark and nav at the top of the door, with the caption in view at
   1440; and NUG. with "Handmade pasta" and the Bakery Lane line at the top of
