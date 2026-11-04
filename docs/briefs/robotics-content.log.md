@@ -180,3 +180,13 @@ For each of `1440-light`, `1440-dark`, `390-light` and `390-dark`:
 Also `results.json`.
 
 STATUS: partial
+
+---
+
+# Follow-up from cms Stage D (5 November)
+
+The seed now exists. §2b is done in it: Websites door = Nug, row = Snug,
+reusing the `/built` media documents; the stock pair is gone. Verify 1: `pnpm
+seed` run twice more after the first load, 0 changes each time.
+
+STATUS: done

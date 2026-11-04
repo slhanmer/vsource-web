@@ -384,3 +384,55 @@ Choices worth knowing:
   child, so one capture run hit the stale server while `.next` was being
   replaced. I killed that PID and captured again; the numbers above are from
   the clean run.
+
+## Stage D — seed, then retire the constants
+
+- **`pnpm seed`** (`scripts/seed.mjs` → `payload run src/seed/run.ts`).
+  Content is `src/seed/content.ts`, generated once from the old constants so
+  every word carried over unchanged. Files are in `src/seed/assets/` (moved
+  from `public/`). Rows are upserted by `slug`, media by filename, and a row
+  is only written if it differs (`src/seed/shape.ts`). **First run: 40
+  created. Second and third runs: 0 created, 0 updated, 40 unchanged.**
+- **The starter's seed guard is copied** (`src/seed/guard.ts` and its test,
+  ported to jest). The seed refuses to overwrite any row edited in the admin
+  since it last wrote it, and `--force` overrides. Its record is in
+  `payload_kv` under `seed:vsource`. Deletion is explicit (`retired` in
+  `content.ts`), so a row an admin added is never removed by omission.
+- **Not seeded:** Craig's, Simon's and Ronan's stock portraits (deleted from
+  the repo with `git rm`). They show terminal tiles. The `stockPortrait`
+  guard went with `crew.ts`. **There was no test for it** to remove, despite
+  what the brief says.
+- **Where the brief did not match the code, I followed the code.** The brief
+  says to seed `spider-drones` as a draft and make Don Gino the lead.
+  robotics-content (4 November) had already removed spider-drones and made
+  Project Arachnid the lead, as CLAUDE.md's current state says. So
+  nothing is seeded as a draft and Project Arachnid is `featured`. The draft
+  path is still exercised in verify 3, on another project.
+- **robotics-content §2b is done here:** Websites' `doorPhoto` is the Nug
+  media document and `stepPhoto` is Snug's, the same documents the `/built`
+  cards use, with their `/built` alt text. The `websites-door` and
+  `websites-step` stock photos are not seeded and are deleted from the repo.
+- **Constants deleted:** `built.ts`, `crew.ts`, `partners.ts` and `photos.ts`.
+  `streams.ts` keeps only `STREAM_COMMON` and `StreamId`, and `landings.ts`
+  has its own `LandingSection` type. Nothing imports the deleted ones.
+- `public/media/` is gitignored. Payload writes uploads there when there is
+  no Blob token.
+
+### ⚠ Media and the shared preview database
+
+`.env.local` has no `BLOB_READ_WRITE_TOKEN`, so the seed's 17 files went to
+`public/media/` on this laptop, and the rows in the **shared** Neon preview
+branch say `/media/<file>`. A Vercel preview deployment does have a token,
+so it will build every media URL as a Blob URL for files that are not in
+Blob. **Images will be broken on preview deployments** until the files are
+in Blob. Either:
+
+1. put the preview Blob store's token in `.env.local` (yours to do, since I
+   don't touch `.env*`) and re-run the seed with `--force`, so the
+   re-uploads go to Blob; or
+2. copy the starter's `pnpm media:blob` (`src/media/to-blob.ts`), which
+   uploads `public/media` into Blob under the same keys with no database
+   writes. I didn't copy it, because the brief doesn't list it.
+
+Production starts from an empty database, so seeding it with its own token
+set avoids the problem from the start (docs/DEPLOYMENT.md).

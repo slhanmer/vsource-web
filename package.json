@@ -19,6 +19,7 @@
     "build-storybook": "storybook build",
     "prepare": "husky",
     "payload": "payload --use-swc",
+    "seed": "node scripts/seed.mjs",
     "user": "node scripts/user.mjs"
   },
   "lint-staged": {

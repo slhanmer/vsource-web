@@ -1,4 +1,17 @@
-import type { Stream, StreamSection } from './streams'
+import type { StreamId } from './streams'
+
+/** One block on a landing page. The same block the stream pages render, kept
+ *  here because landing pages stay in code (CLAUDE.md, CMS). */
+export interface LandingSection {
+  /** Anchor id. Explicit, so editing a title cannot silently break a link. */
+  id: string
+  title: string
+  body: string[]
+  includes?: string[]
+  link?: { href: string; label: string }
+  /** Invented or unverified copy. Renders a visible marker. */
+  pending?: boolean
+}
 
 /**
  * The search landing pages — /regulated and /accessibility.
@@ -25,9 +38,9 @@ export interface Landing {
   serviceType: string
   /** The paragraph under the h1. */
   lede: string
-  sections: StreamSection[]
+  sections: LandingSection[]
   /** Which stream page this belongs under, for the back-link and the CTA. */
-  stream: Stream['id']
+  stream: StreamId
   /** Unverified copy. Renders a visible marker, same as everywhere else. */
   pending?: boolean
 }

@@ -102,9 +102,9 @@ engineer, and nothing claims a qualification. Log the result.
 
 The Websites stream shows our own sites rather than stock:
 
-- `doorPhoto`: the existing `don-gino.jpg` media (the venue screenshot), with the
+- `doorPhoto`: the existing `nug.jpg` media (the venue screenshot), with the
   alt text its `/built` entry uses.
-- `stepPhoto`: the existing `nug.jpg` media, with its `/built` alt text.
+- `stepPhoto`: the existing `snug.jpg` media, with its `/built` alt text.
 
 Reuse the media documents the seed already created for `/built`. Do not upload
 duplicates. Remove the `websites-door` and `websites-step` stock photos from
@@ -139,7 +139,7 @@ pnpm build
    pause control, poster-only under reduced motion. `/built/project-arachnid`
    renders and `/built/spider-drones` 404s.
 4. The fold door and the "What changes" row for Robotics show the Huntsman
-   photos, and Websites shows Don Gino (door) and Nug (row).
+   photos, and Websites shows Nug (door) and Snug (row).
 5. axe on `/`, `/robotics`, `/built` and `/built/project-arachnid`, light and
    dark: 0 violations.
 
