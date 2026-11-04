@@ -237,9 +237,13 @@ that return plain shapes (`src/data/types.ts`), with every image as a `Photo`
 (`src`, `alt`, `width`, `height`).
 
 **Adding a fourth stream is a data change, not a new page.** `app/(site)/[stream]/`
-generates every stream from the `streams` collection, but with
-`dynamicParams = false`, so a new one needs a **redeploy**, and a stream mark
-in `StreamMark`, which is drawn in code.
+generates every stream from the `streams` collection, with no redeploy. It
+does need a stream mark in `StreamMark`, which is drawn in code.
+
+⚠ **`dynamicParams` stays `true` on `[stream]` and `built/[slug]`.** With
+`false`, a save in `/admin` invalidates the `content` tag, and Next then
+404s every prerendered page in that route (`NoFallbackError`) until the next
+deploy. Unknown slugs 404 through the page's own `notFound()`.
 
 `STREAM_COMMON` in `streams.ts` is deliberate: hosting and ongoing support are
 the same offer through any stream, so they are one shared list rather than the

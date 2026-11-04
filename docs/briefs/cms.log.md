@@ -455,3 +455,49 @@ set avoids the problem from the start (docs/DEPLOYMENT.md).
   The documented order is env → migrate production from a laptop → seed it
   (with the production Blob token, so files go straight into Blob) → deploy
   → `pnpm user` → portraits.
+
+## Verify (end of run, against the seeded preview branch, `next start -p 3100`)
+
+| Check | Result |
+|---|---|
+| `pnpm tsc --noEmit` | clean |
+| `pnpm lint` | **1 error, not mine to fix**: the trailing comma in Simon's `next.config.ts` (line 61). Nothing else |
+| `pnpm test:ci` | 47 suites, 634 tests pass (new: revalidate 5, seed guard 7, seed shape 6) |
+| `pnpm build` | passes |
+| 1. Screenshot diff | `/`, `/team`, `/built`, `/robotics`, `/software`, `/websites` × 1440/390 × light/dark, `C:\tmp\cms\after\`. Against the pre-Payload baseline, the only differences are the three terminal tiles on `/` and `/team`, and Websites' Nug/Snug door and row on `/`. Spider drones was already gone. |
+| 2. Editor | Signed in as `cms-editor@vsource.test`: changed Robotics' `door`, which was on `/` at the next load; uploaded a portrait for Ronan (a plain green "TEST" tile, not a photo of anyone), which was on `/team` and `/` at the next load. No rebuild. The editor gets **403** creating a project, deleting a project and deleting media. All reverted afterwards, and the test media deleted. |
+| 3. Publish | spider-drones no longer exists, so this ran on **SAUCE**. As admin: unpublished, it left `/built`, `/built/sauce` 404'd, it left the sitemap, and the anonymous API could not read it. Republished, all three came back. No rebuild. |
+| 4. `VERCEL_ENV=production pnpm build:deploy`, bad URL | refuses: `DATABASE_URL is not a postgres connection string (starts "[encrypted]…").` With it empty: `DATABASE_URL is not set for this deployment…`. Exit 1, nothing touched |
+| 5. axe (wcag2a/aa, 21aa, 22aa) | all 20 sitemap routes plus a 404, light and dark: **42 runs, 0 violations** (`C:\tmp\cms\axe.json`) |
+| Seed guard | an admin edit to QUT's body made `pnpm seed` **refuse** (`partners qut (edited; id 2)`). Reverted, the seed is back to `0 created, 0 updated` |
+
+Results: `C:\tmp\cms\verify-2-3.json` (27 checks).
+
+### A bug verify found, and its fix
+
+The first verify run left **`/software`, `/robotics` and `/websites` at 404**.
+`[stream]` still had `dynamicParams = false`. Once a save cleared the
+`content` tag, Next would not regenerate those prerendered pages
+(`NoFallbackError` in the server log), and they 404'd until the next deploy.
+Any editor's first save would have taken down all three stream pages.
+`dynamicParams` is now `true` (unknown slugs still 404 through the page's
+`notFound()`). The re-run includes the stream pages after saves and an unknown
+path. CLAUDE.md and DEPLOYMENT.md say so. A new stream no longer needs a
+redeploy, only its `StreamMark`.
+
+## Left for Simon
+
+- **Delete the trailing comma** at `next.config.ts:61`. It is the one lint
+  error.
+- **Preview media** (Stage D above): the preview database's media rows point
+  at files in this laptop's `public/media`, not in Blob, so preview
+  deployments will show broken images until they are moved.
+- **Verification accounts** `cms-admin@vsource.test` and
+  `cms-editor@vsource.test` are in the preview database. Delete them when
+  convenient. They are not needed for anything.
+- `NODE_TLS_REJECT_UNAUTHORIZED=0` is set in this machine's environment (not in
+  `.env.local`). Node warns about it on every run, and it turns off TLS
+  certificate checks for every connection, Neon included. Worth unsetting.
+- Commits A–E and this one are on `development`. Merging is yours.
+
+STATUS: done

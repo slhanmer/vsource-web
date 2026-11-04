@@ -10,17 +10,23 @@ import '../styles/stream.scss'
 /**
  * One offer per stream — /software, /robotics, /websites.
  *
- * One template, three routes, all of it driven from constants/streams.ts. A
- * fourth stream would be a data change rather than a new page, and nothing here
- * knows which stream it is rendering beyond what that file says.
+ * One template, every route, all of it driven from the `streams` collection
+ * (src/data/). A fourth stream is a data change rather than a new page — and,
+ * with dynamicParams on, not a redeploy either. It does need a mark in
+ * StreamMark, which is drawn in code.
  *
  * This replaces /services, which tried to be five offers on one page and
- * therefore ranked for none of them. `dynamicParams = false` means anything
- * that is not a stream is a 404 rather than an empty render — this route sits
- * at the top level, so without it every unmatched path on the site would land
- * here.
+ * therefore ranked for none of them.
+ *
+ * ⚠ `dynamicParams` MUST BE TRUE. This route sits at the top level, so every
+ * unmatched path lands here, and the page's notFound() is what makes those a
+ * 404. It used to be `false`, which was fine while the content was constants.
+ * With Payload it breaks the site: a save in /admin clears the `content` tag,
+ * Next then refuses to regenerate a prerendered stream page it can no longer
+ * find in its cache (NoFallbackError), and /software, /robotics and /websites
+ * all 404 until the next deploy. Found by the cms brief's verify step.
  */
-export const dynamicParams = false
+export const dynamicParams = true
 
 export async function generateStaticParams() {
   return (await getStreams()).map((stream) => ({ stream: stream.slug }))

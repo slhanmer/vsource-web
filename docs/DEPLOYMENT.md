@@ -129,8 +129,8 @@ succeed.
 - A save in `/admin` is on the site at the next page load. No deploy is
   needed. A **project** saved as a draft is not on the site until it is
   published.
-- A **new stream** needs a redeploy (its page is generated at build) and a
-  stream mark, which is drawn in code.
+- A **new stream** needs no redeploy, but it does need a stream mark, which is
+  drawn in code (`StreamMark`).
 - Some things stay in code and need a deploy, because a bad edit to them is a
   factual or legal problem: the `/regulated` and `/accessibility` pages, the
   shared "Whichever one you arrive through" list, contact details, and the
