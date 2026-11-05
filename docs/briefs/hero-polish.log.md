@@ -169,6 +169,32 @@ spark is an overlay that only appears after a deliberate shake, and the bend
 is an almost subliminal change in the plate's texture. During a shake both
 are active; the spark draws the eye, and the lines simply part under it.
 
+## §4, second pass: stronger, after Simon couldn't see it
+
+Simon (5 November): the bend was invisible, so it had to be stronger.
+
+- **PEAK 6 → 12px, SIGMA 80 → 100px.** The reach is now about 200px. The
+  slope is at most ~20% of the line spacing, so lines still never cross.
+- **A glint.** While the lines are bent, they are drawn through a radial
+  gradient centred on the bend: **6×** the token's alpha at the centre, 35%
+  of that boost at 45% of the reach, and the token's own strength at the
+  edge. It scales with the bend's strength, so a still pointer leaves the
+  plate exactly as the CSS draws it. That is the main reason it can be seen
+  now: a 2% line moving 12px is still hard to spot, but one that also
+  catches the light is not.
+- Real contrast, no stretching, pointer mid-move:
+  `C:	mp\hero-polish\millend-v2-light.png` and `bend-v2-dark.png`. The
+  lines visibly part and brighten round the pointer in both themes.
+- Re-measured on the production build (`C:	mp\hero-polish\mill-v2\`):
+  frame time **0.42ms mean / 0.6 p95 / 1.5 max**, and **1.88 / 2.4 / 2.6**
+  at 4× CPU throttle. Still identical to the CSS lines before the pointer
+  moves. **0 idle frames** at both speeds once it has settled. At 4×, the
+  settle tail (~43 frames) outlasts a 1.5s wait, so the idle count is taken
+  after 4s. No canvas under reduced motion or on touch.
+- If it now reads too strong, `GLINT` is the dial, at the top of
+  `MillLines.tsx`. Shape (`PEAK`, `SIGMA`) and visibility (`GLINT`) are
+  separate.
+
 ## Verify (production build, `next start -p 3130`, against the seeded preview branch)
 
 | Check | Result |

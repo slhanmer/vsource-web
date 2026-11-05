@@ -21,8 +21,8 @@ import { useReducedMotion } from '@hooks'
  *
  *     d = PEAK · √e · (dy / SIGMA) · exp(−(dx² + dy²) / (2·SIGMA²))
  *
- * peaks at PEAK where |dy| = SIGMA, and is negligible past ~2·SIGMA (≈ 160px).
- * Its slope never exceeds ~12% of the line spacing, so lines never cross.
+ * peaks at PEAK where |dy| = SIGMA, and is negligible past ~2·SIGMA (≈ 200px).
+ * Its slope never exceeds ~20% of the line spacing, so lines never cross.
  *
  * COST. requestAnimationFrame runs only while the pointer is moving or the
  * lines are still settling. Idle means no frames at all. Lines far from the
@@ -36,9 +36,19 @@ import { useReducedMotion } from '@hooks'
  */
 
 /** Peak vertical displacement, CSS px. */
-const PEAK = 6
+const PEAK = 12
 /** Gaussian sigma, CSS px. The visible reach is about twice this. */
-const SIGMA = 80
+const SIGMA = 100
+/*
+ * How much darker (light theme) or brighter (dark theme) a line is at the
+ * centre of the bend, as a multiple of its normal alpha. The lines are a 1.4–2%
+ * whisper, and at that strength a 6px bend was invisible (Simon, 5 November):
+ * the bend has to be SEEN, so the lines it moves catch the light as they move.
+ * It falls off radially to the normal strength at the edge of the reach, and
+ * with the strength of the bend, so a still pointer leaves the plate exactly
+ * as the CSS draws it.
+ */
+const GLINT = 6
 /** Per-frame easing of the bend's centre toward the pointer. */
 const FOLLOW = 0.22
 /** Per-frame easing of the bend's strength toward its target. */
@@ -81,6 +91,9 @@ export default function MillLines() {
     let height = 0
     let dpr = 1
     let colour = ''
+    // The token as numbers, so the glint can scale its alpha.
+    let rgb = '0, 0, 0'
+    let alpha = 0
     let frame = 0
     const pointer = { x: 0, y: 0, inside: false, lastMove: 0 }
     const bend = { x: 0, y: 0, strength: 0 }
@@ -89,6 +102,10 @@ export default function MillLines() {
 
     const readColour = () => {
       colour = getComputedStyle(plate).getPropertyValue('--home-mill').trim()
+      const m = colour.match(/rgba?\(([^)]+)\)/)
+      const parts = m ? m[1].split(',').map((v) => v.trim()) : []
+      rgb = parts.slice(0, 3).join(', ') || '0, 0, 0'
+      alpha = parts[3] !== undefined ? Number(parts[3]) : 1
     }
 
     const draw = () => {
@@ -96,8 +113,20 @@ export default function MillLines() {
       ctx.clearRect(0, 0, width, height)
       ctx.fillStyle = colour
       ctx.strokeStyle = colour
-      ctx.lineWidth = 1
       const s = bend.strength
+      if (s >= 0.004) {
+        // The glint: stronger lines at the centre of the bend, fading to the
+        // token's own strength at the edge of the reach.
+        const glint = ctx.createRadialGradient(bend.x, bend.y, 0, bend.x, bend.y, reach)
+        glint.addColorStop(0, `rgba(${rgb}, ${Math.min(1, alpha * (1 + (GLINT - 1) * s))})`)
+        glint.addColorStop(
+          0.45,
+          `rgba(${rgb}, ${Math.min(1, alpha * (1 + (GLINT - 1) * s * 0.35))})`
+        )
+        glint.addColorStop(1, colour)
+        ctx.strokeStyle = glint
+      }
+      ctx.lineWidth = 1
       const x0 = Math.max(0, bend.x - reach)
       const x1 = Math.min(width, bend.x + reach)
 
