@@ -195,6 +195,20 @@ Simon (5 November): the bend was invisible, so it had to be stronger.
   `MillLines.tsx`. Shape (`PEAK`, `SIGMA`) and visibility (`GLINT`) are
   separate.
 
+## §4, third pass: always there while the pointer is on the plate
+
+Simon: the strength is about right, but the bend only showed while the cursor
+was moving. It should be there wherever the cursor is. So the bend's target
+is now "pointer on the plate", not "pointer moving" (`STOPPED_MS` is gone).
+It follows the pointer, stays bent round it when it rests, and relaxes to
+straight only when the pointer leaves the plate.
+
+It is still free when idle. The loop runs only while the bend is catching up;
+once it is on the pointer, it stops, and the bent lines simply stay drawn.
+Checked on the dev server: 4.5s after the pointer stops, the lines are still
+bent, with **0 rAF calls** in the last 2s. After the pointer moves off the
+plate, the lines are straight.
+
 ## Verify (production build, `next start -p 3130`, against the seeded preview branch)
 
 | Check | Result |

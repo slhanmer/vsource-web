@@ -24,15 +24,16 @@ import { useReducedMotion } from '@hooks'
  * peaks at PEAK where |dy| = SIGMA, and is negligible past ~2·SIGMA (≈ 200px).
  * Its slope never exceeds ~20% of the line spacing, so lines never cross.
  *
- * COST. requestAnimationFrame runs only while the pointer is moving or the
- * lines are still settling. Idle means no frames at all. Lines far from the
+ * COST. requestAnimationFrame runs only while the bend is catching up with
+ * the pointer. A resting pointer keeps its bend but costs no frames: the
+ * bent lines stay drawn on the canvas until something changes. Lines far from the
  * pointer are a single fillRect each; only the few dozen within 3·SIGMA are
  * drawn as polylines, and only across 6·SIGMA of width. Device pixel ratio is
  * capped at 2. A hidden tab cancels the loop.
  *
- * It springs back without bouncing: position and strength each ease toward
- * their target per frame (LERP), and the strength's target drops to zero when
- * the pointer leaves the plate or stops moving.
+ * It is always there while the pointer is on the plate, moving or still, and
+ * springs back without bouncing when the pointer leaves: position and strength
+ * each ease toward their target per frame (LERP).
  */
 
 /** Peak vertical displacement, CSS px. */
@@ -53,8 +54,6 @@ const GLINT = 6
 const FOLLOW = 0.22
 /** Per-frame easing of the bend's strength toward its target. */
 const EASE = 0.12
-/** The pointer counts as stopped after this long without a move, ms. */
-const STOPPED_MS = 140
 /** Polyline sampling step, CSS px. */
 const STEP = 6
 /** The CSS gradient's rhythm: a 1px line at offset 3 of every 4px. */
@@ -95,7 +94,7 @@ export default function MillLines() {
     let rgb = '0, 0, 0'
     let alpha = 0
     let frame = 0
-    const pointer = { x: 0, y: 0, inside: false, lastMove: 0 }
+    const pointer = { x: 0, y: 0, inside: false }
     const bend = { x: 0, y: 0, strength: 0 }
     const K = PEAK * Math.sqrt(Math.E)
     const reach = 3 * SIGMA
@@ -153,15 +152,22 @@ export default function MillLines() {
 
     const tick = () => {
       frame = 0
-      const now = performance.now()
-      const moving = pointer.inside && now - pointer.lastMove < STOPPED_MS
-      const target = moving ? 1 : 0
+      // The bend is wherever the pointer is on the plate, moving or not, and
+      // relaxes to straight only when the pointer leaves (Simon, 5 November).
+      const target = pointer.inside ? 1 : 0
       bend.x += (pointer.x - bend.x) * FOLLOW
       bend.y += (pointer.y - bend.y) * FOLLOW
       bend.strength += (target - bend.strength) * EASE
-      if (!moving && bend.strength < 0.004) {
-        // Settled: straight again, and no more frames until the next move.
-        bend.strength = 0
+      const caughtUp =
+        Math.abs(pointer.x - bend.x) < 0.25 &&
+        Math.abs(pointer.y - bend.y) < 0.25 &&
+        Math.abs(target - bend.strength) < 0.004
+      if (caughtUp) {
+        // Settled — held round a resting pointer, or straight again after it
+        // left. Either way, no more frames until the next move.
+        bend.x = pointer.x
+        bend.y = pointer.y
+        bend.strength = target
         draw()
         return
       }
@@ -183,7 +189,6 @@ export default function MillLines() {
         bend.y = pointer.y
       }
       pointer.inside = true
-      pointer.lastMove = performance.now()
       kick()
     }
 
