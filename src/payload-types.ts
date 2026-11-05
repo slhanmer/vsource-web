@@ -879,29 +879,38 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface Site {
   id: number;
   /**
-   * The home page fold: one photograph per stream. Each fills the stage while its word is typed, then the three settle into bands that link to the stream pages.
+   * The home page fold: two files per stream. The square one fills the stage while its word is typed; then the three 3:1 ones settle into bands that link to the stream pages. Each is shown centred: crop the file, do not expect the site to.
    */
   heroPhotos?: {
     software?: {
+      /**
+       * The run window, while the word is typed. Square, at least 1200×1200.
+       */
       photo?: (number | null) | Media;
       /**
-       * The point the crop keeps, as CSS object-position: "x% y%". 0% 0% is the top-left corner.
+       * The settled band, a link to the stream page. 3:1, at least 1800×600.
        */
-      focus?: string | null;
+      band?: (number | null) | Media;
     };
     robotics?: {
+      /**
+       * The run window, while the word is typed. Square, at least 1200×1200.
+       */
       photo?: (number | null) | Media;
       /**
-       * The point the crop keeps, as CSS object-position: "x% y%". 0% 0% is the top-left corner.
+       * The settled band, a link to the stream page. 3:1, at least 1800×600.
        */
-      focus?: string | null;
+      band?: (number | null) | Media;
     };
     websites?: {
+      /**
+       * The run window, while the word is typed. Square, at least 1200×1200.
+       */
       photo?: (number | null) | Media;
       /**
-       * The point the crop keeps, as CSS object-position: "x% y%". 0% 0% is the top-left corner.
+       * The settled band, a link to the stream page. 3:1, at least 1800×600.
        */
-      focus?: string | null;
+      band?: (number | null) | Media;
     };
   };
   /**
@@ -937,19 +946,19 @@ export interface SiteSelect<T extends boolean = true> {
           | T
           | {
               photo?: T;
-              focus?: T;
+              band?: T;
             };
         robotics?:
           | T
           | {
               photo?: T;
-              focus?: T;
+              band?: T;
             };
         websites?:
           | T
           | {
               photo?: T;
-              focus?: T;
+              band?: T;
             };
       };
   workingPhoto?: T;

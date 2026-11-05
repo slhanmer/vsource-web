@@ -127,10 +127,12 @@ export interface Upcoming {
   stream: string
 }
 
-/** A fold photograph, and the CSS object-position its crops keep. */
+/** A stream's fold files, each cut for its shape (hero-insets-2). */
 export interface HeroPhoto {
+  /** Square: the run window while the stream's word is typed. */
   photo: Photo
-  focus: string
+  /** 3:1: the settled band, a link to the stream page (the LCP). */
+  band: Photo
 }
 
 export interface SiteContent {

@@ -256,14 +256,15 @@ export const getPartners = cached('partners', async (): Promise<Partner[]> => {
   return docs.map(toPartner)
 })
 
-/** A fold photograph and the point its crops keep (hero-stage). */
+/** A stream's two fold files: the square run window and the 3:1 band
+ *  (hero-insets-2). */
 function heroPhoto(
-  entry: { photo?: number | Media | null; focus?: string | null } | null | undefined,
+  entry: { photo?: number | Media | null; band?: number | Media | null } | null | undefined,
   stream: string
 ): HeroPhoto {
   return {
     photo: must(entry?.photo, `The hero photo for ${stream}`),
-    focus: entry?.focus?.trim() || '50% 50%',
+    band: must(entry?.band, `The hero band for ${stream}`),
   }
 }
 

@@ -117,21 +117,37 @@ const content: SeedContent = {
       file: 'photos/pointing.jpg',
       alt: 'Craig points to a line of code on a monitor while Simon looks on.',
     },
+    'hero/hero-software-stage': {
+      file: 'hero/hero-software-stage.jpg',
+      alt: 'A hand points to code on a monitor.',
+    },
+    'hero/hero-software-band': {
+      file: 'hero/hero-software-band.jpg',
+      alt: 'A hand points to code on a monitor.',
+    },
+    'hero/hero-robotics-stage': {
+      file: 'hero/hero-robotics-stage.jpg',
+      alt: 'The Huntsman, an eight-legged robot, on a stone bench.',
+    },
+    'hero/hero-robotics-band': {
+      file: 'hero/hero-robotics-band.jpg',
+      alt: 'The Huntsman, an eight-legged robot, on a stone bench.',
+    },
+    'hero/hero-websites-stage': {
+      file: 'hero/hero-websites-stage.jpg',
+      alt: 'Inside Snug at night, through the window: table lamps, glasses and plates on the counter.',
+    },
+    'hero/hero-websites-band': {
+      file: 'hero/hero-websites-band.jpg',
+      alt: 'Inside Snug at night, through the window: table lamps, glasses and plates on the counter.',
+    },
     'hero/hero-software': {
       file: 'hero/hero-software.jpg',
       alt: 'A hand points to a line of code on a monitor while Simon looks on.',
     },
-    'hero/hero-robotics': {
-      file: 'hero/hero-robotics.jpg',
-      alt: 'The Huntsman, an eight-legged robot, on a stone bench.',
-    },
     'hero/hero-websites': {
       file: 'hero/hero-websites.jpg',
       alt: 'The Snug website: its wordmark over a dark photograph of the room at night.',
-    },
-    'hero/hero-team': {
-      file: 'hero/hero-team.jpg',
-      alt: 'Simon, Craig and Ronan in V Source shirts against a wall of jasmine.',
     },
     'robotics/huntsman-model': {
       file: 'robotics/huntsman-model.jpg',
@@ -781,9 +797,9 @@ const content: SeedContent = {
   ],
   site: {
     heroPhotos: {
-      software: { photo: 'hero/hero-software', focus: '62% 40%' },
-      robotics: { photo: 'hero/hero-robotics', focus: '40% 20%' },
-      websites: { photo: 'hero/hero-websites', focus: '50% 70%' },
+      software: { photo: 'hero/hero-software-stage', band: 'hero/hero-software-band' },
+      robotics: { photo: 'hero/hero-robotics-stage', band: 'hero/hero-robotics-band' },
+      websites: { photo: 'hero/hero-websites-stage', band: 'hero/hero-websites-band' },
     },
     workingPhoto: 'photos/at-the-desk',
     groupPhoto: 'photos/team-group',
@@ -820,6 +836,8 @@ const content: SeedContent = {
       'snug-door.jpg',
       'huntsman-top.jpg',
       'huntsman-terrain-trials.jpg',
+      'hero-robotics.jpg',
+      'hero-team.jpg',
     ],
   },
 }

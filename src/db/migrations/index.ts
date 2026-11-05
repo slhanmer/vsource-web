@@ -7,6 +7,7 @@ import * as migration_20261105_012459_stream_media from './20261105_012459_strea
 import * as migration_20261105_012946_media_fit from './20261105_012946_media_fit';
 import * as migration_20261105_013331_drop_door_fields from './20261105_013331_drop_door_fields';
 import * as migration_20261105_052747_hero_stage from './20261105_052747_hero_stage';
+import * as migration_20261105_065118_hero_bands from './20261105_065118_hero_bands';
 
 export const migrations = [
   {
@@ -52,6 +53,11 @@ export const migrations = [
   {
     up: migration_20261105_052747_hero_stage.up,
     down: migration_20261105_052747_hero_stage.down,
-    name: '20261105_052747_hero_stage'
+    name: '20261105_052747_hero_stage',
+  },
+  {
+    up: migration_20261105_065118_hero_bands.up,
+    down: migration_20261105_065118_hero_bands.down,
+    name: '20261105_065118_hero_bands'
   },
 ];

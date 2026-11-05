@@ -16,13 +16,13 @@ interface Props {
 }
 
 /*
- * One URL per photograph, shared by the big photo and its band, so the
- * browser fetches each file once. Sized for the bigger of the two: the big
- * photo is nearly as tall as the fold (the viewport less the 96px header),
- * and these are 3:2, so `cover` renders them up to 1.5× that wide. A band is
- * never wider than the stage, which that already covers.
+ * Two files per stream, each cut for its shape (hero-insets-2): the square
+ * `photo` for the run window and the 3:1 `band`. Both render about as wide
+ * as the stage column, at most ~620px on a wide screen. Each is shown
+ * centred: no object-position anywhere. If a crop is wrong, the fix is a new
+ * file.
  */
-const SIZES = '(max-width: 979px) 100vw, calc((100vh - 96px) * 1.5)'
+const SIZES = '(max-width: 979px) 100vw, 620px'
 
 /**
  * The fold's stage (hero-stage, then hero-insets, 5 November): windows cut
@@ -44,8 +44,8 @@ const SIZES = '(max-width: 979px) 100vw, calc((100vh - 96px) * 1.5)'
  * keyboard user who tabs in during the run still sees the band they are on:
  * focus inside the bands shows them (home.scss).
  *
- * Each photo's `focus` (the admin's object-position) is the point both crops
- * keep: the stage is tall, a band is wide.
+ * The bands are preloaded: they are the LCP. The square run-window files load
+ * eagerly but are not preloaded.
  */
 export default function HeroStage({ photos, streams }: Props) {
   const run = useHeroRun()
@@ -71,7 +71,6 @@ export default function HeroStage({ photos, streams }: Props) {
             height={photos[key].photo.height}
             sizes={SIZES}
             loading="eager"
-            style={{ objectPosition: photos[key].focus }}
             className={`home-stage__solo-img${key === shown ? ' is-shown' : ''}`}
           />
         ))}
@@ -86,18 +85,18 @@ export default function HeroStage({ photos, streams }: Props) {
           const key = stream.slug as Key
           const hero = photos[key]
           if (!hero) return null
+          const band = hero.band
           return (
             <li key={stream.slug} className="home-stage__band">
               <Link href={stream.href} className="home-stage__link">
                 <span className="home-stage__photo">
                   <Image
-                    src={hero.photo.src}
+                    src={band.src}
                     alt=""
-                    width={hero.photo.width}
-                    height={hero.photo.height}
+                    width={band.width}
+                    height={band.height}
                     sizes={SIZES}
                     preload
-                    style={{ objectPosition: hero.focus }}
                     className="home-stage__band-img"
                   />
                 </span>

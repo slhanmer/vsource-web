@@ -227,7 +227,7 @@ photograph are in **Payload** (see CMS below), and a few are in code.
 | `projects` collection | `/built`, every project page, the projects under each stream. Media kinds `image` (with `fit: cover \| contain`), `video`, `logo`, `mark` (unused) |
 | `crew` collection | home team section and `/team` |
 | `partners` collection | the fold's "Working with" strip and the partners band |
-| `site` global | the home fold's stage (`heroPhotos`: software, robotics, websites, each a `photo` and its `focus`), the home "why" photo, the `/team` group photo, the "Coming soon" row |
+| `site` global | the home fold's stage (`heroPhotos`: software, robotics, websites, each a square `photo` and a 3:1 `band`), the home "why" photo, the `/team` group photo, the "Coming soon" row |
 | `src/constants/contact.ts` | header contacts, footer, contact page |
 | `src/constants/landings.ts` | `/regulated` and `/accessibility` |
 | `src/constants/streams.ts` | `STREAM_COMMON` only |
@@ -357,16 +357,19 @@ As of 5 November:
   message on the left (the rotating headline on **one line**, slot then
   `built to fit.` on one baseline, wrapping only where it cannot fit; the
   lede and sub copy; **Start a conversation** and **See what we've built**).
-  On the right is the **stage**: 1.4× the copy block's height, centred on
-  it, inside the content column, made of **windows cut into the plate**
-  (the recessed edge, on a layer above the photo, and `$radius-md`). No
-  masks, fades or bleed. While the headline runs it shows one big photo
+  On the right is the **stage**, centred on the copy, inside the content
+  column, made of **windows cut into the plate** (the recessed edge, on a
+  layer above the photo, and `$radius-md`). No masks, fades or bleed. Its
+  geometry is the files' (hero-insets-2): three **3:1** bands plus two gaps,
+  narrowed on short screens so it clears the foot; the run window fills the
+  same box from a **square** file. Two files per stream, `photo` (square)
+  and `band` (3:1), shown centred: a wrong crop is fixed with a new file,
+  never an `object-position`. While the headline runs it shows one big photo
   per word in one window, as the word finishes typing; when it lands back
   on Software it settles into **three windows, one link per stream**, and
   stays. Those windows are the streams above the fold. They are also what
   the server renders and what shows without JS, under reduced motion and on
-  narrow screens (copy first, then the windows at 16:9). Each photo's `focus` is its CSS
-  object-position, set in `/admin`. One timeline drives it all
+  narrow screens (copy first, then the 3:1 windows). One timeline drives it all
   (`headlineTimeline.ts` → `HeroRun.tsx` → `HeroStage.tsx`), and the run and
   the settle are under 4.5 s. The team photo is not in the fold. **The copy
   is never shrunk to fit.**

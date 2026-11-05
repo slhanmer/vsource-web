@@ -23,15 +23,18 @@ export const Site: GlobalConfig = {
        * the server renders, what shows without JavaScript and under reduced
        * motion, and the LCP.
        *
-       * `focus` is the photograph's CSS object-position. The stage is tall
-       * and each band is wide, so `cover` crops the same photograph two
-       * ways; the focus is the point both crops keep.
+       * TWO FILES PER STREAM, CUT FOR THEIR SHAPES (hero-insets-2). One
+       * photograph steered into a near-square window and a 3:1 band by a
+       * single focus point never worked for both. So `photo` is the square
+       * file for the run window and `band` the 3:1 file for the settled
+       * band, each shown centred. If a crop is wrong, the fix is a new file,
+       * never a position.
        */
       name: 'heroPhotos',
       type: 'group',
       admin: {
         description:
-          'The home page fold: one photograph per stream. Each fills the stage while its word is typed, then the three settle into bands that link to the stream pages.',
+          'The home page fold: two files per stream. The square one fills the stage while its word is typed; then the three 3:1 ones settle into bands that link to the stream pages. Each is shown centred: crop the file, do not expect the site to.',
       },
       fields: (['software', 'robotics', 'websites'] as const).map((stream) => ({
         name: stream,
@@ -43,14 +46,22 @@ export const Site: GlobalConfig = {
               /* Not `required` at the database: a NOT NULL column cannot be
                  added to the existing row. src/data/ refuses to render
                  without all three, with a message naming the missing one. */
-              { name: 'photo', type: 'upload' as const, relationTo: 'media' as const },
               {
-                name: 'focus',
-                type: 'text' as const,
-                defaultValue: '50% 50%',
+                name: 'photo',
+                type: 'upload' as const,
+                relationTo: 'media' as const,
                 admin: {
                   description:
-                    'The point the crop keeps, as CSS object-position: "x% y%". 0% 0% is the top-left corner.',
+                    'The run window, while the word is typed. Square, at least 1200×1200.',
+                },
+              },
+              {
+                name: 'band',
+                type: 'upload' as const,
+                relationTo: 'media' as const,
+                admin: {
+                  description:
+                    'The settled band, a link to the stream page. 3:1, at least 1800×600.',
                 },
               },
             ],
