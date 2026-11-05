@@ -63,9 +63,7 @@ export default async function Home() {
               under reduced motion, where the CSS lines stay. */}
           <MillLines />
 
-          {/* One timeline for the headline and the stage (HeroRun.tsx). The
-              provider renders nothing, so the stage is a child of the plate,
-              which it is positioned against. */}
+          {/* One timeline for the headline and the stage (HeroRun.tsx). */}
           <HeroRunProvider>
             <div className="home-hero__inner">
               <div className="home-hero__say">
@@ -90,18 +88,20 @@ export default async function Home() {
                   </Link>
                 </p>
               </div>
-            </div>
 
-            {/* After the copy in the source: the two buttons come first in
-                the tab order, then the three bands. */}
-            <HeroStage
-              photos={site.heroPhotos}
-              streams={streams.map((stream) => ({
-                slug: stream.slug,
-                name: stream.name,
-                href: stream.href,
-              }))}
-            />
+              {/* After the copy in the source: the two buttons come first in
+                  the tab order, then the three bands. Inside the copy block,
+                  because its height is set against the copy's
+                  (hero-stage-2). */}
+              <HeroStage
+                photos={site.heroPhotos}
+                streams={streams.map((stream) => ({
+                  slug: stream.slug,
+                  name: stream.name,
+                  href: stream.href,
+                }))}
+              />
+            </div>
           </HeroRunProvider>
 
           {/*

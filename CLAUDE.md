@@ -355,9 +355,9 @@ As of 5 November:
   `photos.ts` are gone.
 - **The fold** (hero-stage, 5 November): the message on the left (the
   rotating headline, the lede and sub copy, **Start a conversation** and
-  **See what we've built**). On the right is the **stage**: the full fold
-  height, bleeding off the right edge, fading into the plate on its left
-  (hero-rebuild's treatment). While the headline runs it shows one big photo
+  **See what we've built**). On the right is the **stage**: 1.4× the copy
+  block's height, centred on it (hero-stage-2), bleeding off the right edge,
+  fading into the plate on its left (72px) and at top and bottom (24px). While the headline runs it shows one big photo
   per word, as the word finishes typing; when it lands back on Software it
   settles into **three bands, one link per stream**, and stays. Those bands
   are the streams above the fold. They are also what the server renders and
@@ -368,6 +368,8 @@ As of 5 November:
   the settle are under 4.5 s. The team photo is not in the fold. **The copy
   is never shrunk to fit.**
 - **Stream pages** open with a photograph (`pagePhoto`), not a line drawing.
+  Under the proof line, the stream's projects are small cards (the `/built`
+  plate, smaller), in columns that divide the count.
   Sections with `media` (an image, or an mp4 under 10 s with a poster and a
   pause control) are two columns, alternating sides. `StreamMark` is now only
   on the `/regulated` and `/accessibility` landing pages.

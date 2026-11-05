@@ -779,7 +779,7 @@ const content: SeedContent = {
     heroPhotos: {
       software: { photo: 'hero/hero-software', focus: '62% 40%' },
       robotics: { photo: 'hero/hero-robotics', focus: '40% 20%' },
-      websites: { photo: 'hero/hero-websites', focus: '0% 0%' },
+      websites: { photo: 'hero/hero-websites', focus: '0% 55%' },
     },
     workingPhoto: 'photos/team-group',
     groupPhoto: 'photos/team-group',

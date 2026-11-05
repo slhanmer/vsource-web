@@ -313,6 +313,8 @@
     align-items: center;
     /* Its place in the plate: the content row, between the 45/55 slack. */
     grid-row: 2;
+    /* The stage is positioned against this block (hero-stage-2). */
+    position: relative;
     /* width as well as max-width: auto side margins on a grid item shrink it
        to its content. */
     width: 100%;
@@ -333,7 +335,8 @@
     line-height: 1.34;
     color: var(--text-primary);
     max-width: 31ch;
-    margin: clamp(22px, 2.4vw, 32px) 0 0;
+    /* hero-stage-2: was clamp(22px, 2.4vw, 32px). */
+    margin: min(clamp($spacing-xl, 3.6vw, $spacing-2xl), 5.5svh) 0 0;
   }
 
   /* A flex column so every line starts at the left edge at its own width. */
@@ -356,7 +359,8 @@
     /* Directly under the copy, at the paragraph-to-button spacing the page
        uses elsewhere (`.home-close__cta`, 28px). It finishes the paragraph
        above it; it is not a separate object at the bottom of the column. */
-    margin: clamp(22px, 2.2vw, 28px) 0 0;
+    /* hero-stage-2: was clamp(22px, 2.2vw, 28px). */
+    margin: min(clamp($spacing-xl, 3.3vw, $spacing-xl + $spacing-xs), 4.6svh) 0 0;
 
     .basic-button {
       /* The kit centres its label with flex — on the `button` ELEMENT rule.
@@ -377,37 +381,82 @@
 
   &__sub {
     font-family: $font-family-read;
-    font-size: clamp(15.5px, 1.2vw, 17.5px);
+    /* One step up on wide screens (hero-stage-2): was 15.5–17.5px, and read
+       as fine print beside the lede. */
+    font-size: clamp(16.5px, 1.3vw, 19px);
     /* Tighter than the body default. $line-height-relaxed is set for a long
        column; on three lines under a headline it opened the paragraph up until
        the three lines stopped reading as one thought. */
     line-height: 1.45;
     color: var(--text-secondary);
     max-width: 46ch;
-    margin: clamp(12px, 1.2vw, 18px) 0 0;
+    /* hero-stage-2: was clamp(12px, 1.2vw, 18px). */
+    margin: min(clamp($spacing-md, 1.8vw, $spacing-lg + $spacing-2xs), 3.4svh) 0 0;
+  }
+
+  /* §3 mobile type, first pass (hero-stage-2): the fold copy was 19px and
+     15.5px here. Ratios, not the pixel line-height tokens (CLAUDE.md, rule 2). */
+  @media (max-width: 560px) {
+    &__lede {
+      font-size: 20px;
+      line-height: 1.35;
+    }
+
+    &__sub {
+      font-size: 18px;
+      line-height: 1.5;
+    }
   }
 }
 
 /* ── the stage (HeroStage.tsx) ───────────────────────────────────────────
-   The right side of the fold, the full height of the plate, from the message
-   column's edge to the right edge of the screen. No radius: its outer edges
-   are the screen's. Where it meets the plate it fades into it: a mask, so it
-   fades into whatever the plate is (the slab gradient and the mill lines),
-   not into a colour that has to be matched. The geometry and the fade are
-   hero-rebuild's photograph, restored from 0ef66a5.
+   The right side of the fold, from the message column's edge to the right
+   edge of the screen. HEIGHT: 1.4× the copy block, centred on it
+   (hero-stage-2; it used to run the full fold height and dwarfed the copy).
+   So it is positioned against `.home-hero__inner`, 20% of the copy's height
+   out above and below. No radius. Where it meets the plate it fades into it,
+   on three sides: 72px on the left (hero-rebuild's edge, 0ef66a5) and about
+   24px top and bottom, so it floats in the plate. A mask, so it fades into
+   whatever the plate is (the slab gradient and the mill lines), not into a
+   colour that has to be matched.
 
    Two layers. The slideshow (`__solo`): one big photo per word while the
    headline runs, crossfading on opacity alone. The bands (`__bands`): three
    links, one per stream, which is where the stage settles and stays. With
    no `.is-running` (the server, no JS, reduced motion, and the end of the
    run) only the bands show. */
+/* The stage's fades, as masks: 72px on the left, and the top and bottom.
+   A mixin rather than a custom property holding the gradient, because a
+   custom property is resolved where it is declared: the bands' own top and
+   bottom values would never reach it. Here the gradient is built on the
+   element that is masked, from that element's values. */
+@mixin home-stage-fades {
+  $x: linear-gradient(90deg, transparent, #000 var(--home-stage-fade));
+  $y: linear-gradient(
+    180deg,
+    transparent,
+    #000 var(--home-stage-fade-top, var(--home-stage-fade-y)),
+    #000 calc(100% - var(--home-stage-fade-bottom, var(--home-stage-fade-y))),
+    transparent
+  );
+  -webkit-mask-image: $x, $y;
+  -webkit-mask-composite: source-in;
+  mask-image: $x, $y;
+  mask-composite: intersect;
+}
+
 .home-stage {
   --home-stage-fade: 72px;
+  --home-stage-fade-y: 24px;
   --home-stage-gap: 6px;
+  /* A band only fades on the stage's outer edges: the first at the top,
+     the last at the bottom (`&__band`). */
   position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
+  /* 1.4× the copy block: 20% of its height out at each end. */
+  top: -20%;
+  bottom: -20%;
+  /* Out to the viewport's right edge; .home-hero clips any overshoot. */
+  right: calc((100% - 100vw) / 2);
   /* The message column ends at the centre line less half the gap. */
   left: calc(50% + var(--home-hero-gap) / 2);
   z-index: 1;
@@ -419,8 +468,7 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity var(--home-stage-settle, 600ms) ease;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--home-stage-fade));
-    mask-image: linear-gradient(90deg, transparent, #000 var(--home-stage-fade));
+    @include home-stage-fades;
   }
 
   &__solo-img {
@@ -469,6 +517,16 @@
   &__band {
     position: relative;
     min-height: 0;
+    --home-stage-fade-top: 0px;
+    --home-stage-fade-bottom: 0px;
+
+    &:first-child {
+      --home-stage-fade-top: var(--home-stage-fade-y);
+    }
+
+    &:last-child {
+      --home-stage-fade-bottom: var(--home-stage-fade-y);
+    }
   }
 
   /* The whole band is the link. The edge lights on hover and focus. */
@@ -512,8 +570,7 @@
     position: absolute;
     inset: 0;
     overflow: hidden;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--home-stage-fade));
-    mask-image: linear-gradient(90deg, transparent, #000 var(--home-stage-fade));
+    @include home-stage-fades;
 
     &::after {
       content: '';
@@ -540,12 +597,13 @@
     filter: brightness(1.1);
   }
 
-  /* Bottom-left, clear of the fade. */
+  /* Bottom-left, clear of the fades: past the left one, and above the
+     bottom one on the last band. */
   &__name {
     position: absolute;
     z-index: 1;
     left: calc(var(--home-stage-fade) + 12px);
-    bottom: clamp(12px, 1.6vh, 20px);
+    bottom: calc(var(--home-stage-fade-bottom, 0px) + clamp(10px, 1.4vh, 18px));
     font-family: $font-family-display;
     font-size: clamp(20px, 1.7vw, 28px);
     font-weight: 600;
@@ -718,17 +776,17 @@
    make it fit (hero-rebuild). */
 @media (max-width: $breakpoint-desktop) {
   .home-plate {
-    grid-template-rows: auto auto auto auto;
-    align-content: start;
     padding-block: clamp(20px, 5vw, 36px) clamp(24px, 5vw, 40px);
   }
 
+  /* In the copy block's one column, after the copy: no positioning, no
+     fades, full bleed through the plate's side padding. */
   .home-stage {
     --home-stage-fade: 0px;
+    --home-stage-fade-y: 0px;
     position: relative;
     inset: auto;
-    grid-row: 3;
-    margin: clamp(26px, 6vw, 40px) calc(-1 * var(--home-gutter)) 0;
+    margin-inline: calc(-1 * var(--home-gutter));
     overflow: visible;
   }
 
@@ -765,11 +823,12 @@
   }
 }
 
-/* A short laptop (1366×768 and the like): less air round the content so the
-   buttons stay in the first screen. Spacing only — never the type. */
-@media (min-width: ($breakpoint-desktop + 1px)) and (max-height: 820px) {
+/* Two columns: the stage stands 20% of the copy's height proud of it at
+   each end (hero-stage-2), so the plate's air has to be at least that, or
+   the stage runs under the header. */
+@media (min-width: ($breakpoint-desktop + 1px)) {
   .home-plate {
-    --home-fold-air: clamp(20px, 3.4vh, 40px);
+    --home-fold-air: clamp(72px, 11svh, 120px);
   }
 }
 
