@@ -1,7 +1,7 @@
 /**
  * What stays of the streams in code.
  *
- * The streams themselves — names, doors, rows, stream pages, photographs — are
+ * The streams themselves — names, rows, stream pages, photographs — are
  * in Payload now (the `streams` collection; see CLAUDE.md, CMS). Two things
  * are not, on purpose:
  *

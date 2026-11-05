@@ -223,11 +223,11 @@ photograph are in **Payload** (see CMS below), and a few are in code.
 
 | Where | Drives |
 |---|---|
-| `streams` collection | the home page doors and "What changes" rows, **and** all three stream pages |
+| `streams` collection | the home page's "What changes" rows, **and** all three stream pages |
 | `projects` collection | `/built`, every project page, the projects under each stream |
 | `crew` collection | home team section and `/team` |
 | `partners` collection | the fold's "Working with" strip and the partners band |
-| `site` global | the home "why" photo, the `/team` group photo, the "Coming" row |
+| `site` global | the home fold photo (`heroPhoto`), the home "why" photo, the `/team` group photo, the "Coming" row |
 | `src/constants/contact.ts` | header contacts, footer, contact page |
 | `src/constants/landings.ts` | `/regulated` and `/accessibility` |
 | `src/constants/streams.ts` | `STREAM_COMMON` only |
@@ -353,10 +353,23 @@ As of 5 November:
 - **Content is in Payload** (cms brief, stages A–E). The preview Neon branch is
   migrated and seeded. `src/constants/built.ts`, `crew.ts`, `partners.ts` and
   `photos.ts` are gone.
+- **The fold is the message and a photograph** (hero-rebuild, 5 November):
+  the rotating headline (two thirds of its old size), the lede and sub copy,
+  then **Start a conversation** and **See what we've built**, on the left.
+  On the right is Mik's photograph of Craig and Simon at the desk, the full
+  height of the plate, bleeding off the right edge, with a crop
+  (`object-position: 40% 35%`) that keeps both faces and the hands in frame.
+  Below the desktop breakpoint the photograph goes on top at 4:5, and the
+  fold may be taller than a screen. **The copy is never shrunk to fit.** The
+  three stream doors and their highlight are gone; "What changes" introduces
+  the streams. The streams' `door` and `doorPhoto` fields are still in the
+  collection, but nothing reads them.
+- The mill lines on the fold bend round the cursor wherever it rests on the
+  plate (`MillLines.tsx`). Nothing runs on touch or under reduced motion.
 - Robotics copy is in (Simon, 4 November). Project Arachnid leads `/built`
-  with The Huntsman's walking clip, and `spider-drones` is gone. Websites'
-  door is our own Snug site and its row is Nug, each cropped for its slot
-  and anchored to the top so the wordmark is never cut.
+  with The Huntsman's walking clip, and `spider-drones` is gone. The Websites
+  row shows our own Nug site, cropped for its slot and anchored to the top so
+  the wordmark is never cut.
 - `/built` is five cards, every one with a real image (built-trim, 5
   November): Project Arachnid (lead), the Aptium portal (its logo on a plate,
   media kind `logo`, because the screens are under NDA), Training
@@ -365,13 +378,14 @@ As of 5 November:
   two columns, so four cards never leave an orphan. Recheck it when the count
   changes.
 - Nothing is flagged `placeholder` or `pending` anywhere.
-- Craig, Simon and Ronan show the terminal tile until their real portraits are
-  uploaded in `/admin`. The stock stand-ins are deleted. Tom has no portrait,
-  permanently.
+- Real portraits from Mik's shoot for Craig, Simon and Ronan; Asuka's as
+  before. Tom has no portrait, permanently: the terminal tile is his. The
+  group shot is on `/team` and is the home page's "Why we work this way"
+  photo, and Software's "What changes" photo is `pointing.jpg`, also from the
+  shoot. No stock photograph is left anywhere on the site.
 - Preview deployments will show broken images until the seeded media is in the
   preview Blob store (`docs/DEPLOYMENT.md` §5).
-- Photos from the 2 November shoot go in through `/admin`: portraits on Crew,
-  and the group and working shots on Site.
+- Further photographs go in through `/admin`.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

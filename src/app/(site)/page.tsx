@@ -3,9 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { CONTACT } from '@constants'
 import { getCrew, getPartners, getSite, getStreams } from '@/data'
-import HeroDoors from '@/components/home/HeroDoors'
 import MillLines from '@/components/home/MillLines'
-import { HeroRunProvider } from '@/components/home/HeroRun'
 import Reveal from '@/components/home/Reveal'
 import RotatingHeadline from '@/components/home/RotatingHeadline'
 import StreamMoves from '@/components/home/StreamMoves'
@@ -23,11 +21,12 @@ export const metadata: Metadata = {
 /**
  * Home page.
  *
- * Three streams means three different buyers landing on the same URL, so this
- * page routes before it argues: logo, the promise, then the three doors, all
- * inside the first screen. The detail bands follow, and the argument that ties
- * the three together sits *after* them — it is supporting material for someone
- * who is already interested, not a gate in front of the thing they came for.
+ * The fold is the promise and the people: the message, two ways on (start a
+ * conversation, or see the work), and a photograph of the team at work. The
+ * three streams are introduced straight after, in "What changes", and the
+ * argument that ties them together sits *after* that — supporting material
+ * for someone who is already interested, not a gate in front of the thing
+ * they came for.
  *
  * The header is the masthead. There was a full lockup at the top of this plate
  * and it was costing about 120px of the scarcest space on the site to say a
@@ -36,8 +35,8 @@ export const metadata: Metadata = {
  * other page, and the plate opens straight onto the argument.
  *
  * Everything below the fold is a server component. The only client boundaries
- * are the rotating headline, the stream bands and the Reveal wrappers, and the
- * copy inside a Reveal is still rendered on the server.
+ * are the rotating headline, the mill lines, the stream bands and the Reveal
+ * wrappers, and the copy inside a Reveal is still rendered on the server.
  */
 export default async function Home() {
   const [streams, partners, crew, site] = await Promise.all([
@@ -50,49 +49,57 @@ export default async function Home() {
   return (
     <main className="home">
       {/*
-        The fold is one machined plate. The streams are openings cut through
-        it, not cards resting on a page, and each opening has a photograph of
-        that kind of work cut into it in turn.
-
-        The door names are spans, not headings: the band for each stream below
-        carries the real h2, and two h2s with the same text would put every
-        stream in the document outline twice.
+        The fold is one machined plate: the message on the left, and a
+        photograph of the team at work on the right, the full height of the
+        plate and bleeding off the right edge (hero-rebuild, 5 November). The
+        three stream doors that used to be here are gone: "What changes",
+        straight after, introduces the streams and links to the same pages.
       */}
       <section className="home-hero">
         <div className="home-plate">
           {/* Behind everything on the plate; renders nothing on touch or
               under reduced motion, where the CSS lines stay. */}
           <MillLines />
-          {/* One timeline for the headline and the doors (HeroRun.tsx). */}
-          <HeroRunProvider>
-            <div className="home-hero__inner">
-              <div className="home-hero__say">
-                <RotatingHeadline />
 
-                <p className="home-hero__lede">
-                  Most businesses bend themselves around tools that nearly fit.
-                </p>
-                <p className="home-hero__sub">
-                  It starts with a conversation about what is actually going wrong. Then we build
-                  the thing that fixes it, and stay on to run it.
-                </p>
+          {/* First in the source, so on a narrow screen it is on top. The
+              LCP: priority, and sizes for the half-width slot it fills on a
+              wide screen and the full width it fills on a narrow one. */}
+          <figure className="home-hero__photo">
+            <Image
+              src={site.heroPhoto.src}
+              alt={site.heroPhoto.alt}
+              width={site.heroPhoto.width}
+              height={site.heroPhoto.height}
+              priority
+              sizes="(max-width: 979px) 100vw, 50vw"
+              className="home-hero__photo-img"
+            />
+          </figure>
 
-                {/*
-                The doors are for someone who already knows which stream they
-                want. This is for everyone else — and since the copy above
-                promises a conversation, the fold has to offer one.
-              */}
-                <p className="home-hero__cta">
-                  <Link href="/contact" className="basic-button">
-                    Start a conversation
-                  </Link>
-                </p>
-              </div>
+          <div className="home-hero__inner">
+            <div className="home-hero__say">
+              <RotatingHeadline />
 
-              {/* Arrive with their words: see HeroRun.tsx. */}
-              <HeroDoors streams={streams} />
+              <p className="home-hero__lede">
+                Most businesses bend themselves around tools that nearly fit.
+              </p>
+              <p className="home-hero__sub">
+                It starts with a conversation about what is actually going wrong. Then we build the
+                thing that fixes it, and stay on to run it.
+              </p>
+
+              {/* The copy promises a conversation, so the fold offers one;
+                  and for someone who wants to see first, the work. */}
+              <p className="home-hero__cta">
+                <Link href="/contact" className="basic-button">
+                  Start a conversation
+                </Link>
+                <Link href="/built" className="basic-button secondary-button">
+                  See what we&rsquo;ve built
+                </Link>
+              </p>
             </div>
-          </HeroRunProvider>
+          </div>
 
           {/*
             The plate's bottom edge. Two jobs: it stops a short content block

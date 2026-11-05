@@ -15,11 +15,6 @@
  *                                                         -------
  *                                                         3,240 ms
  *
- * ⚠ THE DOOR HIGHLIGHT RUNS OFF THIS TIMELINE TOO. The teal edge moves to
- * each word's door the moment the word finishes typing (HeroRun.tsx).
- * Changing a hold, a speed or the word list changes the whole fold, not only
- * the headline.
- *
  * There are no recut beats. The slot is cut once, to the widest word, and
  * never changes width, so a new word is typed straight into it.
  *

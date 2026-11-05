@@ -2,7 +2,6 @@
 
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from '@hooks'
-import { useHeroRun } from './HeroRun'
 import { DELETE_MS, HOLD_MS, SEQUENCE, TYPE_MS, WORDS } from './headlineTimeline'
 
 /**
@@ -50,10 +49,6 @@ export default function RotatingHeadline() {
   const [typing, setTyping] = useState(false)
 
   const reduced = useReducedMotion()
-  /** The doors run off this same timeline (HeroRun.tsx): each is told the
-   *  moment its word finishes typing. Stable identity, so the run below is
-   *  not restarted by it. Null when the headline is used outside the fold. */
-  const wordTyped = useHeroRun()?.wordTyped
   const word = reduced ? SEQUENCE[SEQUENCE.length - 1] : SEQUENCE[step]
   const caret = typing && !reduced
 
@@ -141,9 +136,6 @@ export default function RotatingHeadline() {
         if (n < SEQUENCE[stepRef.current].length) after(TYPE_MS, forward)
         else {
           setTyping(false)
-          // In the same update as the last letter, so a door and its word
-          // cannot land in different frames.
-          wordTyped?.(stepRef.current)
           if (stepRef.current < last) hold()
         }
       }
@@ -155,7 +147,7 @@ export default function RotatingHeadline() {
       alive = false
       window.clearTimeout(timer)
     }
-  }, [reduced, wordTyped])
+  }, [reduced])
 
   const visible = reduced ? word.length : shown
 

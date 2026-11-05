@@ -99,6 +99,8 @@
      below at 1680×1143, which read as dead space at both ends.) */
   min-height: calc(100svh - var(--home-fold-trim));
   display: grid;
+  /* The gap between the message column and the photograph. */
+  --home-hero-gap: clamp(32px, 6vw, 96px);
   /* The top air is the first row's MINIMUM, not padding: as padding it sat
      outside the split and made the space above bigger than the space below. */
   --home-fold-air: clamp(24px, 3vw, 56px);
@@ -161,6 +163,16 @@
   padding-top: clamp(12px, 1.5vw, 20px);
   border-top: 1px solid var(--home-plate-edge);
   box-shadow: inset 0 1px 0 var(--home-plate-lip);
+
+  /* Under the message, not across the photograph: the photograph runs the
+     full height of the fold on the right, so on wide screens the foot is the
+     message column's width. */
+  @media (min-width: ($breakpoint-desktop + 1px)) {
+    width: calc((min(1240px, 100%) - var(--home-hero-gap)) / 2);
+    margin-left: calc((100% - min(1240px, 100%)) / 2);
+    position: relative;
+    z-index: 2;
+  }
 }
 
 .home-plate__trust {
@@ -291,42 +303,62 @@
 .home-hero {
   overflow-x: clip;
 
-  /* Said on the left, offered on the right. Centred text also meant the
-     headline had to be perfectly symmetrical to look right, which a slot with
-     words of different widths in it can never be. */
+  /* Said on the left; the photograph is the right column (hero-rebuild,
+     5 November). The grid keeps the second column empty, so the message
+     column is exactly where it would be beside it, and the photograph is
+     positioned against the same line (`--home-hero-gap`). Centred text
+     would also need a symmetrical headline, which a slot with words of
+     different widths in it can never be. */
   &__inner {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: clamp(32px, 6vw, 96px);
-    /* The copy is centred against the door stack: the middle of the copy
-       block lines up with the middle door. It used to be stretched to the
-       doors' height with the call to action pushed to the bottom, level with
-       the last door, which stranded the button ~150px below the paragraph it
-       finishes (hero-polish, 5 November). The copy is not stretched to fill. */
+    gap: var(--home-hero-gap);
     align-items: center;
     /* Its place in the plate: the content row, between the 45/55 slack. */
     grid-row: 2;
     /* width as well as max-width: auto side margins on a grid item shrink it
-       to its content, and the doors' 40% photo column is a percentage that
-       content cannot size. Without this the doors narrowed to fit their copy. */
+       to its content. */
     width: 100%;
     max-width: 1240px;
     margin: 0 auto;
 
     @media (max-width: $breakpoint-desktop) {
       grid-template-columns: 1fr;
-      gap: clamp(22px, 4vw, 36px);
     }
   }
 
-  @media (max-width: $breakpoint-desktop) {
-    &__lede {
-      margin-top: 16px;
-    }
+  /* THE PHOTOGRAPH. The full height of the fold, from the message column's
+     edge to the right edge of the screen, bleeding past the content column.
+     No radius: its outer edges are the screen's. Where it meets the plate it
+     fades into it — a mask, so it fades into whatever the plate is (the slab
+     gradient and the mill lines), not into a colour that has to be matched.
+     The largest thing on the page, so it is the LCP and loads with priority
+     (page.tsx).
 
-    &__sub {
-      margin-top: 10px;
-    }
+     object-position 40% 35%: the photograph is portrait (2:3) and every slot
+     it fills is wider than that, so `cover` crops top and bottom. 35% keeps
+     Craig's head and Simon's face in frame with Craig's raised hands; 40%
+     keeps both faces when a narrow slot crops the sides instead. */
+  &__photo {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    /* The message column ends at the centre line less half the gap. */
+    left: calc(50% + var(--home-hero-gap) / 2);
+    margin: 0;
+    z-index: 1;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 72px);
+    mask-image: linear-gradient(90deg, transparent, #000 72px);
+  }
+
+  &__photo-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 40% 35%;
   }
 
   /* The hook, then the method. The first line is the one that makes someone
@@ -348,14 +380,11 @@
     align-items: flex-start;
   }
 
-  /* The plate had no way off it. Three doors are navigation — they take someone
-     who already knows which stream they want; this is for the larger group who
-     have a problem and no idea which of the three it is, which is the whole
-     premise of the copy above it.
-     Green, not cyan: this commits, so it is in the action lane. Raised rather
-     than cut — the doors are openings through the plate, this sits on top of
-     it, so the light catches its top edge and a hard line seats it underneath.
-     No blur: depth on this site is edges. */
+  /* Two ways off the fold: start a conversation (primary — green, the action
+     lane, because it commits) and see the work (secondary, an outline). The
+     streams themselves are introduced by "What changes", straight after.
+     Raised: the light catches the top edge and a hard line seats it
+     underneath. No blur: depth on this site is edges. */
   &__cta {
     display: flex;
     flex-wrap: wrap;
@@ -458,9 +487,11 @@
     text-align: left;
     font-weight: 300;
     line-height: 1.1;
-    font-size: clamp(32px, 5vw, 68px);
-    /* No top margin. The header above sets the gap, and a margin here pushed
-       the headline below the top of the doors beside it. */
+    /* Two thirds of what it was (clamp(32px, 5vw, 68px)): beside a
+       photograph of people, the headline should not out-shout it
+       (hero-rebuild). */
+    font-size: clamp(26px, 3.35vw, 46px);
+    /* No top margin: the plate's 45/55 air sets the space above. */
     margin: 0;
     color: var(--text-primary);
   }
@@ -540,344 +571,50 @@
   }
 }
 
-/* ── the three doors ────────────────────────────────────────────────────── */
-/* 1fr rows: the three doors are the same height whatever their copy, and
-   between them they take whatever height the column beside them sets. */
-.home-doors {
-  display: grid;
-  grid-auto-rows: 1fr;
-  gap: clamp(12px, 1.6vw, 20px);
-}
-
-/* The stamped 01/02/03 that used to sit beside each cut are gone. They were
-   the third numbering of the same three things on one screen — the doors, the
-   bands below and the stamps — and a number only earns its place when
-   something refers to it. Nothing did. */
-.home-door {
-  display: grid;
-  text-decoration: none;
-  color: inherit;
-
-  /* The opening. What shows through it is the page behind the plate, and the
-     photograph fills its left part, flush to the top, bottom and left edges.
-     The opening's radius clips the photograph's outer corners. */
-  &__cut {
-    position: relative;
-    display: grid;
-    grid-template-columns: 40% minmax(0, 1fr);
-    align-items: stretch;
-    overflow: hidden;
-    border-radius: $radius-md;
-    background: var(--surface-page);
-  }
-
-  /* The recessed edge belongs to the door, not the photograph, so it is drawn
-     on a layer over both. An inset box-shadow on the opening itself would
-     paint under the photograph and vanish behind it. */
-  &__cut::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    box-shadow:
-      inset 0 3px 7px -2px var(--carve-dark),
-      inset 0 -1px 0 var(--home-plate-lip);
-    transition: box-shadow 0.35s ease;
-  }
-
-  /* A hole cannot lift, so hover lights the kerf instead of raising a card. */
-  &:hover &__cut::after,
-  &:focus-visible &__cut::after {
-    box-shadow:
-      inset 0 3px 7px -2px var(--carve-dark),
-      inset 0 -1px 0 var(--home-plate-lip),
-      inset 0 0 0 1.5px var(--brand-highlight);
-  }
-
-  /* The call to action sits under the lede, on the page ground rather than on
-     a scrim over the photograph, so its contrast does not depend on the
-     photograph. */
-  &__body {
-    display: grid;
-    align-content: center;
-    justify-items: start;
-    gap: 4px;
-    padding: clamp(18px, 2.3vw, 30px) clamp(20px, 2.4vw, 32px);
-  }
-
-  &__name {
-    font-family: $font-family-display;
-    font-size: clamp(20px, 2.1vw, 26px);
-    font-weight: $font-weight-semibold;
-    line-height: 1.1;
-    color: var(--text-primary);
-  }
-
-  &__lede {
-    font-family: $font-family-read;
-    font-size: 17px;
-    line-height: 1.41;
-    color: var(--text-secondary);
-  }
-
-  /* --route-active, not --action-primary. The convention on this site is that
-     cyan points and green acts: this navigates to a stream, it does not commit
-     anything, so it belongs in the route lane. It also resolves to the light
-     theme's teal, which is readable on a pale ground where the neon is not. */
-  &__go {
-    font-family: $font-family-mono;
-    font-size: 10.5px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    color: var(--route-active);
-    border-bottom: 1px solid transparent;
-    padding-bottom: 2px;
-    margin-top: clamp(6px, 0.8vw, 10px);
-    transition: border-color 0.3s ease;
-  }
-
-  &:hover &__go,
-  &:focus-visible &__go {
-    border-bottom-color: var(--route-active);
-  }
-
-  /* On a phone the door stays a row with a small inset photograph on the
-     right, not a full-width band: three bands would push the foot of the fold
-     off a 390x844 screen. */
-  @media (max-width: $breakpoint-mobile) {
-    &__cut {
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: center;
-    }
-
-    &__lede {
-      display: none;
-    }
-  }
-}
-
-/* The photograph is cropped to whatever box the door gives it, never
-   squeezed. The image is taken out of flow so it cannot set the door's height:
-   the copy and the column beside the doors do that, and the photograph
-   follows. Its own edge is off, because the door draws one over both.
-
-   No radius of its own, at any width. A photograph inside a frame never
-   carries one: where it touches the frame's edge the corner is the frame's
-   (the opening clips it), and where it is inset, as the phone thumbnail is,
-   its corners are square. Two different radii nested leave a gap at every
-   corner. Two classes deep so it outranks `.cut-photo`'s own radius, which
-   loads after this file; at one class it lost, and the phone thumbnail kept
-   its 8px corners. */
-.home-door .home-door__photo {
-  border-radius: 0;
-
-  .cut-photo__img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .cut-photo__edge {
-    display: none;
-  }
-
-  @media (max-width: $breakpoint-mobile) {
-    order: 2;
-    width: 64px;
-    aspect-ratio: 4 / 3;
-    margin-right: 15px;
-
-    .cut-photo__edge {
-      display: block;
-    }
-  }
-}
-
-
-/* The single-column band. Between the mobile tier and the desktop breakpoint
-   the hero stacks but still gets desktop-sized type, which is what pushed a
-   600x800 viewport past the fold. */
-
-
-/* ── keeping the fold on small and short screens ────────────────────────────
-   The promise is one screen at EVERY viewport, so this has to hold on a short
-   laptop as well as a small phone — hence max-height alongside max-width. It
-   compresses type and padding rather than scrolling the hero, because a fold
-   that only works on a 900px-tall desktop is not a fold. */
-@media (max-width: $breakpoint-mobile), (max-height: 820px) {
+/* ── narrow screens: photo on top ─────────────────────────────────────────
+   Below the two-column breakpoint the photograph goes first, full width at
+   4:5, cropped to the two faces, then the message, then the buttons. The fold
+   may be taller than one screen here. The copy is NEVER shrunk to make it
+   fit: the old tiers that compressed type (and on short screens hid the sub
+   copy) existed to squeeze three doors into one screen, and the doors are
+   gone (hero-rebuild). */
+@media (max-width: $breakpoint-desktop) {
   .home-plate {
-    --home-fold-air: clamp(20px, 3.4vh, 40px);
-    padding-block: 0 clamp(20px, 3.4vh, 40px);
+    grid-template-rows: auto auto auto auto;
+    padding-block: 0 clamp(24px, 5vw, 40px);
   }
 
-  .home-hero__lede {
-    font-size: 17px;
-    margin-top: 14px;
+  .home-hero__photo {
+    position: relative;
+    inset: auto;
+    grid-row: 1;
+    /* Full bleed: out through the plate's side padding. */
+    margin-inline: calc(-1 * var(--home-gutter));
+    aspect-ratio: 4 / 5;
+    /* A tablet held upright is wide enough that 4:5 would be most of two
+       screens. Past this it crops further, still round the faces. */
+    max-height: 88svh;
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 
-  .home-hero__sub {
-    font-size: 14.5px;
-    margin-top: 9px;
-  }
-
-  .rotator__h1,
-  .rotator__tailline {
-    font-size: clamp(26px, 5.6vw, 40px);
-  }
-
-  .home-hero__cta {
-    margin-top: 18px;
-    gap: 14px;
-
-    .basic-button {
-      height: 40px;
-    }
-  }
-
-  .home-doors {
-    gap: 10px;
-  }
-
-  .home-door {
-    &__body {
-      padding: 13px 15px;
-    }
-
-    &__name {
-      font-size: 18px;
-    }
-
-    &__lede {
-      font-size: 14.5px;
-    }
+  .home-hero__inner {
+    margin-top: clamp(26px, 6vw, 44px);
   }
 }
 
-/* The shell's own heights, and the only thing in this file keyed on the
-   header's breakpoint rather than the hero's. They change on WIDTH alone —
-   putting them in the compact tier above, which fires on width OR height,
-   made a 1440x700 viewport budget for a 56px band it does not have. */
+/* The shell's own heights, keyed on the header's breakpoint. */
 @media (max-width: $breakpoint-mobile) {
   .home {
     --home-header-h: 84px;
   }
 }
 
-/* Declared AFTER the compact tier on purpose: a 600x800 viewport matches
-   both, and the one that stacks the hero has to win. */
-@media (min-width: 481px) and (max-width: $breakpoint-desktop) {
-  .rotator__h1,
-  .rotator__tailline {
-    font-size: clamp(26px, 4.4vw, 36px);
-  }
-
-  .home-hero__lede {
-    font-size: 19px;
-    margin-top: 14px;
-  }
-
-  .home-hero__sub {
-    font-size: 15.5px;
-    margin-top: 8px;
-  }
-
-  .home-hero__cta {
-    padding-top: 11px;
-
-    .basic-button {
-      height: 38px;
-      font-size: 14px;
-    }
-  }
-
+/* A short laptop (1366×768 and the like): less air round the content so the
+   buttons stay in the first screen. Spacing only — never the type. */
+@media (min-width: ($breakpoint-desktop + 1px)) and (max-height: 820px) {
   .home-plate {
-    padding-block: 14px 10px;
-  }
-
-  .home-doors {
-    gap: 6px;
-  }
-
-  .home-door__body {
-    padding: 9px 16px;
-  }
-}
-
-/* A wide-but-short viewport — a small laptop, a tablet in landscape — has the
-   width for two columns even though it is under the desktop breakpoint, and
-   stacking there is exactly what pushes the doors past the fold. Width is not
-   the only thing that decides a layout. */
-@media (min-width: 640px) and (max-height: 820px) {
-  .home-hero__inner {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: clamp(24px, 4vw, 48px);
-  }
-}
-
-/* The last tier. Below this the hero simply will not hold a headline, a
-   sentence, a call to action and three doors without shrinking type past
-   readable, so it is allowed to scroll rather than be crushed. */
-@media (max-height: 680px) {
-  .home-plate {
-    padding-block: 14px;
-  }
-
-  .home-hero__lede {
-    font-size: 16px;
-    margin-top: 10px;
-  }
-
-  .home-hero__sub {
-    display: none;
-  }
-
-  .rotator__h1,
-  .rotator__tailline {
-    font-size: clamp(24px, 4.6vw, 34px);
-  }
-
-  .home-hero__cta {
-    padding-top: 10px;
-    gap: 12px;
-
-    .basic-button {
-      height: 36px;
-      font-size: 13.5px;
-    }
-  }
-
-  .home-doors {
-    gap: 8px;
-  }
-
-  .home-door__body {
-    padding: 10px 14px;
-  }
-}
-
-/* Small AND short — an older phone. Twenty pixels short of the fold without
-   this, which is the difference between a promise kept and a promise nearly
-   kept. */
-@media (max-width: 420px) and (max-height: 680px) {
-  .rotator__h1,
-  .rotator__tailline {
-    font-size: 23px;
-  }
-
-  .home-doors {
-    gap: 7px;
-  }
-
-  .home-door__body {
-    padding: 9px 13px;
-  }
-
-  .home-door__lede {
-    font-size: 14px;
+    --home-fold-air: clamp(20px, 3.4vh, 40px);
   }
 }
 
@@ -1781,16 +1518,6 @@
   }
 }
 
-/* The door whose word is on screen. Cyan points: the kerf lights in
-   --route-active, the way hover lights it, so the eye joins the word to its
-   card. When the run ends no door has this, and the fold is still. */
-.home-door.is-active .home-door__cut::after {
-  box-shadow:
-    inset 0 3px 7px -2px var(--carve-dark),
-    inset 0 -1px 0 var(--home-plate-lip),
-    inset 0 0 0 1.5px var(--route-active);
-}
-
 /* ── reduced motion ─────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .home * {
@@ -1816,11 +1543,10 @@
   }
 }
 
-/* The Websites photographs are website screenshots, cropped (hero-polish §3)
-   with the wordmark at the top. Anchored to the top, so if `cover` trims
+/* The Websites row's photograph is a website screenshot, cropped (hero-polish
+   §3) with the wordmark at the top. Anchored to the top, so if `cover` trims
    anything it trims the bottom, never the wordmark. Scoped to Websites: the
    other streams' photographs are framed for the centre. */
-.home-door--websites .cut-photo__img,
 #websites .home-step__photo .cut-photo__img {
   object-position: top;
 }

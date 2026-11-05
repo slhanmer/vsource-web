@@ -3,7 +3,7 @@ import type { CollectionConfig } from 'payload'
 import { contentAccess, lines, orderField, pendingField, slugField } from './fields'
 
 /*
- * The three streams. Drives the home page doors and "What changes" rows, and
+ * The three streams. Drives the home page's "What changes" rows, and
  * all three stream pages (app/(site)/[stream]/page.tsx). Adding a fourth stream
  * is a new row here, not a new page.
  *
@@ -23,7 +23,7 @@ export const Streams: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'slug', 'order'],
-    description: 'The three lines of work. Each one is a home page door, a row, and its own page.',
+    description: 'The three lines of work. Each one is a home page row and its own page.',
   },
   defaultSort: 'order',
   access: contentAccess,
@@ -40,8 +40,7 @@ export const Streams: CollectionConfig = {
           type: 'text',
           required: true,
           admin: {
-            description:
-              'One short line for the door in the hero. Not the same sentence as anything in the row below it.',
+            description: 'Not shown anywhere at present (the home page doors were removed).',
           },
         },
         {
