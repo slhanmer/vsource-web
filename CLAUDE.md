@@ -353,16 +353,19 @@ As of 5 November:
 - **Content is in Payload** (cms brief, stages A–E). The preview Neon branch is
   migrated and seeded. `src/constants/built.ts`, `crew.ts`, `partners.ts` and
   `photos.ts` are gone.
-- **The fold** (hero-stage, 5 November): the message on the left (the
-  rotating headline, the lede and sub copy, **Start a conversation** and
-  **See what we've built**). On the right is the **stage**: 1.4× the copy
-  block's height, centred on it (hero-stage-2), bleeding off the right edge,
-  fading into the plate on its left (72px) and at top and bottom (24px). While the headline runs it shows one big photo
-  per word, as the word finishes typing; when it lands back on Software it
-  settles into **three bands, one link per stream**, and stays. Those bands
-  are the streams above the fold. They are also what the server renders and
-  what shows without JS, under reduced motion and on narrow screens (copy
-  first, then the bands at 16:9). Each photo's `focus` is its CSS
+- **The fold** (hero-stage, hero-stage-2, hero-insets, 5 November): the
+  message on the left (the rotating headline on **one line**, slot then
+  `built to fit.` on one baseline, wrapping only where it cannot fit; the
+  lede and sub copy; **Start a conversation** and **See what we've built**).
+  On the right is the **stage**: 1.4× the copy block's height, centred on
+  it, inside the content column, made of **windows cut into the plate**
+  (the recessed edge, on a layer above the photo, and `$radius-md`). No
+  masks, fades or bleed. While the headline runs it shows one big photo
+  per word in one window, as the word finishes typing; when it lands back
+  on Software it settles into **three windows, one link per stream**, and
+  stays. Those windows are the streams above the fold. They are also what
+  the server renders and what shows without JS, under reduced motion and on
+  narrow screens (copy first, then the windows at 16:9). Each photo's `focus` is its CSS
   object-position, set in `/admin`. One timeline drives it all
   (`headlineTimeline.ts` → `HeroRun.tsx` → `HeroStage.tsx`), and the run and
   the settle are under 4.5 s. The team photo is not in the fold. **The copy

@@ -164,8 +164,8 @@ export default function RotatingHeadline() {
       <h1 className="rotator__h1">
         <span className="visually-hidden">Software, robotics and websites, built to fit.</span>
         {/*
-          The slot gets its own line, so the headline reads as two lines:
-          the word in its opening, then "built to fit." under it.
+          The slot, then "built to fit." beside it on the same baseline, or
+          under it where the column is too narrow (hero-insets; home.scss).
         */}
         <span className="rotator__cutline" aria-hidden="true">
           <span ref={slotRef} className="cut-slot rotator__slot">
@@ -183,7 +183,7 @@ export default function RotatingHeadline() {
       </h1>
 
       {/*
-        The second line, outside the h1 and aria-hidden. The whole sentence,
+        The tail, outside the h1 and aria-hidden. The whole sentence,
         full stop included, is in the visually-hidden span above, so the
         heading's accessible name is complete without it.
       */}

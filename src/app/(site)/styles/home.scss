@@ -410,65 +410,44 @@
 }
 
 /* ── the stage (HeroStage.tsx) ───────────────────────────────────────────
-   The right side of the fold, from the message column's edge to the right
-   edge of the screen. HEIGHT: 1.4× the copy block, centred on it
-   (hero-stage-2; it used to run the full fold height and dwarfed the copy).
-   So it is positioned against `.home-hero__inner`, 20% of the copy's height
-   out above and below. No radius. Where it meets the plate it fades into it,
-   on three sides: 72px on the left (hero-rebuild's edge, 0ef66a5) and about
-   24px top and bottom, so it floats in the plate. A mask, so it fades into
-   whatever the plate is (the slab gradient and the mill lines), not into a
-   colour that has to be matched.
+   WINDOWS CUT INTO THE PLATE (hero-insets, 5 November). The site's own
+   language: the same recessed edge as every other photograph (`.cut-photo`),
+   light catching the lower inner rim, on its own layer ABOVE the image so the
+   photograph cannot cover it, and $radius-md. No masks, no faded edges, no
+   bleed: the torn edges of hero-stage and hero-stage-2 read as mud.
 
-   Two layers. The slideshow (`__solo`): one big photo per word while the
-   headline runs, crossfading on opacity alone. The bands (`__bands`): three
-   links, one per stream, which is where the stage settles and stays. With
-   no `.is-running` (the server, no JS, reduced motion, and the end of the
-   run) only the bands show. */
-/* The stage's fades, as masks: 72px on the left, and the top and bottom.
-   A mixin rather than a custom property holding the gradient, because a
-   custom property is resolved where it is declared: the bands' own top and
-   bottom values would never reach it. Here the gradient is built on the
-   element that is masked, from that element's values. */
-@mixin home-stage-fades {
-  $x: linear-gradient(90deg, transparent, #000 var(--home-stage-fade));
-  $y: linear-gradient(
-    180deg,
-    transparent,
-    #000 var(--home-stage-fade-top, var(--home-stage-fade-y)),
-    #000 calc(100% - var(--home-stage-fade-bottom, var(--home-stage-fade-y))),
-    transparent
-  );
-  -webkit-mask-image: $x, $y;
-  -webkit-mask-composite: source-in;
-  mask-image: $x, $y;
-  mask-composite: intersect;
-}
+   The stage is the copy block's second column: its right edge is the content
+   column's, which is the header's content edge. HEIGHT: 1.4× the copy block,
+   centred on it (hero-stage-2), so it is positioned against
+   `.home-hero__inner`, 20% of the copy's height out above and below.
 
+   Two layers. The slideshow (`__solo`): one window, one big photo per word
+   while the headline runs, crossfading on opacity alone. The bands
+   (`__bands`): three windows, one link per stream, dividing the height
+   evenly, which is where the stage settles and stays. With no `.is-running`
+   (the server, no JS, reduced motion, and the end of the run) only the bands
+   show. */
 .home-stage {
-  --home-stage-fade: 72px;
-  --home-stage-fade-y: 24px;
-  --home-stage-gap: 6px;
-  /* A band only fades on the stage's outer edges: the first at the top,
-     the last at the bottom (`&__band`). */
+  --home-stage-gap: #{$spacing-md};
+  --home-stage-carve: inset 0 3px 8px -3px var(--carve-dark), inset 0 -1px 0 var(--carve-lip);
   position: absolute;
   /* 1.4× the copy block: 20% of its height out at each end. */
   top: -20%;
   bottom: -20%;
-  /* Out to the viewport's right edge; .home-hero clips any overshoot. */
-  right: calc((100% - 100vw) / 2);
+  right: 0;
   /* The message column ends at the centre line less half the gap. */
   left: calc(50% + var(--home-hero-gap) / 2);
   z-index: 1;
-  overflow: hidden;
 
   &__solo {
     position: absolute;
     inset: 0;
+    overflow: hidden;
+    border-radius: $radius-md;
+    background: var(--surface-sunken);
     opacity: 0;
     pointer-events: none;
     transition: opacity var(--home-stage-settle, 600ms) ease;
-    @include home-stage-fades;
   }
 
   &__solo-img {
@@ -483,6 +462,17 @@
     &.is-shown {
       opacity: 1;
     }
+  }
+
+  /* The recessed edge, above the photographs (CutPhoto's reason: an inset
+     shadow on the frame paints under its content). */
+  &__edge {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    box-shadow: var(--home-stage-carve);
+    pointer-events: none;
   }
 
   &__bands {
@@ -503,7 +493,7 @@
 
   /* While the run plays the bands are out of sight and out of the way of
      the pointer. Focus brings them back: a keyboard user who tabs in during
-     the run sees the band they are on. */
+     the run sees the window they are on. */
   &.is-running &__bands {
     opacity: 0;
     pointer-events: none;
@@ -517,46 +507,42 @@
   &__band {
     position: relative;
     min-height: 0;
-    --home-stage-fade-top: 0px;
-    --home-stage-fade-bottom: 0px;
-
-    &:first-child {
-      --home-stage-fade-top: var(--home-stage-fade-y);
-    }
-
-    &:last-child {
-      --home-stage-fade-bottom: var(--home-stage-fade-y);
-    }
   }
 
-  /* The whole band is the link. The edge lights on hover and focus. */
+  /* The whole window is the link. */
   &__link {
     position: absolute;
     inset: 0;
     display: block;
+    overflow: hidden;
+    border-radius: $radius-md;
+    background: var(--surface-sunken);
     color: var(--text-on-dark);
     text-decoration: none;
     outline: none;
 
-    /* The lit edge, above the photograph and its scrim. */
+    /* The recessed edge, above the photograph and its scrim. Hover lights
+       the rim teal (cyan points: these navigate). */
     &::after {
       content: '';
       position: absolute;
       inset: 0;
       z-index: 2;
+      border-radius: inherit;
       pointer-events: none;
-      box-shadow: inset 0 0 0 0 transparent;
+      box-shadow: var(--home-stage-carve);
       transition: box-shadow 0.2s ease;
     }
 
     &:hover::after {
-      box-shadow: inset 0 0 0 2px var(--route-active);
+      box-shadow:
+        var(--home-stage-carve),
+        inset 0 0 0 2px var(--route-active);
     }
 
-    /* Always visible on focus: the teal ring with a dark line inside it, so
-       it holds against a bright photograph in either theme. */
+    /* Always visible on focus, at once: the teal rim with a dark line
+       inside it, so it holds against a bright photograph in either theme. */
     &:focus-visible::after {
-      /* At once: a focus ring that fades in is briefly no ring at all. */
       transition: none;
       box-shadow:
         inset 0 0 0 3px var(--route-active),
@@ -564,13 +550,11 @@
     }
   }
 
-  /* The photograph, faded into the plate on its left like the big one, and
-     a short scrim along its foot for the name. */
+  /* The photograph, and a short scrim along its foot for the name: the scrim
+     is for contrast, inside the window, not an edge. */
   &__photo {
     position: absolute;
     inset: 0;
-    overflow: hidden;
-    @include home-stage-fades;
 
     &::after {
       content: '';
@@ -597,13 +581,12 @@
     filter: brightness(1.1);
   }
 
-  /* Bottom-left, clear of the fades: past the left one, and above the
-     bottom one on the last band. */
+  /* Bottom-left, inside the window. */
   &__name {
     position: absolute;
     z-index: 1;
-    left: calc(var(--home-stage-fade) + 12px);
-    bottom: calc(var(--home-stage-fade-bottom, 0px) + clamp(10px, 1.4vh, 18px));
+    left: clamp(14px, 1.4vw, 20px);
+    bottom: clamp(10px, 1.4vh, 16px);
     font-family: $font-family-display;
     font-size: clamp(20px, 1.7vw, 28px);
     font-weight: 600;
@@ -675,9 +658,24 @@
 
 /* ── the rotating headline ──────────────────────────────────────────────── */
 .rotator {
-  /* One headline set as two lines, but only the first is in the h1. The
-     complete sentence is in the h1's visually-hidden span, so the second line
-     is presentation only. */
+  /* ONE LINE WHERE IT FITS (hero-insets): the cut slot, then "built to
+     fit." on the same baseline, a word space between them. A wrapping flex
+     row aligned on the first baseline, so the tail sits on the slot's text
+     baseline and drops to a second line only when the column is too narrow
+     for both at their size. The type is never shrunk to force one line.
+
+     Only the slot is in the h1. The complete sentence is in the h1's
+     visually-hidden span, so the tail is presentation only. */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  /* A word space, at headline size: the gap is in em of this font-size. */
+  font-family: $font-family-read;
+  font-weight: 300;
+  font-size: clamp(26px, 3.35vw, 46px);
+  column-gap: 0.25em;
+  row-gap: 0.12em;
+
   &__h1,
   &__tailline {
     font-family: $font-family-read;
@@ -693,15 +691,14 @@
     color: var(--text-primary);
   }
 
-  /* The slot on its own line. It is cut once to the widest word and never
-     changes width, so nothing else on the page moves while the words type. */
+  /* The slot is cut once to the widest word and never changes width, so
+     nothing else on the page moves while the words type. */
   &__cutline {
-    display: block;
+    display: inline;
   }
 
   &__tailline {
     display: block;
-    margin-top: 0.12em;
   }
 
   /* The cut itself — fill, edge, padding, type — is `.cut-slot`, shared with
@@ -768,26 +765,21 @@
   }
 }
 
-/* ── narrow screens: copy, then the bands ─────────────────────────────────
+/* ── narrow screens: copy, then the windows ───────────────────────────────
    Below the two-column breakpoint the message comes first, then the stage as
-   three bands stacked full width (out through the plate's side padding), each
-   about 16:9 and already settled: no slideshow here, whatever the run is
-   doing. The fold may be taller than one screen. The copy is NEVER shrunk to
-   make it fit (hero-rebuild). */
+   three windows stacked full width, each about 16:9, with the same cut edge
+   and already settled: no slideshow here, whatever the run is doing. The fold
+   may be taller than one screen. The copy is NEVER shrunk to make it fit
+   (hero-rebuild). */
 @media (max-width: $breakpoint-desktop) {
   .home-plate {
     padding-block: clamp(20px, 5vw, 36px) clamp(24px, 5vw, 40px);
   }
 
-  /* In the copy block's one column, after the copy: no positioning, no
-     fades, full bleed through the plate's side padding. */
+  /* In the copy block's one column, after the copy: no positioning. */
   .home-stage {
-    --home-stage-fade: 0px;
-    --home-stage-fade-y: 0px;
     position: relative;
     inset: auto;
-    margin-inline: calc(-1 * var(--home-gutter));
-    overflow: visible;
   }
 
   .home-stage__solo {
@@ -804,15 +796,6 @@
 
   .home-stage__band {
     aspect-ratio: 16 / 9;
-  }
-
-  .home-stage__photo {
-    -webkit-mask-image: none;
-    mask-image: none;
-  }
-
-  .home-stage__name {
-    left: var(--home-gutter);
   }
 }
 

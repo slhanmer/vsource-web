@@ -17,17 +17,17 @@ interface Props {
 
 /*
  * One URL per photograph, shared by the big photo and its band, so the
- * browser fetches each file once. Sized for the bigger of the two: on a wide
- * screen the big photo covers the full fold height (the viewport less the
- * 96px header), and these are 3:2, so `cover` renders them 1.5× that wide.
- * A band is never wider than the stage, which that already covers.
+ * browser fetches each file once. Sized for the bigger of the two: the big
+ * photo is nearly as tall as the fold (the viewport less the 96px header),
+ * and these are 3:2, so `cover` renders them up to 1.5× that wide. A band is
+ * never wider than the stage, which that already covers.
  */
 const SIZES = '(max-width: 979px) 100vw, calc((100vh - 96px) * 1.5)'
 
 /**
- * The fold's stage (hero-stage, 5 November): the right side of the plate,
- * the full fold height, bleeding off the right edge and fading into the plate
- * on its left.
+ * The fold's stage (hero-stage, then hero-insets, 5 November): windows cut
+ * into the plate beside the copy, with the site's recessed edge. 1.4× the
+ * copy's height and inside the content column (home.scss).
  *
  *   - WHILE THE HEADLINE RUNS, one big photograph per word, crossfading in as
  *     the word finishes typing (HeroRun.tsx carries the timing from
@@ -75,6 +75,7 @@ export default function HeroStage({ photos, streams }: Props) {
             className={`home-stage__solo-img${key === shown ? ' is-shown' : ''}`}
           />
         ))}
+        <span className="home-stage__edge" aria-hidden="true" />
       </div>
 
       {/* The three ways in. Each band is one link, named by the stream; the
