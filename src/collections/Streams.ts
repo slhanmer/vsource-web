@@ -61,7 +61,22 @@ export const Streams: CollectionConfig = {
           type: 'upload',
           relationTo: 'media',
           required: true,
-          admin: { description: 'Sits beside the stream’s "What changes" row.' },
+          admin: {
+            description:
+              'Sits beside the stream’s "What changes" row. With a clip below, this is its poster: shown without JavaScript, under reduced motion and until the clip plays, so use the clip’s first frame.',
+          },
+        },
+        {
+          /* home-tweaks §1: optional, so a migration can add the column to
+             existing rows. stepPhoto stays required: it is the poster. */
+          name: 'stepClip',
+          type: 'upload',
+          relationTo: 'media',
+          filterOptions: { mimeType: { contains: 'video' } },
+          admin: {
+            description:
+              'Optional: a short muted mp4 (under ten seconds) that plays in place of the photo while the row is on screen, with a pause control.',
+          },
         },
       ],
     },
@@ -128,7 +143,10 @@ export const Streams: CollectionConfig = {
                   name: 'upload',
                   type: 'upload',
                   relationTo: 'media',
-                  admin: { description: 'An image, or an mp4 clip under ten seconds.' },
+                  admin: {
+                    description:
+                      'An image, or an mp4 clip under ten seconds. Landscape, about 16:10 (e.g. 1600×1000). Portrait images stand taller than the text beside them.',
+                  },
                 },
                 {
                   name: 'poster',

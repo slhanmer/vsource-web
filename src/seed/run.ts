@@ -1,8 +1,10 @@
 import { stat } from 'fs/promises'
 import path from 'path'
+import sharp from 'sharp'
 import { type CollectionSlug, getPayload, type Payload } from 'payload'
 
 import { loadConfig } from '../db/load-config'
+import { portraitSectionMedia } from './checks'
 import content from './content'
 import { conflicts, describe, type Existing, type SeedRecord } from './guard'
 import { crewData, differs, partnerData, projectData, streamData } from './shape'
@@ -220,6 +222,22 @@ async function record(
 }
 
 async function main() {
+  /* Before anything is written: no portrait image beside a stream section
+     (home-tweaks §4; ./checks.ts). */
+  const portrait = await portraitSectionMedia(content, async (key) => {
+    const asset = content.assets[key]
+    if (!asset) return null
+    const { width, height } = await sharp(path.join(ASSETS, asset.file)).metadata()
+    return width && height ? { width, height } : null
+  })
+  if (portrait.length > 0) {
+    console.error(
+      `Seed: REFUSED. These stream section images are portrait, so they stand taller than\n` +
+        `the text beside them. Use a landscape cut, about 16:10:\n\n  ${portrait.join('\n  ')}`
+    )
+    process.exit(1)
+  }
+
   const payload = await getPayload({ config: await loadConfig() })
   const force = process.env.SEED_FORCE === '1'
 

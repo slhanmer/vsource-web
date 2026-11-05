@@ -41,6 +41,8 @@ export interface Stream {
   instead: string
   solution: string
   stepPhoto: Photo
+  /** Optional clip for the "What changes" row; `stepPhoto` is its poster. */
+  stepClip?: ProjectMedia
   lede: string
   caps: string[]
   who: string

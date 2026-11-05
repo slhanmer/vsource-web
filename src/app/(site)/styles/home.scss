@@ -1223,6 +1223,37 @@
   }
 }
 
+/* The clip in a row's photo slot (home-tweaks §1): /built's player in the
+   same box as the photographs, with the same recessed edge on a layer ABOVE
+   the video (the player's own inset shadow paints under it). The pause
+   control sits above the edge. */
+.home-step__clip.built-media {
+  aspect-ratio: auto;
+  background: var(--surface-recessed);
+  box-shadow: none;
+
+  .built-media__video {
+    position: absolute;
+    inset: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+    box-shadow:
+      inset 0 3px 8px -3px var(--carve-dark),
+      inset 0 -1px 0 var(--carve-lip);
+  }
+
+  .built-media__toggle {
+    z-index: 2;
+  }
+}
+
 /* THE PINNED STAGE. The section becomes a tall track; a stage one screen tall
    sticks to the top of the scroller while the track passes underneath, and the
    three rows, stacked in one grid cell on it, swap by scroll position. The
@@ -1689,28 +1720,11 @@
     font-size: clamp(25px, 3.3vw, 42px);
     text-align: left;
     line-height: 1.18;
-    max-width: 22ch;
+    /* One line on desktop (home-tweaks): the full content width, not a
+       measure. It wraps where the width runs out; the type never shrinks. */
+    max-width: none;
     margin: 0;
     color: var(--text-primary);
-  }
-
-  &__row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px 28px;
-    margin-top: 26px;
-    font-family: $font-family-mono;
-    font-size: 13.5px;
-    color: var(--text-secondary);
-
-    a {
-      color: var(--brand-highlight);
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
   }
 
   &__cta {

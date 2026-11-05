@@ -1,4 +1,5 @@
 import type { Stream } from '@/data/types'
+import ProjectMedia from '@/components/built/ProjectMedia'
 import CutPhoto from '@/components/photos/CutPhoto'
 import MovesFocus from './MovesFocus'
 
@@ -80,11 +81,24 @@ export default function StreamMoves({ streams }: { streams: Stream[] }) {
                 </div>
 
                 <div className="home-step__media">
-                  <CutPhoto
-                    photo={stream.stepPhoto}
-                    sizes="(max-width: 979px) 92vw, (max-width: 1440px) 44vw, 600px"
-                    className="home-step__photo"
-                  />
+                  {/* A clip, where the stream has one (home-tweaks §1), plays
+                      in the photo's place: /built's player, so muted, looping,
+                      inline, with its pause control and reduced-motion
+                      handling, and only while it is on screen (its observer's
+                      root is #main). Its poster is the step photo. */}
+                  {stream.stepClip ? (
+                    <ProjectMedia
+                      spec={stream.stepClip}
+                      sizes="(max-width: 979px) 92vw, (max-width: 1440px) 44vw, 600px"
+                      className="home-step__photo home-step__clip"
+                    />
+                  ) : (
+                    <CutPhoto
+                      photo={stream.stepPhoto}
+                      sizes="(max-width: 979px) 92vw, (max-width: 1440px) 44vw, 600px"
+                      className="home-step__photo"
+                    />
+                  )}
                 </div>
 
                 <div className="home-step__answer">

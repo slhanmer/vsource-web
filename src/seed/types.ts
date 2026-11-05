@@ -24,6 +24,8 @@ export interface SeedStream {
   instead: string
   solution: string
   stepPhoto: Key
+  /** Optional "What changes" clip; stepPhoto is its poster. */
+  stepClip?: Key | null
   promise: string
   pageLede: string
   pagePhoto: Key | null

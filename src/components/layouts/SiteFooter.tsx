@@ -10,7 +10,8 @@ import './styles/siteFooter.scss'
  * furniture on screen at all times and out of the fold on every page. The
  * contacts have moved to the right of the header's readout strip, where they
  * are reachable from anywhere without costing anything; what is left is the
- * copyright and the ABN, which nobody needs until they need it.
+ * copyright and the ABN, which nobody needs until they need it, and (since
+ * home-tweaks) the email and location the home page's close used to carry.
  *
  * So no band, no border, no background: a footer that looks like chrome invites
  * you to read it. This sits on the page like a colophon and scrolls away with
@@ -26,8 +27,14 @@ export default function SiteFooter() {
   return (
     <footer className="site-footer">
       <p className="site-footer__legal">
-        &copy; {YEAR} V Source Development
+        <span>&copy; {YEAR} V Source Development</span>
         <span className="site-footer__abn">ABN {CONTACT.abn}</span>
+        {/* From the home page's close (home-tweaks). Never the phone: that is
+            the header contacts and /contact only. */}
+        <a className="site-footer__email" href={`mailto:${CONTACT.email}`}>
+          {CONTACT.email}
+        </a>
+        <span>{CONTACT.location}</span>
       </p>
     </footer>
   )

@@ -108,15 +108,34 @@ function sectionMedia(media: SectionMediaDoc): { media?: ProjectMedia } {
   }
 }
 
+/** The "What changes" clip, if the stream has one, with its step photo as
+ *  the poster (home-tweaks §1). Played by ProjectMedia, as on /built. */
+function stepClip(doc: StreamDoc, poster: Photo): { stepClip?: ProjectMedia } {
+  const clip = doc.stepClip
+  if (!clip || typeof clip === 'number' || !clip.url) return {}
+  return {
+    stepClip: {
+      kind: 'video',
+      src: clip.url,
+      poster: poster.src,
+      alt: clip.alt,
+      width: poster.width,
+      height: poster.height,
+    },
+  }
+}
+
 function toStream(doc: StreamDoc): Stream {
   const pagePhoto = photo(doc.pagePhoto)
+  const stepPhoto = must(doc.stepPhoto, `Stream "${doc.slug}" step photo`)
   return {
     slug: doc.slug,
     name: doc.name,
     problem: doc.problem,
     instead: doc.instead,
     solution: doc.solution,
-    stepPhoto: must(doc.stepPhoto, `Stream "${doc.slug}" step photo`),
+    stepPhoto,
+    ...stepClip(doc, stepPhoto),
     lede: doc.lede,
     caps: texts(doc.caps),
     who: doc.who,

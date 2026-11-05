@@ -31,7 +31,12 @@
   font-size: $font-size-xs;
   color: $text-subtle;
 
-  // Has to hold one line at 360: 11px mono runs ~318px against 336 available.
+  // Four items since home-tweaks: one line on a wide screen, wrapping to
+  // centred lines on a phone, each item kept whole.
+  > * {
+    white-space: nowrap;
+  }
+
   @media (max-width: $breakpoint-mobile) {
     gap: $spacing-2xs $spacing-xs;
     font-size: 11px;
@@ -43,5 +48,20 @@
 
   @media (max-width: $breakpoint-mobile) {
     letter-spacing: 0;
+  }
+}
+
+// Cyan points: a link that navigates (opens mail), in the teal, with a 24px
+// target height for WCAG 2.5.8 even at 11–12px type.
+.site-footer__email {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  color: var(--route-active);
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    text-decoration: underline;
   }
 }

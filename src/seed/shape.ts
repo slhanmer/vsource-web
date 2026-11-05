@@ -20,6 +20,7 @@ export function streamData(s: SeedStream, media: Resolve) {
     instead: s.instead,
     solution: s.solution,
     stepPhoto: media(s.stepPhoto),
+    stepClip: s.stepClip ? media(s.stepClip) : null,
     promise: s.promise,
     pageLede: s.pageLede,
     pagePhoto: s.pagePhoto ? media(s.pagePhoto) : null,

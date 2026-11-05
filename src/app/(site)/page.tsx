@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { CONTACT } from '@constants'
 import { getCrew, getPartners, getSite, getStreams } from '@/data'
 import { HeroRunProvider } from '@/components/home/HeroRun'
 import HeroStage from '@/components/home/HeroStage'
@@ -13,6 +12,9 @@ import CutPhoto from '@/components/photos/CutPhoto'
 import TerminalTile from '@/components/photos/TerminalTile'
 import './styles/pages.scss'
 import './styles/home.scss'
+// The clip player's frame and control (.built-media), for the What changes
+// clip (home-tweaks).
+import './styles/built.scss'
 
 export const metadata: Metadata = {
   title: 'Software, robotics and websites — Brisbane',
@@ -260,19 +262,11 @@ export default async function Home() {
 
       <Reveal id="start" className="home-close">
         <h2 className="home-close__title home-line">Tell us what you are trying to build.</h2>
-        <div className="home-close__row home-line">
-          <span>
-            <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
-          </span>
-          {/*
-            No phone here. It is in the header contacts and on /contact, which
-            is where someone who wants to ring looks — repeating it at the foot
-            of the home page was the third time the same number appeared on one
-            screen.
-          */}
-          <span>{CONTACT.location}</span>
-          <span>ABN {CONTACT.abn}</span>
-        </div>
+        {/*
+          Title and button only (home-tweaks). The email and location moved
+          to the footer, beside the ABN, on every page. Still no phone here:
+          it is in the header contacts and on /contact.
+        */}
         <p className="home-close__cta">
           <Link href="/contact" className="basic-button">
             Start a conversation

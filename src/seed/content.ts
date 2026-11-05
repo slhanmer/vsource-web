@@ -31,7 +31,7 @@ const content: SeedContent = {
   assets: {
     'websites/nug-row': {
       file: 'websites/nug-row.jpg',
-      alt: 'The Nug General Store website: the NUG. wordmark over a photograph of the shopfront window, its gold lettering reading “Handmade pasta”.',
+      alt: 'The Nug General Store homepage: the NUG. wordmark above a photograph of the shopfront window with “Handmade pasta” in gold, beside a green panel with Book a table and See the pasta buttons.',
     },
     'built/huntsman-walk': {
       file: 'built/huntsman-walk.mp4',
@@ -253,7 +253,8 @@ const content: SeedContent = {
       instead: 'Robots that walk where wheels stop.',
       solution:
         'Each foot picks its own ground, so the robot can step over debris, keep its footing on loose material and carry its sensors into gaps people can’t safely reach.',
-      stepPhoto: 'photos/robotics/huntsman-studio',
+      stepPhoto: 'built/huntsman-walk-poster',
+      stepClip: 'built/huntsman-walk',
       promise: 'Robots that go where people can’t, so rescuers don’t have to.',
       pageLede:
         'After an earthquake, a building collapse or a landslide, the first hours matter most. We build legged robots to put eyes, sensors and eventually supplies into the places rescuers can’t safely reach.',
@@ -379,7 +380,7 @@ const content: SeedContent = {
           media: {
             upload: 'websites/nug-row',
             poster: null,
-            alt: 'The Nug General Store website: the NUG. wordmark over a photograph of the shopfront window, its gold lettering reading “Handmade pasta”.',
+            alt: 'The Nug General Store homepage: the NUG. wordmark above a photograph of the shopfront window with “Handmade pasta” in gold, beside a green panel with Book a table and See the pasta buttons.',
           },
         },
         {

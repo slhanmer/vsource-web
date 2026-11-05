@@ -223,7 +223,7 @@ photograph are in **Payload** (see CMS below), and a few are in code.
 
 | Where | Drives |
 |---|---|
-| `streams` collection | the home page's "What changes" rows, **and** all three stream pages: the head photo (`pagePhoto`) and each section's optional `media` |
+| `streams` collection | the home page's "What changes" rows (`stepPhoto`, and an optional `stepClip` with `stepPhoto` as its poster: Robotics plays the Huntsman walking), **and** all three stream pages: the head photo (`pagePhoto`) and each section's optional `media` (landscape only: the seed refuses a portrait one) |
 | `projects` collection | `/built`, every project page, the projects under each stream. Media kinds `image` (with `fit: cover \| contain`), `video`, `logo`, `mark` (unused) |
 | `crew` collection | home team section and `/team` |
 | `partners` collection | the fold's "Working with" strip and the partners band |

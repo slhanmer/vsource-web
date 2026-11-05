@@ -237,9 +237,13 @@ export interface Stream {
    */
   solution: string;
   /**
-   * Sits beside the stream’s "What changes" row.
+   * Sits beside the stream’s "What changes" row. With a clip below, this is its poster: shown without JavaScript, under reduced motion and until the clip plays, so use the clip’s first frame.
    */
   stepPhoto: number | Media;
+  /**
+   * Optional: a short muted mp4 (under ten seconds) that plays in place of the photo while the row is on screen, with a pause control.
+   */
+  stepClip?: (number | null) | Media;
   /**
    * The h1. A promise, not a label.
    */
@@ -285,7 +289,7 @@ export interface Stream {
          */
         media?: {
           /**
-           * An image, or an mp4 clip under ten seconds.
+           * An image, or an mp4 clip under ten seconds. Landscape, about 16:10 (e.g. 1600×1000). Portrait images stand taller than the text beside them.
            */
           upload?: (number | null) | Media;
           /**
@@ -677,6 +681,7 @@ export interface StreamsSelect<T extends boolean = true> {
   instead?: T;
   solution?: T;
   stepPhoto?: T;
+  stepClip?: T;
   promise?: T;
   pageLede?: T;
   pagePhoto?: T;
