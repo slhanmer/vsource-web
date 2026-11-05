@@ -104,12 +104,19 @@ export default async function BuiltPage() {
       */}
       <section className="built-soon" aria-labelledby="built-soon-heading">
         <h2 id="built-soon-heading" className="built-soon__heading">
-          Coming
+          Coming soon
         </h2>
         <ul className="built-soon__list">
           {site.comingSoon.map((item) => (
             <li key={item.name} className="built-soon__item">
+              {/* Separate elements, so the name and the stream never run
+                  together as one word. A screen reader hears "CurbHire,
+                  software"; the eye sees "CurbHire · software". */}
               <span className="built-soon__name">{item.name}</span>
+              <span className="visually-hidden">, </span>
+              <span className="built-soon__dot" aria-hidden="true">
+                ·
+              </span>
               <span className="built-soon__stream">{item.stream}</span>
             </li>
           ))}

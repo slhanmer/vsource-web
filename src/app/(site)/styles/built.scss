@@ -65,20 +65,31 @@
 .built-media--logo {
   display: grid;
   place-items: center;
-  padding: 12% 18%;
+  padding: 0;
   background: var(--logo-plate);
   box-shadow:
     inset 0 1px 0 var(--carve-lip),
     0 1px 0 var(--border-subtle-colour);
 }
 
+// About 60% of the plate's width, capped by its height, centred (review-2: at
+// its own pixel size it was a postage stamp on a large plate).
 .built-media__logo {
   display: block;
-  width: auto;
+  width: 60%;
   height: auto;
-  max-width: 100%;
-  max-height: 100%;
+  max-height: 70%;
   object-fit: contain;
+}
+
+// The whole image, never cropped, on the card's own plate colour: for
+// screenshots and composites, whose edges are the content.
+.built-media--contain {
+  background: var(--surface-card);
+
+  .built-media__img {
+    object-fit: contain;
+  }
 }
 
 .built-media--mark .markwrap {
@@ -156,10 +167,20 @@
 }
 
 // ── the cards ──────────────────────────────────────────────────────────────
+// Each project is a RAISED PLATE (review-2: it was unclear where one ended and
+// the next began): a lighter fill, light catching its top edge, a hairline
+// seating it. No drop shadow — depth on this site is edges. The media inside
+// stays recessed, cut into the plate.
 .built-card {
   display: block;
   text-decoration: none;
   color: inherit;
+  padding: clamp(12px, 1.4vw, 18px);
+  border-radius: $radius-md;
+  background: var(--surface-card);
+  box-shadow:
+    inset 0 1px 0 var(--carve-lip),
+    0 1px 0 var(--border-subtle-colour);
 
   &__media {
     transition: box-shadow 0.3s ease;
@@ -174,7 +195,7 @@
   }
 
   &__body {
-    padding-top: clamp(14px, 1.8vw, 22px);
+    padding: clamp(14px, 1.8vw, 22px) clamp(2px, 0.4vw, 6px) clamp(4px, 0.6vw, 8px);
   }
 
   &__meta {
@@ -420,7 +441,11 @@
   &__item {
     display: flex;
     align-items: baseline;
-    gap: 9px;
+    gap: 8px;
+  }
+
+  &__dot {
+    color: var(--text-subtle);
   }
 
   &__name {

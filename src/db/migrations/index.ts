@@ -4,6 +4,7 @@ import * as migration_20261104_230733_built_trim from './20261104_230733_built_t
 import * as migration_20261105_003136_hero_rebuild from './20261105_003136_hero_rebuild';
 import * as migration_20261105_011354_hero_photos from './20261105_011354_hero_photos';
 import * as migration_20261105_012459_stream_media from './20261105_012459_stream_media';
+import * as migration_20261105_012946_media_fit from './20261105_012946_media_fit';
 
 export const migrations = [
   {
@@ -34,6 +35,11 @@ export const migrations = [
   {
     up: migration_20261105_012459_stream_media.up,
     down: migration_20261105_012459_stream_media.down,
-    name: '20261105_012459_stream_media'
+    name: '20261105_012459_stream_media',
+  },
+  {
+    up: migration_20261105_012946_media_fit.up,
+    down: migration_20261105_012946_media_fit.down,
+    name: '20261105_012946_media_fit'
   },
 ];

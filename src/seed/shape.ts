@@ -66,6 +66,7 @@ export function projectData(p: SeedProject, media: Resolve, stream: Resolve) {
     url: p.url,
     media: {
       kind: p.media.kind,
+      fit: p.media.fit,
       upload: p.media.upload ? media(p.media.upload) : null,
       poster: p.media.poster ? media(p.media.poster) : null,
       markId: p.media.markId,

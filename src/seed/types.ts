@@ -63,6 +63,8 @@ export interface SeedProject {
   url: string | null
   media: {
     kind: 'image' | 'video' | 'logo' | 'mark'
+    /** Images: 'cover' crops to fill, 'contain' shows the whole image. */
+    fit: 'cover' | 'contain'
     upload: Key | null
     poster: Key | null
     markId: 'software' | 'robotics' | 'websites' | null

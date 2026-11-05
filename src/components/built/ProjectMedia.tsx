@@ -114,8 +114,9 @@ export default function ProjectMedia({ spec, priority = false, className = '', s
   }
 
   if (spec.kind === 'image') {
+    const fit = spec.fit === 'contain' ? ' built-media--contain' : ''
     return (
-      <div className={`built-media ${className}`.trim()}>
+      <div className={`built-media${fit} ${className}`.trim()}>
         <Image
           src={spec.src ?? ''}
           alt={spec.alt}

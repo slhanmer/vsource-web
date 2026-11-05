@@ -116,3 +116,29 @@ changes.**
 Robotics clip: muted, loop, poster, **playing** in view (t = 1.49s). The pause
 control click → paused, with the label switched to "Play this clip".
 Screenshots: `C:\tmp\review-2\streams\<slug>-{1440,390}.png`.
+
+## §4 `/built`
+
+- **Logo size:** the `logo` kind now sizes the logo to **60% of the plate's
+  width**, capped at 70% of its height, centred. That applies to any `logo`
+  media, not only Aptium. Measured: 60% wide, 32% tall. **Note:** the only
+  Aptium artwork is a 185×56 PNG, so at 60% of a ~560px plate it is upscaled
+  about 1.8× and slightly soft on a high-DPI screen. A larger PNG or an SVG
+  from Aptium would fix that; just upload it to the same media document.
+- **`fit: 'cover' | 'contain'`** on project media (images; default `cover`;
+  migration `20261105_012946_media_fit`). `contain` shows the whole image on
+  the card's plate colour, never cropped. It is set on Training
+  Professionals (2.11:1 image in a 1.78 frame), SAUCE (1.6:1) and Five
+  Brisbane venues (1.91:1). All three now show edge to edge.
+- **Cards are raised plates:** `--surface-card` fill, light on the top edge
+  (`inset 0 1px 0 var(--carve-lip)`), a hairline seating it, internal
+  padding, no drop shadow. The media inside stays recessed. The lead card
+  gets the same treatment. Gaps between cards: 40px across, 58px down at 1440.
+- **Coming soon:** the heading says so, and each item is three elements: the
+  name, a visually hidden ", ", and an `aria-hidden` "·", then the stream.
+  The eye sees "CurbHire · software"; a screen reader hears "CurbHire,
+  software". Before, the two spans had nothing between them but a CSS gap,
+  so read as text they ran together as "CurbHiresoftware".
+
+Screenshots: `C:\tmp\review-2\built\built-{1440,390}-{light,dark}.png`;
+numbers in `built.json`.

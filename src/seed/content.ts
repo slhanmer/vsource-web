@@ -464,6 +464,7 @@ const content: SeedContent = {
       url: null,
       media: {
         kind: 'video',
+        fit: 'cover',
         upload: 'built/huntsman-walk',
         poster: 'built/huntsman-walk-poster',
         markId: null,
@@ -514,6 +515,7 @@ const content: SeedContent = {
       url: null,
       media: {
         kind: 'logo',
+        fit: 'cover',
         upload: 'logos/partners/aptium',
         poster: null,
         markId: null,
@@ -563,6 +565,7 @@ const content: SeedContent = {
       url: null,
       media: {
         kind: 'image',
+        fit: 'contain',
         upload: 'built/training-professionals',
         poster: null,
         markId: null,
@@ -612,6 +615,7 @@ const content: SeedContent = {
       url: null,
       media: {
         kind: 'image',
+        fit: 'contain',
         upload: 'built/sauce',
         poster: null,
         markId: null,
@@ -649,6 +653,7 @@ const content: SeedContent = {
       url: null,
       media: {
         kind: 'image',
+        fit: 'contain',
         upload: 'built/venues-montage',
         poster: null,
         markId: null,

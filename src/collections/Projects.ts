@@ -161,6 +161,23 @@ export const Projects: CollectionConfig = {
           ],
         },
         {
+          /*
+           * How an image fills the card's 16:9 frame (review-2). `cover` fills
+           * it and crops what does not fit; `contain` shows the whole image on
+           * the card's plate colour, never cropped — for screenshots and
+           * composites, where the edges are the content.
+           */
+          name: 'fit',
+          type: 'select',
+          defaultValue: 'cover',
+          options: [
+            { label: 'Fill the frame (may crop)', value: 'cover' },
+            { label: 'Show the whole image (never crops)', value: 'contain' },
+          ],
+          enumName: 'enum_projects_media_fit',
+          admin: { condition: (_, sibling) => sibling?.kind === 'image' },
+        },
+        {
           name: 'upload',
           type: 'upload',
           relationTo: 'media',

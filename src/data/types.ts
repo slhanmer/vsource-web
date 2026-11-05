@@ -65,6 +65,8 @@ export type MediaKind = 'video' | 'image' | 'logo' | 'mark'
 
 export interface ProjectMedia {
   kind: MediaKind
+  /** Images only: crop to fill the frame (default), or show the whole image. */
+  fit?: 'cover' | 'contain'
   src?: string
   poster?: string
   markId?: MarkId

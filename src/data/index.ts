@@ -176,6 +176,7 @@ function toProject(doc: ProjectDoc): Project {
     ...(doc.url ? { url: doc.url } : {}),
     media: {
       kind: m.kind,
+      ...(m.fit === 'contain' ? { fit: 'contain' as const } : {}),
       ...(upload ? { src: upload.src } : {}),
       ...(poster ? { poster: poster.src } : {}),
       ...(m.markId ? { markId: m.markId as MarkId } : {}),

@@ -407,6 +407,7 @@ export interface Project {
     | null;
   media: {
     kind: 'image' | 'video' | 'logo' | 'mark';
+    fit?: ('cover' | 'contain') | null;
     /**
      * The image, the mp4 clip, or (for a logo) the logo artwork.
      */
@@ -789,6 +790,7 @@ export interface ProjectsSelect<T extends boolean = true> {
     | T
     | {
         kind?: T;
+        fit?: T;
         upload?: T;
         poster?: T;
         markId?: T;
