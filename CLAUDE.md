@@ -223,11 +223,11 @@ photograph are in **Payload** (see CMS below), and a few are in code.
 
 | Where | Drives |
 |---|---|
-| `streams` collection | the home page's "What changes" rows, **and** all three stream pages |
-| `projects` collection | `/built`, every project page, the projects under each stream |
+| `streams` collection | the home page's "What changes" rows, **and** all three stream pages: the head photo (`pagePhoto`) and each section's optional `media` |
+| `projects` collection | `/built`, every project page, the projects under each stream. Media kinds `image` (with `fit: cover \| contain`), `video`, `logo`, `mark` (unused) |
 | `crew` collection | home team section and `/team` |
 | `partners` collection | the fold's "Working with" strip and the partners band |
-| `site` global | the home fold photo (`heroPhoto`), the home "why" photo, the `/team` group photo, the "Coming" row |
+| `site` global | the home fold photos (`heroPhotos`: software, robotics, websites, team), the home "why" photo, the `/team` group photo, the "Coming soon" row |
 | `src/constants/contact.ts` | header contacts, footer, contact page |
 | `src/constants/landings.ts` | `/regulated` and `/accessibility` |
 | `src/constants/streams.ts` | `STREAM_COMMON` only |
@@ -353,30 +353,36 @@ As of 5 November:
 - **Content is in Payload** (cms brief, stages A–E). The preview Neon branch is
   migrated and seeded. `src/constants/built.ts`, `crew.ts`, `partners.ts` and
   `photos.ts` are gone.
-- **The fold is the message and a photograph** (hero-rebuild, 5 November):
-  the rotating headline (two thirds of its old size), the lede and sub copy,
-  then **Start a conversation** and **See what we've built**, on the left.
-  On the right is Mik's photograph of Craig and Simon at the desk, the full
-  height of the plate, bleeding off the right edge, with a crop
-  (`object-position: 40% 35%`) that keeps both faces and the hands in frame.
-  Below the desktop breakpoint the photograph goes on top at 4:5, and the
-  fold may be taller than a screen. **The copy is never shrunk to fit.** The
-  three stream doors and their highlight are gone; "What changes" introduces
-  the streams. The streams' `door` and `doorPhoto` fields are still in the
-  collection, but nothing reads them.
+- **The fold** (hero-rebuild, then review-2, 5 November): the message on the
+  left (the rotating headline at two thirds of its old size, the lede and sub
+  copy, **Start a conversation** and **See what we've built**). On the right
+  is a 3:2 photo frame that **follows the headline**: each stream's photo as
+  its word finishes typing, then the team photo, which stays. Under it are
+  the three streams as links (`Software · Robotics · Websites`), the current
+  one lit in `--route-active`. That row is what shows the streams above the
+  fold, so it is usable from the first paint. One timeline drives it all
+  (`headlineTimeline.ts` → `HeroRun.tsx` → `HeroFrame.tsx`), and the run is
+  under 4.5 s. The server render, no JS and reduced motion show the team
+  photo with no link lit. Narrow screens: frame and links first. **The copy
+  is never shrunk to fit.**
+- **Stream pages** open with a photograph (`pagePhoto`), not a line drawing.
+  Sections with `media` (an image, or an mp4 under 10 s with a poster and a
+  pause control) are two columns, alternating sides. `StreamMark` is now only
+  on the `/regulated` and `/accessibility` landing pages.
 - The mill lines on the fold bend round the cursor wherever it rests on the
   plate (`MillLines.tsx`). Nothing runs on touch or under reduced motion.
 - Robotics copy is in (Simon, 4 November). Project Arachnid leads `/built`
   with The Huntsman's walking clip, and `spider-drones` is gone. The Websites
   row shows our own Nug site, cropped for its slot and anchored to the top so
   the wordmark is never cut.
-- `/built` is five cards, every one with a real image (built-trim, 5
-  November): Project Arachnid (lead), the Aptium portal (its logo on a plate,
-  media kind `logo`, because the screens are under NDA), Training
+- `/built` is five cards, every one with a real image (built-trim, then
+  review-2): Project Arachnid (lead), the Aptium portal (its logo at 60% of a
+  light plate, media kind `logo`, because the screens are under NDA), Training
   Professionals, SAUCE (a Storybook sheet, `Showcase/Overview`), and Five
-  Brisbane venues, which lists the five venue sites on its page. The grid is
-  two columns, so four cards never leave an orphan. Recheck it when the count
-  changes.
+  Brisbane venues, which lists the five venue sites on its page. Each card is
+  a raised plate. Screenshots use `fit: 'contain'`, so they are never cropped.
+  The grid is two columns, so four cards never leave an orphan. Recheck it
+  when the count changes.
 - Nothing is flagged `placeholder` or `pending` anywhere.
 - Real portraits from Mik's shoot for Craig, Simon and Ronan; Asuka's as
   before. Tom has no portrait, permanently: the terminal tile is his. The

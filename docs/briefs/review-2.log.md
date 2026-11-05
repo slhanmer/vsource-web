@@ -165,3 +165,12 @@ head) and the walking clip and poster on `/built`. The full Snug screenshot
 (`built/snug`) stays, as one of the venue sites.
 
 Seed: 2 removed; second run 0 changes.
+
+## §6 Docs
+
+`CLAUDE.md`, in the content table and "Current state": `streams` (now with
+`pagePhoto` and section `media`), `projects` (the media kinds and `fit`),
+`site` (`heroPhotos`, "Coming soon"), the fold (photo frame following the
+headline, stream links, fallbacks), stream pages (photo head, alternating
+sections; `StreamMark` only on the landing pages), and `/built` (logo at
+60%, raised cards, `contain` screenshots).
