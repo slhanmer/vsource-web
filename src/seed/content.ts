@@ -12,9 +12,10 @@
  * built/nug is the Nug card on /built and the Websites door on the home page.
  *
  * What is NOT here, on purpose:
- *   - Craig's, Simon's and Ronan's stock stand-in portraits. Strangers' faces
- *     under real names; they show the terminal tile until the real
- *     photographs are uploaded.
+ *   - Any stock portrait. Craig, Simon and Ronan have their real portraits
+ *     from Mik's shoot (hero-rebuild). Tom has none, permanently.
+ *   - Any stock photograph. The last three went in hero-rebuild, replaced by
+ *     the shoot's (they are in `retired.media`).
  *   - The Websites stock photos. The door and row show our own sites: Snug on
  *     the door, Nug on the row, each cropped for its slot (hero-polish §3).
  *   - STREAM_COMMON, landings, contact and the headline words, which stay in
@@ -64,22 +65,6 @@ const content: SeedContent = {
       file: 'built/don-gino.jpg',
       alt: 'The Don Gino site: the name set large in yellow on black under a gold script logo, with three circular Italian tile motifs labelled Famiglia, Menu and Hours.',
     },
-    'photos/stock/software-door': {
-      file: 'photos/stock/software-door.jpg',
-      alt: 'Two women at a wooden table covered in printed sheets, one leaning in to point at a page while the other writes on it.',
-      credit: {
-        name: 'Yegor Makarenko',
-        url: 'https://unsplash.com/photos/z1hePtraqbo',
-      },
-    },
-    'photos/stock/software-step': {
-      file: 'photos/stock/software-step.jpg',
-      alt: 'Two women in blue at a desk by a bookshelf, one pointing at a shared laptop while the other writes in an open notebook.',
-      credit: {
-        name: 'Cabri Caldwell',
-        url: 'https://unsplash.com/photos/6jg8KPfEOtU',
-      },
-    },
     'photos/robotics/huntsman-top': {
       file: 'photos/robotics/huntsman-top.jpg',
       alt: 'The Huntsman from above on a stone bench, its controller board and battery mounted at the centre.',
@@ -104,14 +89,6 @@ const content: SeedContent = {
       file: 'logos/partners/training-professionals.png',
       alt: 'Training Professionals logo',
     },
-    'photos/stock/working': {
-      file: 'photos/stock/working.jpg',
-      alt: 'Three people working on laptops at a long wooden table in a timber-lined room, one with his chin on his hand, reading his screen.',
-      credit: {
-        name: 'Annie Spratt',
-        url: 'https://unsplash.com/photos/dWYU3i-mqEo',
-      },
-    },
     'built/venues-montage': {
       file: 'built/venues-montage.jpg',
       alt: 'Five venue websites side by side: Nug General Store, Snug, Jane’s Deli, Bar Cooper’s and Don Gino.',
@@ -124,6 +101,30 @@ const content: SeedContent = {
       file: 'built/sauce.jpg',
       alt: 'A sheet of SAUCE components — inputs, buttons, a table and a dropdown — on a dark theme.',
     },
+    'photos/at-the-desk': {
+      file: 'photos/at-the-desk.jpg',
+      alt: 'Craig, standing, talks through code on a monitor while Simon types at the keyboard.',
+    },
+    'crew/simon-hanmer': {
+      file: 'crew/simon-hanmer.jpg',
+      alt: 'Simon Hanmer',
+    },
+    'crew/ronan-donahoe': {
+      file: 'crew/ronan-donahoe.jpg',
+      alt: 'Ronan Donahoe',
+    },
+    'crew/craig-schneider': {
+      file: 'crew/craig-schneider.jpg',
+      alt: 'Craig Schneider',
+    },
+    'photos/team-group': {
+      file: 'photos/team-group.jpg',
+      alt: 'Simon, Craig and Ronan in V Source shirts against a wall of jasmine.',
+    },
+    'photos/pointing': {
+      file: 'photos/pointing.jpg',
+      alt: 'Craig points to a line of code on a monitor while Simon looks on.',
+    },
   },
   streams: [
     {
@@ -131,12 +132,12 @@ const content: SeedContent = {
       name: 'Software',
       order: 10,
       door: 'Systems built to your process, not someone else’s platform.',
-      doorPhoto: 'photos/stock/software-door',
+      doorPhoto: null,
       problem: 'Your process lives in a spreadsheet and three people’s heads.',
       instead: 'One system, built around how you actually work.',
       solution:
         'Off-the-shelf platforms make you work their way. We build to the process you already run, so nothing lives in a side spreadsheet, and when someone asks what happened, the system can show them.',
-      stepPhoto: 'photos/stock/software-step',
+      stepPhoto: 'photos/pointing',
       promise:
         'The thing your business actually does, instead of the nearest platform that almost does it.',
       pageLede:
@@ -637,7 +638,7 @@ const content: SeedContent = {
       bio: [
         'Craig runs V Source. He holds a computer science degree from QUT and is completing an engineering degree in computer and software systems, alongside two decades in residential construction, communications infrastructure and site supervision. That range is why we can talk about the hardware a system runs on and the site it is installed on, not only the code — and why, when an install has to pass inspection, someone here has already been the person accountable for that.',
       ],
-      portrait: null,
+      portrait: 'crew/craig-schneider',
     },
     {
       slug: 'simon-hanmer',
@@ -649,7 +650,7 @@ const content: SeedContent = {
       bio: [
         'Simon designs and builds the part clients actually use — the interface, the system behind it, and often the brand around it. He holds a computer science degree from QUT, and before it spent twenty-odd years running kitchens — launching restaurants, and running services where a hundred covers arrive inside ninety minutes and nothing is permitted to fail quietly. Consistency under load, working to a deadline that does not move, and knowing precisely how much can go wrong at once: that turns out to be most of what shipping software actually is.',
       ],
-      portrait: null,
+      portrait: 'crew/simon-hanmer',
     },
     {
       slug: 'ronan-donahoe',
@@ -664,7 +665,7 @@ const content: SeedContent = {
         'There is more to Ronan than just testing and documentation though. He is currently studying a double degree in Mechatronics Engineering and Computational & Applied Mathematics: hardware, software, and the maths that ties them together. He uses this range to find solutions that are practical and elegant, which usually means finding a smarter way to make something work rather than a more complicated one.',
         'Ronan is another V Source team member with a background in hospitality (by coincidence, not by design). While Simon’s background was in the kitchen, Ronan looked after the front of house, where staying calm under pressure and solving problems on the fly is an indispensable skill. People are unpredictable, and understanding that is invaluable.',
       ],
-      portrait: null,
+      portrait: 'crew/ronan-donahoe',
     },
     {
       slug: 'asuka-hirai',
@@ -722,8 +723,8 @@ const content: SeedContent = {
     },
   ],
   site: {
-    workingPhoto: 'photos/stock/working',
-    groupPhoto: null,
+    workingPhoto: 'photos/team-group',
+    groupPhoto: 'photos/team-group',
     comingSoon: [
       {
         name: 'CurbHire',
@@ -738,6 +739,7 @@ const content: SeedContent = {
         stream: 'software',
       },
     ],
+    heroPhoto: 'photos/at-the-desk',
   },
   retired: {
     projects: [
@@ -749,6 +751,7 @@ const content: SeedContent = {
       'bar-coopers',
       'don-gino',
     ],
+    media: ['software-door.jpg', 'software-step.jpg', 'working.jpg', 'placeholder-site.jpg'],
   },
 }
 

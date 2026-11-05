@@ -88,11 +88,12 @@ const cached = <A extends unknown[], R>(key: string, fn: (...args: A) => Promise
   unstable_cache(fn, ['content', key, CACHE_EPOCH], { tags: [CONTENT_CACHE_TAG] })
 
 function toStream(doc: StreamDoc): Stream {
+  const doorPhoto = photo(doc.doorPhoto)
   return {
     slug: doc.slug,
     name: doc.name,
     door: doc.door,
-    doorPhoto: must(doc.doorPhoto, `Stream "${doc.slug}" door photo`),
+    ...(doorPhoto ? { doorPhoto } : {}),
     problem: doc.problem,
     instead: doc.instead,
     solution: doc.solution,
@@ -241,6 +242,7 @@ export const getSite = cached('site', async (): Promise<SiteContent> => {
     stream: slugOf(item.stream),
   }))
   return {
+    heroPhoto: must(site.heroPhoto, 'The home page hero photo'),
     workingPhoto: must(site.workingPhoto, 'The site working photo'),
     ...(groupPhoto ? { groupPhoto } : {}),
     comingSoon,

@@ -229,9 +229,9 @@ export interface Stream {
    */
   door: string;
   /**
-   * Fills the door on the home page fold.
+   * Not shown anywhere at present (the home page doors were removed).
    */
-  doorPhoto: number | Media;
+  doorPhoto?: (number | null) | Media;
   /**
    * Where someone is now. One short sentence they would recognise — a situation, never a failing.
    */
@@ -858,6 +858,10 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface Site {
   id: number;
   /**
+   * The home page fold photograph. Its crop is set in code; a new photo needs checking at every width.
+   */
+  heroPhoto?: (number | null) | Media;
+  /**
    * People at work, in the home page’s "why we work this way" section. Only people who are on the team, or alt text that says they are not.
    */
   workingPhoto: number | Media;
@@ -883,6 +887,7 @@ export interface Site {
  * via the `definition` "site_select".
  */
 export interface SiteSelect<T extends boolean = true> {
+  heroPhoto?: T;
   workingPhoto?: T;
   groupPhoto?: T;
   comingSoon?:

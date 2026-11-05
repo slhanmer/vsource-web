@@ -111,6 +111,7 @@ async function overwrites(payload: Payload, media: Map<string, number>): Promise
   for (const c of content.crew) await check('crew', c.slug, crewData(c, img))
   for (const p of content.partners) await check('partners', p.slug, partnerData(p, img))
   for (const [collection, slugs] of Object.entries(content.retired ?? {})) {
+    if (collection === 'media') continue
     for (const slug of slugs ?? []) {
       const row = await bySlug(payload, collection as CollectionSlug, slug)
       if (row)
@@ -262,6 +263,7 @@ async function main() {
   }
 
   for (const [collection, slugs] of Object.entries(content.retired ?? {})) {
+    if (collection === 'media') continue
     for (const slug of slugs ?? []) {
       const row = await bySlug(payload, collection as CollectionSlug, slug)
       if (!row) continue
@@ -271,6 +273,7 @@ async function main() {
   }
 
   const site = {
+    heroPhoto: img(content.site.heroPhoto),
     workingPhoto: img(content.site.workingPhoto),
     groupPhoto: content.site.groupPhoto ? img(content.site.groupPhoto) : null,
     comingSoon: content.site.comingSoon.map((c) => ({ name: c.name, stream: stream(c.stream) })),
@@ -281,6 +284,15 @@ async function main() {
     tally.updated.push('global site')
   } else {
     tally.unchanged++
+  }
+
+  /* Retired media goes last, after every row that pointed at it has been
+     rewritten to point elsewhere. */
+  for (const filename of content.retired?.media ?? []) {
+    const row = await byFilename(payload, filename)
+    if (!row) continue
+    await payload.delete({ collection: MEDIA, id: row.id })
+    tally.removed.push(`media ${filename}`)
   }
 
   await payload.kv.set(

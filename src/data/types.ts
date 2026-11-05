@@ -35,8 +35,10 @@ export interface StreamSection {
 export interface Stream {
   slug: string
   name: string
+  /** Unused since hero-rebuild: the fold's doors are gone. */
   door: string
-  doorPhoto: Photo
+  /** Unused since hero-rebuild, and empty on Software. */
+  doorPhoto?: Photo
   problem: string
   instead: string
   solution: string
@@ -124,6 +126,8 @@ export interface Upcoming {
 }
 
 export interface SiteContent {
+  /** The home page fold photograph (the LCP). */
+  heroPhoto: Photo
   workingPhoto: Photo
   groupPhoto?: Photo
   comingSoon: Upcoming[]

@@ -48,8 +48,14 @@ export const Streams: CollectionConfig = {
           name: 'doorPhoto',
           type: 'upload',
           relationTo: 'media',
-          required: true,
-          admin: { description: 'Fills the door on the home page fold.' },
+          /*
+           * Unused since hero-rebuild (5 November): the fold's doors are gone,
+           * and nothing on the site reads this or `door` now. Kept until
+           * Simon decides whether the stream pages should use them.
+           */
+          admin: {
+            description: 'Not shown anywhere at present (the home page doors were removed).',
+          },
         },
         {
           name: 'problem',

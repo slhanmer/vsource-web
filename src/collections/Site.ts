@@ -15,6 +15,22 @@ export const Site: GlobalConfig = {
   access: { read: () => true, update: isSignedIn },
   fields: [
     {
+      /*
+       * The home page fold's photograph: the full height of the fold, on the
+       * right, bleeding to the edge of the screen. It is the largest thing on
+       * the page (the LCP), so it loads with priority. Its crop is set in
+       * home.scss (`object-position`) to keep both faces and the hands in
+       * frame, so a replacement needs the same composition or a new crop.
+       */
+      name: 'heroPhoto',
+      type: 'upload',
+      relationTo: 'media',
+      admin: {
+        description:
+          'The home page fold photograph. Its crop is set in code; a new photo needs checking at every width.',
+      },
+    },
+    {
       name: 'workingPhoto',
       type: 'upload',
       relationTo: 'media',

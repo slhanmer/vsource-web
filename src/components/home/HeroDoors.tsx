@@ -21,11 +21,13 @@ export default function HeroDoors({ streams }: { streams: Stream[] }) {
           href={stream.href}
         >
           <div className="home-door__cut">
-            <CutPhoto
-              photo={stream.doorPhoto}
-              sizes="(max-width: 480px) 64px, (max-width: 979px) 36vw, (max-width: 1440px) 17vw, 232px"
-              className="home-door__photo"
-            />
+            {stream.doorPhoto && (
+              <CutPhoto
+                photo={stream.doorPhoto}
+                sizes="(max-width: 480px) 64px, (max-width: 979px) 36vw, (max-width: 1440px) 17vw, 232px"
+                className="home-door__photo"
+              />
+            )}
             <div className="home-door__body">
               <span className="home-door__name">{stream.name}</span>
               <span className="home-door__lede">{stream.door}</span>

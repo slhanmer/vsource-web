@@ -21,7 +21,7 @@ export interface SeedStream {
   name: string
   order: number
   door: string
-  doorPhoto: Key
+  doorPhoto: Key | null
   problem: string
   instead: string
   solution: string
@@ -100,11 +100,15 @@ export interface SeedContent {
   crew: SeedCrew[]
   partners: SeedPartner[]
   site: {
+    heroPhoto: Key
     workingPhoto: Key
     groupPhoto: Key | null
     comingSoon: Array<{ name: string; stream: string }>
   }
   /** Rows to delete, by slug. Removal is explicit: a row missing from this
    *  file is left alone, because an admin may have added it. */
-  retired?: Partial<Record<'streams' | 'projects' | 'crew' | 'partners', string[]>>
+  retired?: Partial<Record<'streams' | 'projects' | 'crew' | 'partners', string[]>> & {
+    /** Media rows to delete, by filename, once nothing the seed writes uses them. */
+    media?: string[]
+  }
 }
