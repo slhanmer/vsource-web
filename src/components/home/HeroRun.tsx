@@ -13,22 +13,23 @@ import { useReducedMotion } from '@hooks'
 import { SEQUENCE } from './headlineTimeline'
 
 /**
- * The fold's one timeline, shared (review-2, 5 November).
+ * The fold's one timeline, shared (review-2, then hero-stage, 5 November).
  *
  * The rotating headline owns the run (headlineTimeline.ts) and reports in as
- * each word FINISHES typing; the photo frame and the stream links beside it
- * read from here. So nothing in the fold has a timer of its own, and the
- * photograph cannot drift from the word.
+ * each word FINISHES typing; the stage beside it (HeroStage.tsx) reads from
+ * here. So nothing in the fold has a timer of its own, and the photograph
+ * cannot drift from the word.
  *
- *   - At the server, without JavaScript, and under reduced motion: `settled`,
- *     which is the team photograph and no link lit. That is what the fold
+ *   - At the server, without JavaScript, and under reduced motion: settled
+ *     (`active` null), which is the three stream bands. That is what the fold
  *     looks like at rest, so it is also what it looks like when nothing runs.
- *   - At mount, Software is already on screen, so its photo and its link.
- *   - Each later word, as its last letter lands: its photo and its link.
- *   - Back on Software, the end of the run: `settled` again, for good.
+ *   - At mount, Software is already on screen, so its big photo.
+ *   - Each later word, as its last letter lands: its big photo.
+ *   - Back on Software, the end of the run: settled again, for good.
  *
- * The run is under 4.5 s (headlineTimeline.ts and its test), so the photos
- * change for less than five seconds and stop: WCAG 2.2.2 needs no control.
+ * The run and the settle are under 4.5 s (headlineTimeline.ts and its test),
+ * so the stage moves for less than five seconds and stops: WCAG 2.2.2 needs
+ * no control.
  */
 
 interface HeroRunValue {

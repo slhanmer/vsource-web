@@ -3,8 +3,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { CONTACT } from '@constants'
 import { getCrew, getPartners, getSite, getStreams } from '@/data'
-import HeroFrame from '@/components/home/HeroFrame'
 import { HeroRunProvider } from '@/components/home/HeroRun'
+import HeroStage from '@/components/home/HeroStage'
 import MillLines from '@/components/home/MillLines'
 import Reveal from '@/components/home/Reveal'
 import RotatingHeadline from '@/components/home/RotatingHeadline'
@@ -23,9 +23,10 @@ export const metadata: Metadata = {
 /**
  * Home page.
  *
- * The fold is the promise and the people: the message, two ways on (start a
- * conversation, or see the work), and a photograph of the team at work. The
- * three streams are introduced straight after, in "What changes", and the
+ * The fold is the promise and the three ways in: the message, two ways on
+ * (start a conversation, or see the work), and the stage, which settles into
+ * one band per stream, each a link. The streams are argued straight after,
+ * in "What changes", and the
  * argument that ties them together sits *after* that — supporting material
  * for someone who is already interested, not a gate in front of the thing
  * they came for.
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
  * other page, and the plate opens straight onto the argument.
  *
  * Everything below the fold is a server component. The only client boundaries
- * are the rotating headline, the mill lines, the stream bands and the Reveal
+ * are the rotating headline, the stage, the mill lines, the stream bands and the Reveal
  * wrappers, and the copy inside a Reveal is still rendered on the server.
  */
 export default async function Home() {
@@ -52,9 +53,9 @@ export default async function Home() {
     <main className="home">
       {/*
         The fold is one machined plate: the message on the left; on the
-        right a 3:2 photo frame that follows the headline (each stream's
-        picture while its word is typed, then the team, which stays) and,
-        under it, the three streams as links (review-2, 5 November).
+        right the stage, the full height of the plate and fading into it,
+        which follows the headline (one big photo per word) and then settles
+        into three bands, one link per stream (hero-stage, 5 November).
       */}
       <section className="home-hero">
         <div className="home-plate">
@@ -62,8 +63,9 @@ export default async function Home() {
               under reduced motion, where the CSS lines stay. */}
           <MillLines />
 
-          {/* One timeline for the headline, the photo and the stream links
-              (HeroRun.tsx). */}
+          {/* One timeline for the headline and the stage (HeroRun.tsx). The
+              provider renders nothing, so the stage is a child of the plate,
+              which it is positioned against. */}
           <HeroRunProvider>
             <div className="home-hero__inner">
               <div className="home-hero__say">
@@ -88,18 +90,18 @@ export default async function Home() {
                   </Link>
                 </p>
               </div>
-
-              {/* The photo follows the headline; the links under it are the
-                three streams, above the fold from the first paint. */}
-              <HeroFrame
-                photos={site.heroPhotos}
-                streams={streams.map((stream) => ({
-                  slug: stream.slug,
-                  name: stream.name,
-                  href: stream.href,
-                }))}
-              />
             </div>
+
+            {/* After the copy in the source: the two buttons come first in
+                the tab order, then the three bands. */}
+            <HeroStage
+              photos={site.heroPhotos}
+              streams={streams.map((stream) => ({
+                slug: stream.slug,
+                name: stream.name,
+                href: stream.href,
+              }))}
+            />
           </HeroRunProvider>
 
           {/*

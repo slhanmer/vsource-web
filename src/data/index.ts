@@ -11,6 +11,7 @@ import type {
 } from '@/payload-types'
 import type {
   CrewMember,
+  HeroPhoto,
   MarkId,
   Partner,
   Photo,
@@ -255,6 +256,17 @@ export const getPartners = cached('partners', async (): Promise<Partner[]> => {
   return docs.map(toPartner)
 })
 
+/** A fold photograph and the point its crops keep (hero-stage). */
+function heroPhoto(
+  entry: { photo?: number | Media | null; focus?: string | null } | null | undefined,
+  stream: string
+): HeroPhoto {
+  return {
+    photo: must(entry?.photo, `The hero photo for ${stream}`),
+    focus: entry?.focus?.trim() || '50% 50%',
+  }
+}
+
 export const getSite = cached('site', async (): Promise<SiteContent> => {
   const site = await (await payload()).findGlobal({ slug: 'site', depth: 1 })
   const groupPhoto = photo(site.groupPhoto)
@@ -264,10 +276,9 @@ export const getSite = cached('site', async (): Promise<SiteContent> => {
   }))
   return {
     heroPhotos: {
-      software: must(site.heroPhotos?.software, 'The hero photo for Software'),
-      robotics: must(site.heroPhotos?.robotics, 'The hero photo for Robotics'),
-      websites: must(site.heroPhotos?.websites, 'The hero photo for Websites'),
-      team: must(site.heroPhotos?.team, 'The hero photo for the team'),
+      software: heroPhoto(site.heroPhotos?.software, 'Software'),
+      robotics: heroPhoto(site.heroPhotos?.robotics, 'Robotics'),
+      websites: heroPhoto(site.heroPhotos?.websites, 'Websites'),
     },
     workingPhoto: must(site.workingPhoto, 'The site working photo'),
     ...(groupPhoto ? { groupPhoto } : {}),

@@ -127,9 +127,16 @@ export interface Upcoming {
   stream: string
 }
 
+/** A fold photograph, and the CSS object-position its crops keep. */
+export interface HeroPhoto {
+  photo: Photo
+  focus: string
+}
+
 export interface SiteContent {
-  /** The home page fold's photographs, one per stream and the team (the LCP). */
-  heroPhotos: { software: Photo; robotics: Photo; websites: Photo; team: Photo }
+  /** The home page fold's photographs, one per stream: the slideshow, then
+   *  the three bands it settles into (the LCP). */
+  heroPhotos: Record<'software' | 'robotics' | 'websites', HeroPhoto>
   workingPhoto: Photo
   groupPhoto?: Photo
   comingSoon: Upcoming[]

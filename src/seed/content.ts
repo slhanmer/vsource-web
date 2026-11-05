@@ -777,10 +777,9 @@ const content: SeedContent = {
   ],
   site: {
     heroPhotos: {
-      software: 'hero/hero-software',
-      robotics: 'hero/hero-robotics',
-      websites: 'hero/hero-websites',
-      team: 'hero/hero-team',
+      software: { photo: 'hero/hero-software', focus: '62% 40%' },
+      robotics: { photo: 'hero/hero-robotics', focus: '40% 20%' },
+      websites: { photo: 'hero/hero-websites', focus: '0% 0%' },
     },
     workingPhoto: 'photos/team-group',
     groupPhoto: 'photos/team-group',

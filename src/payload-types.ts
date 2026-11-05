@@ -879,16 +879,30 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface Site {
   id: number;
   /**
-   * The home page fold: one 3:2 photograph per stream, shown while its word is typed, then the team photograph, which stays.
+   * The home page fold: one photograph per stream. Each fills the stage while its word is typed, then the three settle into bands that link to the stream pages.
    */
   heroPhotos?: {
-    software?: (number | null) | Media;
-    robotics?: (number | null) | Media;
-    websites?: (number | null) | Media;
-    /**
-     * Where the fold settles, and all that shows without motion.
-     */
-    team?: (number | null) | Media;
+    software?: {
+      photo?: (number | null) | Media;
+      /**
+       * The point the crop keeps, as CSS object-position: "x% y%". 0% 0% is the top-left corner.
+       */
+      focus?: string | null;
+    };
+    robotics?: {
+      photo?: (number | null) | Media;
+      /**
+       * The point the crop keeps, as CSS object-position: "x% y%". 0% 0% is the top-left corner.
+       */
+      focus?: string | null;
+    };
+    websites?: {
+      photo?: (number | null) | Media;
+      /**
+       * The point the crop keeps, as CSS object-position: "x% y%". 0% 0% is the top-left corner.
+       */
+      focus?: string | null;
+    };
   };
   /**
    * People at work, in the home page’s "why we work this way" section. Only people who are on the team, or alt text that says they are not.
@@ -919,10 +933,24 @@ export interface SiteSelect<T extends boolean = true> {
   heroPhotos?:
     | T
     | {
-        software?: T;
-        robotics?: T;
-        websites?: T;
-        team?: T;
+        software?:
+          | T
+          | {
+              photo?: T;
+              focus?: T;
+            };
+        robotics?:
+          | T
+          | {
+              photo?: T;
+              focus?: T;
+            };
+        websites?:
+          | T
+          | {
+              photo?: T;
+              focus?: T;
+            };
       };
   workingPhoto?: T;
   groupPhoto?: T;

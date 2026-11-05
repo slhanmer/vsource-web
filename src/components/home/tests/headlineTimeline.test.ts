@@ -3,9 +3,11 @@ import {
   DELETE_MS,
   HOLD_MS,
   SEQUENCE,
+  SETTLE_MS,
   TYPE_MS,
   WORDS,
   timelineMs,
+  typedMs,
 } from '../headlineTimeline'
 
 /**
@@ -13,14 +15,17 @@ import {
  * (WCAG 2.2.2). These tests fail if a new word or a longer hold changes that.
  */
 describe('rotating headline timeline', () => {
-  it('finishes typing within the 4,500 ms budget', () => {
+  it('finishes typing and settles the stage within the 4,500 ms budget', () => {
     // Summed here from the constants, not just trusted from timelineMs().
-    let total = 0
+    let typed = 0
     for (let i = 1; i < SEQUENCE.length; i += 1) {
-      total += HOLD_MS + SEQUENCE[i - 1].length * DELETE_MS + SEQUENCE[i].length * TYPE_MS
+      typed += HOLD_MS + SEQUENCE[i - 1].length * DELETE_MS + SEQUENCE[i].length * TYPE_MS
     }
+    expect(typed).toBe(typedMs())
+    expect(typed).toBe(3240)
+    const total = typed + SETTLE_MS
     expect(total).toBe(timelineMs())
-    expect(total).toBe(3240)
+    expect(total).toBe(3840)
     expect(total).toBeLessThanOrEqual(BUDGET_MS)
     expect(BUDGET_MS).toBeLessThan(5000)
   })

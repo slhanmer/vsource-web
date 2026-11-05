@@ -27,6 +27,9 @@
      Light in both themes: supplied artwork is drawn for white. Global now
      (global.scss), because /built's logo media uses the same plate. */
   --home-logo-plate: var(--logo-plate);
+  /* Under a stream name on its band (hero-stage). Dark in both themes: the
+     name is --text-on-dark, over a photograph, whatever the page is. */
+  --home-stage-scrim: rgba(4, 8, 7, 0.78);
 }
 
 [data-theme='dark'] .home {
@@ -112,11 +115,7 @@
   padding-block: 0 clamp(18px, 2vw, 28px);
   padding-inline: var(--home-gutter);
   background:
-    repeating-linear-gradient(
-      180deg,
-      transparent 0 3px,
-      var(--home-mill) 3px 4px
-    ),
+    repeating-linear-gradient(180deg, transparent 0 3px, var(--home-mill) 3px 4px),
     linear-gradient(180deg, var(--home-plate-top), var(--home-plate-bottom));
   border-bottom: 1px solid var(--home-plate-edge);
   box-shadow: inset 0 1px 0 var(--home-plate-lip);
@@ -146,7 +145,6 @@
   z-index: 1;
 }
 
-
 /* ── the plate's bottom edge ────────────────────────────────────────────────
    A hairline, the marks of people who have actually paid us, and the way down.
    Hidden on short viewports, where the fold matters more than the flourish. */
@@ -163,6 +161,16 @@
   padding-top: clamp(12px, 1.5vw, 20px);
   border-top: 1px solid var(--home-plate-edge);
   box-shadow: inset 0 1px 0 var(--home-plate-lip);
+
+  /* Under the message, not across the stage: the stage runs the full height
+     of the fold on the right, so on wide screens the foot is the message
+     column's width (restored from hero-rebuild, 0ef66a5). */
+  @media (min-width: ($breakpoint-desktop + 1px)) {
+    width: calc((min(1240px, 100%) - var(--home-hero-gap)) / 2);
+    margin-left: calc((100% - min(1240px, 100%)) / 2);
+    position: relative;
+    z-index: 2;
+  }
 }
 
 .home-plate__trust {
@@ -293,10 +301,11 @@
 .home-hero {
   overflow-x: clip;
 
-  /* Said on the left; the photo frame and the stream links on the right,
-     vertically centred against the copy (review-2). Centred text would need
-     a symmetrical headline, which a slot with words of different widths in
-     it can never be. */
+  /* Said on the left; the stage is the right side (hero-stage). The grid
+     keeps the second column empty, so the message column is exactly where it
+     would be beside it, and the stage is positioned against the same line
+     (`--home-hero-gap`). Centred text would need a symmetrical headline,
+     which a slot with words of different widths in it can never be. */
   &__inner {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -379,26 +388,42 @@
   }
 }
 
-/* ── the photo frame and the stream links (HeroFrame.tsx) ────────────────
-   A 3:2 opening cut into the plate, the same recessed edge as every other
-   photograph (`.cut-photo`), with four photographs stacked in it. One shows;
-   the others are transparent. They swap on opacity alone, ~400ms. Under
-   reduced motion nothing runs at all, so the team photo simply sits there. */
-.home-frame {
-  display: grid;
-  gap: 14px;
-  min-width: 0;
+/* ── the stage (HeroStage.tsx) ───────────────────────────────────────────
+   The right side of the fold, the full height of the plate, from the message
+   column's edge to the right edge of the screen. No radius: its outer edges
+   are the screen's. Where it meets the plate it fades into it: a mask, so it
+   fades into whatever the plate is (the slab gradient and the mill lines),
+   not into a colour that has to be matched. The geometry and the fade are
+   hero-rebuild's photograph, restored from 0ef66a5.
 
-  &__photos {
-    position: relative;
-    margin: 0;
-    aspect-ratio: 3 / 2;
-    overflow: hidden;
-    border-radius: $radius-md;
-    background: var(--surface-recessed);
+   Two layers. The slideshow (`__solo`): one big photo per word while the
+   headline runs, crossfading on opacity alone. The bands (`__bands`): three
+   links, one per stream, which is where the stage settles and stays. With
+   no `.is-running` (the server, no JS, reduced motion, and the end of the
+   run) only the bands show. */
+.home-stage {
+  --home-stage-fade: 72px;
+  --home-stage-gap: 6px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  /* The message column ends at the centre line less half the gap. */
+  left: calc(50% + var(--home-hero-gap) / 2);
+  z-index: 1;
+  overflow: hidden;
+
+  &__solo {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--home-stage-settle, 600ms) ease;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--home-stage-fade));
+    mask-image: linear-gradient(90deg, transparent, #000 var(--home-stage-fade));
   }
 
-  &__img {
+  &__solo-img {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -412,61 +437,130 @@
     }
   }
 
-  &__edge {
+  &__bands {
     position: absolute;
     inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    border-radius: inherit;
-    box-shadow:
-      inset 0 3px 8px -3px var(--carve-dark),
-      inset 0 -1px 0 var(--carve-lip);
-  }
-
-  /* The three streams, above the fold. Mono labels, the eyebrow style. Cyan
-     points: these navigate, so the lit one is --route-active, and at rest
-     none is. Each is a 24px+ target with the dot between them drawn in CSS,
-     so a screen reader hears three links, not punctuation. */
-  &__streams {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 2px 0;
+    display: grid;
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+    gap: var(--home-stage-gap);
     margin: 0;
     padding: 0;
     list-style: none;
+    transition: opacity var(--home-stage-settle, 600ms) ease;
+  }
 
-    li + li::before {
-      content: '·';
-      padding-inline: 10px;
-      color: var(--text-subtle);
+  &.is-running &__solo {
+    opacity: 1;
+  }
+
+  /* While the run plays the bands are out of sight and out of the way of
+     the pointer. Focus brings them back: a keyboard user who tabs in during
+     the run sees the band they are on. */
+  &.is-running &__bands {
+    opacity: 0;
+    pointer-events: none;
+
+    &:focus-within {
+      opacity: 1;
+      pointer-events: auto;
     }
   }
 
-  &__stream {
-    display: inline-flex;
-    align-items: center;
-    min-height: 28px;
-    font-family: $font-family-mono;
-    font-size: 12.5px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--text-secondary);
+  &__band {
+    position: relative;
+    min-height: 0;
+  }
+
+  /* The whole band is the link. The edge lights on hover and focus. */
+  &__link {
+    position: absolute;
+    inset: 0;
+    display: block;
+    color: var(--text-on-dark);
     text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition:
-      color 0.3s ease,
-      border-color 0.3s ease;
+    outline: none;
 
-    &:hover,
-    &:focus-visible {
-      color: var(--route-active);
-      border-bottom-color: currentColor;
+    /* The lit edge, above the photograph and its scrim. */
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      box-shadow: inset 0 0 0 0 transparent;
+      transition: box-shadow 0.2s ease;
     }
 
-    &.is-active {
-      color: var(--route-active);
+    &:hover::after {
+      box-shadow: inset 0 0 0 2px var(--route-active);
     }
+
+    /* Always visible on focus: the teal ring with a dark line inside it, so
+       it holds against a bright photograph in either theme. */
+    &:focus-visible::after {
+      /* At once: a focus ring that fades in is briefly no ring at all. */
+      transition: none;
+      box-shadow:
+        inset 0 0 0 3px var(--route-active),
+        inset 0 0 0 5px var(--home-stage-scrim);
+    }
+  }
+
+  /* The photograph, faded into the plate on its left like the big one, and
+     a short scrim along its foot for the name. */
+  &__photo {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--home-stage-fade));
+    mask-image: linear-gradient(90deg, transparent, #000 var(--home-stage-fade));
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: min(72%, 120px);
+      background: linear-gradient(0deg, var(--home-stage-scrim), transparent);
+      pointer-events: none;
+    }
+  }
+
+  &__band-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: filter 0.25s ease;
+  }
+
+  &__link:hover &__band-img,
+  &__link:focus-visible &__band-img {
+    filter: brightness(1.1);
+  }
+
+  /* Bottom-left, clear of the fade. */
+  &__name {
+    position: absolute;
+    z-index: 1;
+    left: calc(var(--home-stage-fade) + 12px);
+    bottom: clamp(12px, 1.6vh, 20px);
+    font-family: $font-family-display;
+    font-size: clamp(20px, 1.7vw, 28px);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-stage__solo,
+  .home-stage__solo-img,
+  .home-stage__bands,
+  .home-stage__band-img,
+  .home-stage__link::after {
+    transition: none;
   }
 }
 
@@ -616,22 +710,51 @@
   }
 }
 
-/* ── narrow screens: frame on top ─────────────────────────────────────────
-   Below the two-column breakpoint the photo frame goes first, full width at
-   3:2 with the stream links under it, then the message and the buttons. The
-   fold may be taller than one screen here. The copy is NEVER shrunk to make
-   it fit (hero-rebuild). */
+/* ── narrow screens: copy, then the bands ─────────────────────────────────
+   Below the two-column breakpoint the message comes first, then the stage as
+   three bands stacked full width (out through the plate's side padding), each
+   about 16:9 and already settled: no slideshow here, whatever the run is
+   doing. The fold may be taller than one screen. The copy is NEVER shrunk to
+   make it fit (hero-rebuild). */
 @media (max-width: $breakpoint-desktop) {
   .home-plate {
+    grid-template-rows: auto auto auto auto;
+    align-content: start;
     padding-block: clamp(20px, 5vw, 36px) clamp(24px, 5vw, 40px);
   }
 
-  .home-hero__inner {
-    row-gap: clamp(26px, 6vw, 40px);
+  .home-stage {
+    --home-stage-fade: 0px;
+    position: relative;
+    inset: auto;
+    grid-row: 3;
+    margin: clamp(26px, 6vw, 40px) calc(-1 * var(--home-gutter)) 0;
+    overflow: visible;
   }
 
-  .home-frame {
-    order: -1;
+  .home-stage__solo {
+    display: none;
+  }
+
+  .home-stage__bands,
+  .home-stage.is-running .home-stage__bands {
+    position: static;
+    grid-template-rows: none;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .home-stage__band {
+    aspect-ratio: 16 / 9;
+  }
+
+  .home-stage__photo {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .home-stage__name {
+    left: var(--home-gutter);
   }
 }
 

@@ -3,8 +3,9 @@
  *
  * The headline plays ONCE and stops, which is how it meets WCAG 2.2.2 without a
  * pause control: 2.2.2 only applies to motion that lasts longer than five
- * seconds. The budget is 4,500 ms from mount to the last character typed, which
- * leaves headroom for hydration and the font landing.
+ * seconds. The budget is 4,500 ms from mount to the fold standing still (the last
+ * character typed, then the stage settling), which leaves headroom for hydration
+ * and the font landing.
  *
  * The run is Software (on screen at mount) → Robotics → Websites → Software,
  * the same order as the streams on the page:
@@ -13,7 +14,10 @@
  *   deletes  (8 + 8 + 8) chars × DELETE_MS       24 × 18 =   432
  *   types    (8 + 8 + 8) chars × TYPE_MS         24 × 42 = 1,008
  *                                                         -------
- *                                                         3,240 ms
+ *   typed                                                 3,240 ms
+ *   settle   the stage into three bands      SETTLE_MS       600
+ *                                                         -------
+ *   still                                                 3,840 ms
  *
  * There are no recut beats. The slot is cut once, to the widest word, and
  * never changes width, so a new word is typed straight into it.
@@ -21,8 +25,12 @@
  * Each hold outlasts the longest word's typing (all three are eight letters,
  * 8 × 42 = 336 ms), so a word is read for longer than it takes to appear.
  *
- * A fourth eight-letter word would add 1,080 ms and land at 4,320 — inside the
- * budget with almost none of its headroom left. Anything more than that, or a
+ * The settle (hero-stage, 5 November) is part of the motion, so it is in the
+ * sum: when the last word lands, the fold's stage crossfades from one big
+ * photograph into the three stream bands, and nothing moves after that.
+ *
+ * A fourth eight-letter word would add 1,080 ms and land at 4,920 with the
+ * settle — past the budget. Anything more than that, or a
  * longer hold on top of it, goes past the budget and towards five seconds, and
  * then it needs the pause button back. The test in
  * tests/headlineTimeline.test.ts fails before that happens.
@@ -44,8 +52,12 @@ export const HOLD_MS = 600
 /** The ceiling. Under five seconds, with headroom. */
 export const BUDGET_MS = 4500
 
+/** The stage's crossfade into three bands, once the run lands back on the
+ *  first word (HeroStage.tsx reads it, so the CSS cannot drift from it). */
+export const SETTLE_MS = 600
+
 /** Mount to the final character typed, in milliseconds. */
-export function timelineMs(): number {
+export function typedMs(): number {
   let total = 0
   for (let i = 1; i < SEQUENCE.length; i += 1) {
     total += HOLD_MS
@@ -53,4 +65,10 @@ export function timelineMs(): number {
     total += SEQUENCE[i].length * TYPE_MS
   }
   return total
+}
+
+/** Mount to the moment the fold is still: the last word typed, then the
+ *  settle. This is what the budget is for. */
+export function timelineMs(): number {
+  return typedMs() + SETTLE_MS
 }

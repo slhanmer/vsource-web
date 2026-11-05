@@ -227,7 +227,7 @@ photograph are in **Payload** (see CMS below), and a few are in code.
 | `projects` collection | `/built`, every project page, the projects under each stream. Media kinds `image` (with `fit: cover \| contain`), `video`, `logo`, `mark` (unused) |
 | `crew` collection | home team section and `/team` |
 | `partners` collection | the fold's "Working with" strip and the partners band |
-| `site` global | the home fold photos (`heroPhotos`: software, robotics, websites, team), the home "why" photo, the `/team` group photo, the "Coming soon" row |
+| `site` global | the home fold's stage (`heroPhotos`: software, robotics, websites, each a `photo` and its `focus`), the home "why" photo, the `/team` group photo, the "Coming soon" row |
 | `src/constants/contact.ts` | header contacts, footer, contact page |
 | `src/constants/landings.ts` | `/regulated` and `/accessibility` |
 | `src/constants/streams.ts` | `STREAM_COMMON` only |
@@ -353,17 +353,19 @@ As of 5 November:
 - **Content is in Payload** (cms brief, stages A–E). The preview Neon branch is
   migrated and seeded. `src/constants/built.ts`, `crew.ts`, `partners.ts` and
   `photos.ts` are gone.
-- **The fold** (hero-rebuild, then review-2, 5 November): the message on the
-  left (the rotating headline at two thirds of its old size, the lede and sub
-  copy, **Start a conversation** and **See what we've built**). On the right
-  is a 3:2 photo frame that **follows the headline**: each stream's photo as
-  its word finishes typing, then the team photo, which stays. Under it are
-  the three streams as links (`Software · Robotics · Websites`), the current
-  one lit in `--route-active`. That row is what shows the streams above the
-  fold, so it is usable from the first paint. One timeline drives it all
-  (`headlineTimeline.ts` → `HeroRun.tsx` → `HeroFrame.tsx`), and the run is
-  under 4.5 s. The server render, no JS and reduced motion show the team
-  photo with no link lit. Narrow screens: frame and links first. **The copy
+- **The fold** (hero-stage, 5 November): the message on the left (the
+  rotating headline, the lede and sub copy, **Start a conversation** and
+  **See what we've built**). On the right is the **stage**: the full fold
+  height, bleeding off the right edge, fading into the plate on its left
+  (hero-rebuild's treatment). While the headline runs it shows one big photo
+  per word, as the word finishes typing; when it lands back on Software it
+  settles into **three bands, one link per stream**, and stays. Those bands
+  are the streams above the fold. They are also what the server renders and
+  what shows without JS, under reduced motion and on narrow screens (copy
+  first, then the bands at 16:9). Each photo's `focus` is its CSS
+  object-position, set in `/admin`. One timeline drives it all
+  (`headlineTimeline.ts` → `HeroRun.tsx` → `HeroStage.tsx`), and the run and
+  the settle are under 4.5 s. The team photo is not in the fold. **The copy
   is never shrunk to fit.**
 - **Stream pages** open with a photograph (`pagePhoto`), not a line drawing.
   Sections with `media` (an image, or an mp4 under 10 s with a poster and a

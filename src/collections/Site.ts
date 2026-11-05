@@ -16,34 +16,47 @@ export const Site: GlobalConfig = {
   fields: [
     {
       /*
-       * The home page fold's photographs (review-2, 5 November). The photo
-       * follows the headline: each stream's picture while its word is typed,
-       * then the team, which stays. All four are 3:2 and share one frame.
+       * The home page fold's stage (hero-stage, 5 November). While the
+       * headline runs, each stream's photograph fills the stage as its word
+       * finishes typing; then the stage settles into three bands, one per
+       * stream, each a link to its stream page. The settled bands are what
+       * the server renders, what shows without JavaScript and under reduced
+       * motion, and the LCP.
        *
-       * `team` is what the server renders, what shows without JavaScript and
-       * under reduced motion, and what the fold settles on, so it is the LCP
-       * and the one loaded with priority.
+       * `focus` is the photograph's CSS object-position. The stage is tall
+       * and each band is wide, so `cover` crops the same photograph two
+       * ways; the focus is the point both crops keep.
        */
       name: 'heroPhotos',
       type: 'group',
       admin: {
         description:
-          'The home page fold: one 3:2 photograph per stream, shown while its word is typed, then the team photograph, which stays.',
+          'The home page fold: one photograph per stream. Each fills the stage while its word is typed, then the three settle into bands that link to the stream pages.',
       },
-      fields: [
-        /* Not `required` at the database: a NOT NULL column cannot be added
-           to the existing row. src/data/ refuses to render without all
-           four, with a message naming the missing one. */
-        { name: 'software', type: 'upload', relationTo: 'media' },
-        { name: 'robotics', type: 'upload', relationTo: 'media' },
-        { name: 'websites', type: 'upload', relationTo: 'media' },
-        {
-          name: 'team',
-          type: 'upload',
-          relationTo: 'media',
-          admin: { description: 'Where the fold settles, and all that shows without motion.' },
-        },
-      ],
+      fields: (['software', 'robotics', 'websites'] as const).map((stream) => ({
+        name: stream,
+        type: 'group' as const,
+        fields: [
+          {
+            type: 'row' as const,
+            fields: [
+              /* Not `required` at the database: a NOT NULL column cannot be
+                 added to the existing row. src/data/ refuses to render
+                 without all three, with a message naming the missing one. */
+              { name: 'photo', type: 'upload' as const, relationTo: 'media' as const },
+              {
+                name: 'focus',
+                type: 'text' as const,
+                defaultValue: '50% 50%',
+                admin: {
+                  description:
+                    'The point the crop keeps, as CSS object-position: "x% y%". 0% 0% is the top-left corner.',
+                },
+              },
+            ],
+          },
+        ],
+      })),
     },
     {
       name: 'workingPhoto',
