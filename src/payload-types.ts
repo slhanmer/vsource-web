@@ -205,7 +205,7 @@ export interface Media {
   };
 }
 /**
- * The three lines of work. Each one is a home page door, a row, and its own page.
+ * The three lines of work. Each one is a home page row and its own page.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "streams".
@@ -225,7 +225,7 @@ export interface Stream {
    */
   order: number;
   /**
-   * One short line for the door in the hero. Not the same sentence as anything in the row below it.
+   * Not shown anywhere at present (the home page doors were removed).
    */
   door: string;
   /**
@@ -858,9 +858,17 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface Site {
   id: number;
   /**
-   * The home page fold photograph. Its crop is set in code; a new photo needs checking at every width.
+   * The home page fold: one 3:2 photograph per stream, shown while its word is typed, then the team photograph, which stays.
    */
-  heroPhoto?: (number | null) | Media;
+  heroPhotos?: {
+    software?: (number | null) | Media;
+    robotics?: (number | null) | Media;
+    websites?: (number | null) | Media;
+    /**
+     * Where the fold settles, and all that shows without motion.
+     */
+    team?: (number | null) | Media;
+  };
   /**
    * People at work, in the home page’s "why we work this way" section. Only people who are on the team, or alt text that says they are not.
    */
@@ -887,7 +895,14 @@ export interface Site {
  * via the `definition` "site_select".
  */
 export interface SiteSelect<T extends boolean = true> {
-  heroPhoto?: T;
+  heroPhotos?:
+    | T
+    | {
+        software?: T;
+        robotics?: T;
+        websites?: T;
+        team?: T;
+      };
   workingPhoto?: T;
   groupPhoto?: T;
   comingSoon?:

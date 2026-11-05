@@ -242,7 +242,12 @@ export const getSite = cached('site', async (): Promise<SiteContent> => {
     stream: slugOf(item.stream),
   }))
   return {
-    heroPhoto: must(site.heroPhoto, 'The home page hero photo'),
+    heroPhotos: {
+      software: must(site.heroPhotos?.software, 'The hero photo for Software'),
+      robotics: must(site.heroPhotos?.robotics, 'The hero photo for Robotics'),
+      websites: must(site.heroPhotos?.websites, 'The hero photo for Websites'),
+      team: must(site.heroPhotos?.team, 'The hero photo for the team'),
+    },
     workingPhoto: must(site.workingPhoto, 'The site working photo'),
     ...(groupPhoto ? { groupPhoto } : {}),
     comingSoon,

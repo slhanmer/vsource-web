@@ -126,8 +126,8 @@ export interface Upcoming {
 }
 
 export interface SiteContent {
-  /** The home page fold photograph (the LCP). */
-  heroPhoto: Photo
+  /** The home page fold's photographs, one per stream and the team (the LCP). */
+  heroPhotos: { software: Photo; robotics: Photo; websites: Photo; team: Photo }
   workingPhoto: Photo
   groupPhoto?: Photo
   comingSoon: Upcoming[]

@@ -163,16 +163,6 @@
   padding-top: clamp(12px, 1.5vw, 20px);
   border-top: 1px solid var(--home-plate-edge);
   box-shadow: inset 0 1px 0 var(--home-plate-lip);
-
-  /* Under the message, not across the photograph: the photograph runs the
-     full height of the fold on the right, so on wide screens the foot is the
-     message column's width. */
-  @media (min-width: ($breakpoint-desktop + 1px)) {
-    width: calc((min(1240px, 100%) - var(--home-hero-gap)) / 2);
-    margin-left: calc((100% - min(1240px, 100%)) / 2);
-    position: relative;
-    z-index: 2;
-  }
 }
 
 .home-plate__trust {
@@ -303,12 +293,10 @@
 .home-hero {
   overflow-x: clip;
 
-  /* Said on the left; the photograph is the right column (hero-rebuild,
-     5 November). The grid keeps the second column empty, so the message
-     column is exactly where it would be beside it, and the photograph is
-     positioned against the same line (`--home-hero-gap`). Centred text
-     would also need a symmetrical headline, which a slot with words of
-     different widths in it can never be. */
+  /* Said on the left; the photo frame and the stream links on the right,
+     vertically centred against the copy (review-2). Centred text would need
+     a symmetrical headline, which a slot with words of different widths in
+     it can never be. */
   &__inner {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -325,40 +313,6 @@
     @media (max-width: $breakpoint-desktop) {
       grid-template-columns: 1fr;
     }
-  }
-
-  /* THE PHOTOGRAPH. The full height of the fold, from the message column's
-     edge to the right edge of the screen, bleeding past the content column.
-     No radius: its outer edges are the screen's. Where it meets the plate it
-     fades into it — a mask, so it fades into whatever the plate is (the slab
-     gradient and the mill lines), not into a colour that has to be matched.
-     The largest thing on the page, so it is the LCP and loads with priority
-     (page.tsx).
-
-     object-position 40% 35%: the photograph is portrait (2:3) and every slot
-     it fills is wider than that, so `cover` crops top and bottom. 35% keeps
-     Craig's head and Simon's face in frame with Craig's raised hands; 40%
-     keeps both faces when a narrow slot crops the sides instead. */
-  &__photo {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    /* The message column ends at the centre line less half the gap. */
-    left: calc(50% + var(--home-hero-gap) / 2);
-    margin: 0;
-    z-index: 1;
-    overflow: hidden;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 72px);
-    mask-image: linear-gradient(90deg, transparent, #000 72px);
-  }
-
-  &__photo-img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: 40% 35%;
   }
 
   /* The hook, then the method. The first line is the one that makes someone
@@ -422,6 +376,97 @@
     color: var(--text-secondary);
     max-width: 46ch;
     margin: clamp(12px, 1.2vw, 18px) 0 0;
+  }
+}
+
+/* ── the photo frame and the stream links (HeroFrame.tsx) ────────────────
+   A 3:2 opening cut into the plate, the same recessed edge as every other
+   photograph (`.cut-photo`), with four photographs stacked in it. One shows;
+   the others are transparent. They swap on opacity alone, ~400ms. Under
+   reduced motion nothing runs at all, so the team photo simply sits there. */
+.home-frame {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+
+  &__photos {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    border-radius: $radius-md;
+    background: var(--surface-recessed);
+  }
+
+  &__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+
+    &.is-shown {
+      opacity: 1;
+    }
+  }
+
+  &__edge {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: inherit;
+    box-shadow:
+      inset 0 3px 8px -3px var(--carve-dark),
+      inset 0 -1px 0 var(--carve-lip);
+  }
+
+  /* The three streams, above the fold. Mono labels, the eyebrow style. Cyan
+     points: these navigate, so the lit one is --route-active, and at rest
+     none is. Each is a 24px+ target with the dot between them drawn in CSS,
+     so a screen reader hears three links, not punctuation. */
+  &__streams {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li + li::before {
+      content: '·';
+      padding-inline: 10px;
+      color: var(--text-subtle);
+    }
+  }
+
+  &__stream {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    font-family: $font-family-mono;
+    font-size: 12.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition:
+      color 0.3s ease,
+      border-color 0.3s ease;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--route-active);
+      border-bottom-color: currentColor;
+    }
+
+    &.is-active {
+      color: var(--route-active);
+    }
   }
 }
 
@@ -571,35 +616,22 @@
   }
 }
 
-/* ── narrow screens: photo on top ─────────────────────────────────────────
-   Below the two-column breakpoint the photograph goes first, full width at
-   4:5, cropped to the two faces, then the message, then the buttons. The fold
-   may be taller than one screen here. The copy is NEVER shrunk to make it
-   fit: the old tiers that compressed type (and on short screens hid the sub
-   copy) existed to squeeze three doors into one screen, and the doors are
-   gone (hero-rebuild). */
+/* ── narrow screens: frame on top ─────────────────────────────────────────
+   Below the two-column breakpoint the photo frame goes first, full width at
+   3:2 with the stream links under it, then the message and the buttons. The
+   fold may be taller than one screen here. The copy is NEVER shrunk to make
+   it fit (hero-rebuild). */
 @media (max-width: $breakpoint-desktop) {
   .home-plate {
-    grid-template-rows: auto auto auto auto;
-    padding-block: 0 clamp(24px, 5vw, 40px);
-  }
-
-  .home-hero__photo {
-    position: relative;
-    inset: auto;
-    grid-row: 1;
-    /* Full bleed: out through the plate's side padding. */
-    margin-inline: calc(-1 * var(--home-gutter));
-    aspect-ratio: 4 / 5;
-    /* A tablet held upright is wide enough that 4:5 would be most of two
-       screens. Past this it crops further, still round the faces. */
-    max-height: 88svh;
-    -webkit-mask-image: none;
-    mask-image: none;
+    padding-block: clamp(20px, 5vw, 36px) clamp(24px, 5vw, 40px);
   }
 
   .home-hero__inner {
-    margin-top: clamp(26px, 6vw, 44px);
+    row-gap: clamp(26px, 6vw, 40px);
+  }
+
+  .home-frame {
+    order: -1;
   }
 }
 

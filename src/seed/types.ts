@@ -100,7 +100,7 @@ export interface SeedContent {
   crew: SeedCrew[]
   partners: SeedPartner[]
   site: {
-    heroPhoto: Key
+    heroPhotos: { software: Key; robotics: Key; websites: Key; team: Key }
     workingPhoto: Key
     groupPhoto: Key | null
     comingSoon: Array<{ name: string; stream: string }>

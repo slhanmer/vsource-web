@@ -101,10 +101,6 @@ const content: SeedContent = {
       file: 'built/sauce.jpg',
       alt: 'A sheet of SAUCE components — inputs, buttons, a table and a dropdown — on a dark theme.',
     },
-    'photos/at-the-desk': {
-      file: 'photos/at-the-desk.jpg',
-      alt: 'Craig, standing, talks through code on a monitor while Simon types at the keyboard.',
-    },
     'crew/simon-hanmer': {
       file: 'crew/simon-hanmer.jpg',
       alt: 'Simon Hanmer',
@@ -124,6 +120,22 @@ const content: SeedContent = {
     'photos/pointing': {
       file: 'photos/pointing.jpg',
       alt: 'Craig points to a line of code on a monitor while Simon looks on.',
+    },
+    'hero/hero-software': {
+      file: 'hero/hero-software.jpg',
+      alt: 'A hand points to a line of code on a monitor while Simon looks on.',
+    },
+    'hero/hero-robotics': {
+      file: 'hero/hero-robotics.jpg',
+      alt: 'The Huntsman, an eight-legged robot, on a stone bench.',
+    },
+    'hero/hero-websites': {
+      file: 'hero/hero-websites.jpg',
+      alt: 'The Snug website: its wordmark over a dark photograph of the room at night.',
+    },
+    'hero/hero-team': {
+      file: 'hero/hero-team.jpg',
+      alt: 'Simon, Craig and Ronan in V Source shirts against a wall of jasmine.',
     },
   },
   streams: [
@@ -723,6 +735,12 @@ const content: SeedContent = {
     },
   ],
   site: {
+    heroPhotos: {
+      software: 'hero/hero-software',
+      robotics: 'hero/hero-robotics',
+      websites: 'hero/hero-websites',
+      team: 'hero/hero-team',
+    },
     workingPhoto: 'photos/team-group',
     groupPhoto: 'photos/team-group',
     comingSoon: [
@@ -739,7 +757,6 @@ const content: SeedContent = {
         stream: 'software',
       },
     ],
-    heroPhoto: 'photos/at-the-desk',
   },
   retired: {
     projects: [
@@ -751,7 +768,13 @@ const content: SeedContent = {
       'bar-coopers',
       'don-gino',
     ],
-    media: ['software-door.jpg', 'software-step.jpg', 'working.jpg', 'placeholder-site.jpg'],
+    media: [
+      'software-door.jpg',
+      'software-step.jpg',
+      'working.jpg',
+      'placeholder-site.jpg',
+      'at-the-desk.jpg',
+    ],
   },
 }
 

@@ -3,6 +3,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { CONTACT } from '@constants'
 import { getCrew, getPartners, getSite, getStreams } from '@/data'
+import HeroFrame from '@/components/home/HeroFrame'
+import { HeroRunProvider } from '@/components/home/HeroRun'
 import MillLines from '@/components/home/MillLines'
 import Reveal from '@/components/home/Reveal'
 import RotatingHeadline from '@/components/home/RotatingHeadline'
@@ -49,11 +51,10 @@ export default async function Home() {
   return (
     <main className="home">
       {/*
-        The fold is one machined plate: the message on the left, and a
-        photograph of the team at work on the right, the full height of the
-        plate and bleeding off the right edge (hero-rebuild, 5 November). The
-        three stream doors that used to be here are gone: "What changes",
-        straight after, introduces the streams and links to the same pages.
+        The fold is one machined plate: the message on the left; on the
+        right a 3:2 photo frame that follows the headline (each stream's
+        picture while its word is typed, then the team, which stays) and,
+        under it, the three streams as links (review-2, 5 November).
       */}
       <section className="home-hero">
         <div className="home-plate">
@@ -61,45 +62,45 @@ export default async function Home() {
               under reduced motion, where the CSS lines stay. */}
           <MillLines />
 
-          {/* First in the source, so on a narrow screen it is on top. The
-              LCP: priority, and sizes for the half-width slot it fills on a
-              wide screen and the full width it fills on a narrow one. */}
-          <figure className="home-hero__photo">
-            <Image
-              src={site.heroPhoto.src}
-              alt={site.heroPhoto.alt}
-              width={site.heroPhoto.width}
-              height={site.heroPhoto.height}
-              priority
-              sizes="(max-width: 979px) 100vw, 50vw"
-              className="home-hero__photo-img"
-            />
-          </figure>
+          {/* One timeline for the headline, the photo and the stream links
+              (HeroRun.tsx). */}
+          <HeroRunProvider>
+            <div className="home-hero__inner">
+              <div className="home-hero__say">
+                <RotatingHeadline />
 
-          <div className="home-hero__inner">
-            <div className="home-hero__say">
-              <RotatingHeadline />
+                <p className="home-hero__lede">
+                  Most businesses bend themselves around tools that nearly fit.
+                </p>
+                <p className="home-hero__sub">
+                  It starts with a conversation about what is actually going wrong. Then we build
+                  the thing that fixes it, and stay on to run it.
+                </p>
 
-              <p className="home-hero__lede">
-                Most businesses bend themselves around tools that nearly fit.
-              </p>
-              <p className="home-hero__sub">
-                It starts with a conversation about what is actually going wrong. Then we build the
-                thing that fixes it, and stay on to run it.
-              </p>
-
-              {/* The copy promises a conversation, so the fold offers one;
+                {/* The copy promises a conversation, so the fold offers one;
                   and for someone who wants to see first, the work. */}
-              <p className="home-hero__cta">
-                <Link href="/contact" className="basic-button">
-                  Start a conversation
-                </Link>
-                <Link href="/built" className="basic-button secondary-button">
-                  See what we&rsquo;ve built
-                </Link>
-              </p>
+                <p className="home-hero__cta">
+                  <Link href="/contact" className="basic-button">
+                    Start a conversation
+                  </Link>
+                  <Link href="/built" className="basic-button secondary-button">
+                    See what we&rsquo;ve built
+                  </Link>
+                </p>
+              </div>
+
+              {/* The photo follows the headline; the links under it are the
+                three streams, above the fold from the first paint. */}
+              <HeroFrame
+                photos={site.heroPhotos}
+                streams={streams.map((stream) => ({
+                  slug: stream.slug,
+                  name: stream.name,
+                  href: stream.href,
+                }))}
+              />
             </div>
-          </div>
+          </HeroRunProvider>
 
           {/*
             The plate's bottom edge. Two jobs: it stops a short content block

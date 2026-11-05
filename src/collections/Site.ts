@@ -16,19 +16,34 @@ export const Site: GlobalConfig = {
   fields: [
     {
       /*
-       * The home page fold's photograph: the full height of the fold, on the
-       * right, bleeding to the edge of the screen. It is the largest thing on
-       * the page (the LCP), so it loads with priority. Its crop is set in
-       * home.scss (`object-position`) to keep both faces and the hands in
-       * frame, so a replacement needs the same composition or a new crop.
+       * The home page fold's photographs (review-2, 5 November). The photo
+       * follows the headline: each stream's picture while its word is typed,
+       * then the team, which stays. All four are 3:2 and share one frame.
+       *
+       * `team` is what the server renders, what shows without JavaScript and
+       * under reduced motion, and what the fold settles on, so it is the LCP
+       * and the one loaded with priority.
        */
-      name: 'heroPhoto',
-      type: 'upload',
-      relationTo: 'media',
+      name: 'heroPhotos',
+      type: 'group',
       admin: {
         description:
-          'The home page fold photograph. Its crop is set in code; a new photo needs checking at every width.',
+          'The home page fold: one 3:2 photograph per stream, shown while its word is typed, then the team photograph, which stays.',
       },
+      fields: [
+        /* Not `required` at the database: a NOT NULL column cannot be added
+           to the existing row. src/data/ refuses to render without all
+           four, with a message naming the missing one. */
+        { name: 'software', type: 'upload', relationTo: 'media' },
+        { name: 'robotics', type: 'upload', relationTo: 'media' },
+        { name: 'websites', type: 'upload', relationTo: 'media' },
+        {
+          name: 'team',
+          type: 'upload',
+          relationTo: 'media',
+          admin: { description: 'Where the fold settles, and all that shows without motion.' },
+        },
+      ],
     },
     {
       name: 'workingPhoto',

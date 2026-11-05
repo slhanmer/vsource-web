@@ -273,7 +273,12 @@ async function main() {
   }
 
   const site = {
-    heroPhoto: img(content.site.heroPhoto),
+    heroPhotos: {
+      software: img(content.site.heroPhotos.software),
+      robotics: img(content.site.heroPhotos.robotics),
+      websites: img(content.site.heroPhotos.websites),
+      team: img(content.site.heroPhotos.team),
+    },
     workingPhoto: img(content.site.workingPhoto),
     groupPhoto: content.site.groupPhoto ? img(content.site.groupPhoto) : null,
     comingSoon: content.site.comingSoon.map((c) => ({ name: c.name, stream: stream(c.stream) })),
