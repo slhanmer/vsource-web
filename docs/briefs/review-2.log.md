@@ -55,3 +55,19 @@ Settled fold: the buttons and links are in the first screen at every wide size
 (links bottom: 627/768, 662/900, 727/1050, 741/1080). The frame is about
 576×384. At 390×844 the frame, the links, then the copy. Screenshots:
 `C:\tmp\review-2\fold\fold-<w>x<h>-<theme>.png`.
+
+## §2 The other group shot
+
+The new `team-group.jpg` replaces the file of the **same media document**
+(id 29), which is `/team`'s group photo and the home "Why" photo. Same alt.
+
+**A seed bug this found, and its fix.** When the seed swaps a changed file
+into an existing row, Payload finds the old file still on disk and saves the
+new one as `team-group-1.jpg`. The next seed run looked up the exact name
+`team-group.jpg`, didn't find it, and **created a second document** (id 35),
+pointing the site at it. Fixed in `src/seed/run.ts`: `byFilename` now treats
+`name-N.ext` as the same asset and takes the oldest matching row. I then
+deleted the duplicate (id 35, checked by filename before deleting) through
+the admin API. Result: one document, the original id 29, holding the new
+file (536,740 bytes), used by both slots. **Two further seed runs: 0
+changes.**

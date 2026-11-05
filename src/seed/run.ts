@@ -46,14 +46,31 @@ async function bySlug(payload: Payload, collection: CollectionSlug, slug: string
   return (docs[0] as unknown as Row | undefined) ?? null
 }
 
+/*
+ * The media row for an asset file: its exact name, or Payload's rename of it.
+ *
+ * ⚠ REPLACING A FILE RENAMES IT. When the seed swaps a changed file into an
+ * existing row, Payload finds the old file still on disk and saves the new
+ * one as `name-1.jpg`. Looking up by the exact name alone then misses the
+ * row on the next run and CREATES A SECOND ONE (review-2 §2 did exactly
+ * that). So `name-N.ext` counts as the same asset, and the oldest row wins.
+ */
 async function byFilename(payload: Payload, file: string) {
+  const base = path.basename(file)
+  const ext = path.extname(base)
+  const stem = base.slice(0, -ext.length)
   const { docs } = await payload.find({
     collection: MEDIA,
-    where: { filename: { equals: path.basename(file) } },
-    limit: 1,
+    where: { filename: { like: stem } },
+    sort: 'id',
+    limit: 50,
     depth: 0,
   })
-  return (docs[0] as unknown as Row | undefined) ?? null
+  const same = new RegExp(
+    `^${stem.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(-\\d+)?${ext.replace('.', '\\.')}$`
+  )
+  const rows = docs as unknown as Array<Row & { filename: string }>
+  return rows.find((row) => row.filename === base || same.test(row.filename)) ?? null
 }
 
 async function versionCount(payload: Payload, collection: CollectionSlug, id: number) {
