@@ -9,6 +9,7 @@ import * as migration_20261105_013331_drop_door_fields from './20261105_013331_d
 import * as migration_20261105_052747_hero_stage from './20261105_052747_hero_stage';
 import * as migration_20261105_065118_hero_bands from './20261105_065118_hero_bands';
 import * as migration_20261105_070136_step_clip from './20261105_070136_step_clip';
+import * as migration_20261105_081531_stream_hidden from './20261105_081531_stream_hidden';
 
 export const migrations = [
   {
@@ -64,6 +65,11 @@ export const migrations = [
   {
     up: migration_20261105_070136_step_clip.up,
     down: migration_20261105_070136_step_clip.down,
-    name: '20261105_070136_step_clip'
+    name: '20261105_070136_step_clip',
+  },
+  {
+    up: migration_20261105_081531_stream_hidden.up,
+    down: migration_20261105_081531_stream_hidden.down,
+    name: '20261105_081531_stream_hidden'
   },
 ];

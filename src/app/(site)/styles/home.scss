@@ -428,8 +428,9 @@
   --home-stage-gap: clamp(16px, 1.6vw, 28px);
   --home-stage-carve: inset 0 3px 8px -3px var(--carve-dark), inset 0 -1px 0 var(--carve-lip);
   position: absolute;
-  /* LOCKED TO THE FILES' SHAPES (hero-insets-2). Three 3:1 bands and two
-     gaps, so the stage is as tall as it is wide plus two gaps; the run
+  /* LOCKED TO THE FILES' SHAPES (hero-insets-2). One 3:1 band per visible
+     stream and a gap between each (three streams: as tall as it is wide plus
+     two gaps; two: two thirds of its width plus one); the run
      window fills the same box, which is nearly square, and the square file
      covers it with a sliver trimmed. It sits in the copy block's second
      column, in the flow, centred on the copy by the grid's
@@ -443,10 +444,16 @@
   justify-self: end;
   width: min(
     100%,
+    /* n bands at 3:1 and n − 1 gaps fit the room: w·n/3 + (n − 1)·gap ≤ room.
+       n is the number of visible streams (--home-stage-count, set by
+       HeroStage; hide-websites). */
     calc(
-      100svh - var(--home-fold-trim) - 2 * var(--home-fold-air) - var(--home-foot-h) - 2 *
-        var(--home-stage-gap) - 28px
-    )
+        (
+            100svh - var(--home-fold-trim) - 2 * var(--home-fold-air) - var(--home-foot-h) -
+              (var(--home-stage-count, 3) - 1) * var(--home-stage-gap) - 28px
+          ) *
+          3 / var(--home-stage-count, 3)
+      )
   );
 
   &__solo {

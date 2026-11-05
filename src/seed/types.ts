@@ -20,6 +20,8 @@ export interface SeedStream {
   slug: string
   name: string
   order: number
+  /** Off the site, reversibly (hide-websites). Omitted means visible. */
+  hidden?: boolean
   problem: string
   instead: string
   solution: string

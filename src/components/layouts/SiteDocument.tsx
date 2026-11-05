@@ -1,8 +1,10 @@
 import { CONTACT } from '@constants'
+import { getStreams } from '@/data'
 import CursorSpark from './CursorSpark'
 import { fontVariables } from './fonts'
 import SiteFooter from './SiteFooter'
 import SiteHeader from './SiteHeader'
+import { siteNav } from './siteNav'
 import { Providers } from './SiteProviders'
 import '@styles/global.scss'
 import '@/app/(site)/styles/shell.scss'
@@ -70,7 +72,9 @@ const WEBSITE = {
  * only overrides it when the visitor has explicitly chosen a theme — it runs
  * before paint, which is why it is inline and not a component.
  */
-export default function SiteDocument({ children }: { children: React.ReactNode }) {
+export default async function SiteDocument({ children }: { children: React.ReactNode }) {
+  // The nav's streams are the visible ones (hide-websites).
+  const nav = siteNav(await getStreams())
   return (
     <html lang="en-AU" data-theme="dark" className={fontVariables} suppressHydrationWarning>
       {/* This is an App Router root document (rendered by app/(site)/layout.tsx
@@ -94,7 +98,7 @@ export default function SiteDocument({ children }: { children: React.ReactNode }
             <a href="#main" className="skip-link">
               Skip to content
             </a>
-            <SiteHeader />
+            <SiteHeader nav={nav} />
             <div className="site-scroll">
               {/*
                 The footer is INSIDE the scroller now. It used to be pinned

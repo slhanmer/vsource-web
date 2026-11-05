@@ -5,13 +5,13 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { HeroPhoto } from '@/data/types'
 import { useHeroRun } from './HeroRun'
-import { SETTLE_MS, WORDS } from './headlineTimeline'
-
-type Key = 'software' | 'robotics' | 'websites'
+import { SETTLE_MS } from './headlineTimeline'
 
 interface Props {
-  photos: Record<Key, HeroPhoto>
-  /** The three streams, in WORDS order: the bands. */
+  /** Keyed by stream slug. A stream without photos is left out of the stage. */
+  photos: Partial<Record<string, HeroPhoto>>
+  /** The visible streams, in the headline's word order: the bands
+   *  (hide-websites: however many there are). */
   streams: Array<{ slug: string; name: string; href: string }>
 }
 
@@ -32,7 +32,7 @@ const SIZES = '(max-width: 979px) 100vw, 620px'
  *   - WHILE THE HEADLINE RUNS, one big photograph per word, crossfading in as
  *     the word finishes typing (HeroRun.tsx carries the timing from
  *     headlineTimeline.ts; nothing here has a timer).
- *   - WHEN IT LANDS BACK ON SOFTWARE, the stage settles (SETTLE_MS) into three
+ *   - WHEN IT LANDS BACK ON SOFTWARE, the stage settles (SETTLE_MS) into its
  *     bands, one per stream, each a link to its stream page. That is the
  *     permanent state, and it is also what the server renders, what shows
  *     without JavaScript and under reduced motion, and on narrow screens,
@@ -50,25 +50,36 @@ const SIZES = '(max-width: 979px) 100vw, 620px'
 export default function HeroStage({ photos, streams }: Props) {
   const run = useHeroRun()
   const active = run?.active ?? null
-  const shown: Key | null = active === null ? null : (WORDS[active].toLowerCase() as Key)
-  const order: Key[] = ['software', 'robotics', 'websites']
+  // Only streams with photos: the headline's words and the bands are the
+  // same list, in the same order, so `active` indexes both.
+  const shown = active === null ? null : (streams[active]?.slug ?? null)
+  const order = streams.flatMap((stream) => {
+    const hero = photos[stream.slug]
+    return hero ? [{ key: stream.slug, hero }] : []
+  })
 
   return (
     <div
       className={`home-stage${shown ? ' is-running' : ''}`}
-      style={{ '--home-stage-settle': `${SETTLE_MS}ms` } as CSSProperties}
+      style={
+        {
+          '--home-stage-settle': `${SETTLE_MS}ms`,
+          // The stage's height is this many 3:1 bands (home.scss).
+          '--home-stage-count': order.length,
+        } as CSSProperties
+      }
     >
       {/* The slideshow. Decorative while it runs, except for the photo on
           screen, which carries its alt text. */}
       <div className="home-stage__solo">
-        {order.map((key) => (
+        {order.map(({ key, hero }) => (
           <Image
             key={key}
-            src={photos[key].photo.src}
-            alt={key === shown ? photos[key].photo.alt : ''}
+            src={hero.photo.src}
+            alt={key === shown ? hero.photo.alt : ''}
             aria-hidden={key === shown ? undefined : true}
-            width={photos[key].photo.width}
-            height={photos[key].photo.height}
+            width={hero.photo.width}
+            height={hero.photo.height}
             sizes={SIZES}
             loading="eager"
             className={`home-stage__solo-img${key === shown ? ' is-shown' : ''}`}
@@ -77,13 +88,12 @@ export default function HeroStage({ photos, streams }: Props) {
         <span className="home-stage__edge" aria-hidden="true" />
       </div>
 
-      {/* The three ways in. Each band is one link, named by the stream; the
+      {/* The ways in, one per visible stream. Each band is one link, named by the stream; the
           photo in it is decoration, so its alt is empty and a screen reader
           hears "Software, link", not the photo's description first. */}
       <ul className="home-stage__bands" aria-label="What we do">
         {streams.map((stream) => {
-          const key = stream.slug as Key
-          const hero = photos[key]
+          const hero = photos[stream.slug]
           if (!hero) return null
           const band = hero.band
           return (

@@ -16,6 +16,7 @@ export function streamData(s: SeedStream, media: Resolve) {
     slug: s.slug,
     name: s.name,
     order: s.order,
+    hidden: s.hidden ?? false,
     problem: s.problem,
     instead: s.instead,
     solution: s.solution,

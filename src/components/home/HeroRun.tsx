@@ -10,7 +10,7 @@ import {
   type ReactNode,
 } from 'react'
 import { useReducedMotion } from '@hooks'
-import { SEQUENCE } from './headlineTimeline'
+import { sequenceOf } from './headlineTimeline'
 
 /**
  * The fold's one timeline, shared (review-2, then hero-stage, 5 November).
@@ -33,9 +33,14 @@ import { SEQUENCE } from './headlineTimeline'
  */
 
 interface HeroRunValue {
-  /** Index into WORDS of the word on screen while the run plays; null at rest. */
+  /** The visible streams' names, in order: the headline's words and the
+   *  stage's photos (hide-websites). */
+  words: string[]
+  /** The words as played: all of them, then the first again. */
+  sequence: string[]
+  /** Index into `words` of the word on screen while the run plays; null at rest. */
   active: number | null
-  /** Called by the headline when SEQUENCE[step] has finished typing. */
+  /** Called by the headline when sequence[step] has finished typing. */
   wordTyped: (step: number) => void
 }
 
@@ -45,26 +50,33 @@ export function useHeroRun() {
   return useContext(HeroRunContext)
 }
 
-export function HeroRunProvider({ children }: { children: ReactNode }) {
+export function HeroRunProvider({ words, children }: { words: string[]; children: ReactNode }) {
   const reduced = useReducedMotion()
   const [active, setActive] = useState<number | null>(null)
+  const sequence = useMemo(() => sequenceOf(words), [words])
+  // One stream is nothing to run through: the fold just shows it settled.
+  const runs = words.length > 1
 
-  // Start on Software a frame after mount — the same priming the rest of the
-  // home page uses, and it keeps the state change out of the effect body.
+  // Start on the first word a frame after mount — the same priming the rest
+  // of the home page uses, and it keeps the state change out of the effect body.
   useEffect(() => {
-    if (reduced) return
+    if (reduced || !runs) return
     const frame = requestAnimationFrame(() => setActive(0))
     return () => cancelAnimationFrame(frame)
-  }, [reduced])
+  }, [reduced, runs])
 
-  const wordTyped = useCallback((step: number) => {
-    // Back on the first word: the run is over, and the fold settles.
-    setActive(step >= SEQUENCE.length - 1 ? null : step)
-  }, [])
+  const last = sequence.length - 1
+  const wordTyped = useCallback(
+    (step: number) => {
+      // Back on the first word: the run is over, and the fold settles.
+      setActive(step >= last ? null : step)
+    },
+    [last]
+  )
 
   const value = useMemo(
-    () => ({ active: reduced ? null : active, wordTyped }),
-    [reduced, active, wordTyped]
+    () => ({ words, sequence, active: reduced || !runs ? null : active, wordTyped }),
+    [words, sequence, reduced, runs, active, wordTyped]
   )
 
   return <HeroRunContext.Provider value={value}>{children}</HeroRunContext.Provider>

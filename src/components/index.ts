@@ -47,5 +47,5 @@ export { default as HoneypotField } from './security/HoneyPot'
 // LAYOUT COMPONENTS
 export { default as SiteHeader } from './layouts/SiteHeader'
 export { default as SiteFooter } from './layouts/SiteFooter'
-export { SITE_NAV } from './layouts/siteNav'
+export { siteNav } from './layouts/siteNav'
 export type { SiteNavItem } from './layouts/siteNav'

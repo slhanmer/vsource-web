@@ -3,12 +3,13 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from '@hooks'
 import { useHeroRun } from './HeroRun'
-import { DELETE_MS, HOLD_MS, SEQUENCE, TYPE_MS, WORDS } from './headlineTimeline'
+import { DELETE_MS, HOLD_MS, TYPE_MS, sentenceOf } from './headlineTimeline'
 
 /**
  * The headline performs the thesis.
  *
  * "Software / Robotics / Websites — built to fit", where the leading word
+ * (the words are the visible streams, from HeroRun: hide-websites)
  * sits in a cut slot. The slot is cut once, to the width of the widest word,
  * and never changes after that: each word is typed into the same opening,
  * left-aligned on the same baseline, and the shorter ones leave a little of it
@@ -38,6 +39,10 @@ import { DELETE_MS, HOLD_MS, SEQUENCE, TYPE_MS, WORDS } from './headlineTimeline
  *      word or a longer hold takes it over. Under prefers-reduced-motion it does
  *      not run at all.
  */
+/** Outside the fold's provider there is no stream list; never the case on
+ *  the home page, but it keeps the component total. */
+const FALLBACK = ['Software']
+
 export default function RotatingHeadline() {
   const slotRef = useRef<HTMLSpanElement>(null)
   const innerRef = useRef<HTMLSpanElement>(null)
@@ -45,16 +50,20 @@ export default function RotatingHeadline() {
    *  down and restart the timer chain that is advancing it. */
   const stepRef = useRef(0)
 
+  const run = useHeroRun()
+  const words = run?.words ?? FALLBACK
+  const sequence = run?.sequence ?? FALLBACK
+
   const [step, setStep] = useState(0)
-  const [shown, setShown] = useState<number>(SEQUENCE[0].length)
+  const [shown, setShown] = useState<number>(sequence[0].length)
   const [typing, setTyping] = useState(false)
 
   const reduced = useReducedMotion()
   /** The fold's photo frame and stream links run off this same timeline
    *  (HeroRun.tsx): each is told the moment its word finishes typing. Stable
    *  identity, so the run below is not restarted by it. Null outside the fold. */
-  const wordTyped = useHeroRun()?.wordTyped
-  const word = reduced ? SEQUENCE[SEQUENCE.length - 1] : SEQUENCE[step]
+  const wordTyped = run?.wordTyped
+  const word = reduced ? sequence[sequence.length - 1] : sequence[step]
   const caret = typing && !reduced
 
   /**
@@ -74,7 +83,7 @@ export default function RotatingHeadline() {
       if (cancelled || !slot || !inner) return
 
       const widest = Math.max(
-        ...WORDS.map((candidate) => {
+        ...words.map((candidate) => {
           const probe = inner.cloneNode(false) as HTMLElement
           probe.textContent = candidate
           probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre'
@@ -94,13 +103,13 @@ export default function RotatingHeadline() {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [words])
 
-  // The run: hold, backspace, type — once through SEQUENCE, then stop.
+  // The run: hold, backspace, type — once through sequence, then stop.
   // Reduced motion tears the chain down; the render below then shows the last
   // word, which is the first word, so nothing visibly changes.
   useEffect(() => {
-    const last = SEQUENCE.length - 1
+    const last = sequence.length - 1
     if (reduced || stepRef.current >= last) return
 
     let alive = true
@@ -115,7 +124,7 @@ export default function RotatingHeadline() {
 
     const erase = () => {
       setTyping(true)
-      let n = SEQUENCE[stepRef.current].length
+      let n = sequence[stepRef.current].length
       const back = () => {
         n -= 1
         setShown(Math.max(n, 0))
@@ -138,7 +147,7 @@ export default function RotatingHeadline() {
       const forward = () => {
         n += 1
         setShown(n)
-        if (n < SEQUENCE[stepRef.current].length) after(TYPE_MS, forward)
+        if (n < sequence[stepRef.current].length) after(TYPE_MS, forward)
         else {
           setTyping(false)
           // In the same update as the last letter, so a photo and its word
@@ -155,14 +164,14 @@ export default function RotatingHeadline() {
       alive = false
       window.clearTimeout(timer)
     }
-  }, [reduced, wordTyped])
+  }, [reduced, wordTyped, sequence])
 
   const visible = reduced ? word.length : shown
 
   return (
     <div className="rotator">
       <h1 className="rotator__h1">
-        <span className="visually-hidden">Software, robotics and websites, built to fit.</span>
+        <span className="visually-hidden">{sentenceOf(words)}</span>
         {/*
           The slot, then "built to fit." beside it on the same baseline, or
           under it where the column is too narrow (hero-insets; home.scss).

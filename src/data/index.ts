@@ -22,6 +22,8 @@ import type {
   Upcoming,
 } from './types'
 
+import { visibleOnly } from './visible'
+
 export type * from './types'
 
 /*
@@ -240,11 +242,33 @@ function toPartner(doc: PartnerDoc): Partner {
   }
 }
 
+/**
+ * THE VISIBLE STREAMS, and only those (hide-websites, 5 November). Every page
+ * reads this one list: the header nav, the hero's words and stage, What
+ * changes, the stream pages and their static params, and the sitemap. So a
+ * stream with `hidden` ticked in /admin is gone from all of them at once,
+ * with no special case anywhere, and comes back the same way.
+ */
 export const getStreams = cached('streams', async (): Promise<Stream[]> => {
   const { docs } = await (
     await payload()
   ).find({ collection: 'streams', sort: 'order', depth: 1, limit: 100, draft: false })
-  return docs.map(toStream)
+  return visibleOnly(docs).map(toStream)
+})
+
+/** The slugs of hidden streams: only so their old URLs can redirect home
+ *  rather than 404 ([stream]/page.tsx). Nothing renders from this. */
+export const getHiddenStreamSlugs = cached('hidden-streams', async (): Promise<string[]> => {
+  const { docs } = await (
+    await payload()
+  ).find({
+    collection: 'streams',
+    depth: 0,
+    limit: 100,
+    draft: false,
+    where: { hidden: { equals: true } },
+  })
+  return docs.map((doc) => doc.slug)
 })
 
 export const getProjects = cached('projects', async (): Promise<Project[]> => {

@@ -10,9 +10,11 @@ export interface SiteNavItem {
 }
 
 /**
- * The three streams first, because they are what is being sold, then the proof
- * and the way to start. The streams are in the same order as STREAMS
- * (constants/streams.ts) — keep the two in step.
+ * The streams first, because they are what is being sold, then the proof and
+ * the way to start. The streams are the VISIBLE ones, in their order, from
+ * src/data (hide-websites): a hidden stream is simply not passed in, so it is
+ * not in the nav. SiteDocument fetches them and hands the result to the
+ * header.
  *
  * Team is deliberately NOT here. Five nav items plus a mark and a theme switch
  * is more than a 68px band can hold honestly, and of the five the people page
@@ -20,10 +22,10 @@ export interface SiteNavItem {
  * reachable from the home page's team section, from the footer and from the
  * sitemap — see the note in SiteFooter about giving it a link there.
  */
-export const SITE_NAV: SiteNavItem[] = [
-  { label: 'Software', href: '/software' },
-  { label: 'Robotics', href: '/robotics' },
-  { label: 'Websites', href: '/websites' },
-  { label: 'Built', href: '/built' },
-  { label: 'Contact', href: '/contact' },
-]
+export function siteNav(streams: Array<{ name: string; href: string }>): SiteNavItem[] {
+  return [
+    ...streams.map((stream) => ({ label: stream.name, href: stream.href })),
+    { label: 'Built', href: '/built' },
+    { label: 'Contact', href: '/contact' },
+  ]
+}

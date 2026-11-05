@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { contentAccess, lines, orderField, pendingField, slugField } from './fields'
+import { isAdminField } from '../lib/access'
 
 /*
  * The three streams. Drives the home page's "What changes" rows, and
@@ -31,6 +32,21 @@ export const Streams: CollectionConfig = {
     { name: 'name', type: 'text', required: true, admin: { description: 'Plain, searchable.' } },
     slugField,
     orderField,
+    {
+      /* hide-websites: a stream can leave the site and come back with this
+         box alone. src/data/ drops hidden streams from the one list every
+         page reads (nav, hero, What changes, stream pages, sitemap), and the
+         stream's own URL redirects home. Its content and media stay. Admin
+         only: which streams exist is composition, not copy. */
+      name: 'hidden',
+      type: 'checkbox',
+      defaultValue: false,
+      access: { update: isAdminField },
+      admin: {
+        position: 'sidebar',
+        description: 'Hidden streams have no page, and appear nowhere on the site.',
+      },
+    },
     {
       type: 'collapsible',
       label: 'Home page',

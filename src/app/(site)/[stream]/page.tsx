@@ -1,9 +1,9 @@
 import type { CSSProperties } from 'react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { STREAM_COMMON } from '@constants'
-import { getProjects, getStream, getStreams } from '@/data'
+import { getHiddenStreamSlugs, getProjects, getStream, getStreams } from '@/data'
 import ProjectMedia from '@/components/built/ProjectMedia'
 import CutPhoto from '@/components/photos/CutPhoto'
 import '../styles/pages.scss'
@@ -29,6 +29,13 @@ import '../styles/built.scss'
  * Next then refuses to regenerate a prerendered stream page it can no longer
  * find in its cache (NoFallbackError), and /software, /robotics and /websites
  * all 404 until the next deploy. Found by the cms brief's verify step.
+ *
+ * A HIDDEN STREAM (hide-websites) is not in getStreams(), so it has no static
+ * page and no metadata. Its URL redirects home, TEMPORARILY (307): the old
+ * live site and links elsewhere point at /websites, and the redirect has to
+ * disappear the moment the box is unticked. That is why it is here, read
+ * from the data, and not a fixed redirect in next.config.ts, which would
+ * outlive the checkbox until somebody remembered to delete it.
  */
 export const dynamicParams = true
 
@@ -56,7 +63,10 @@ export async function generateMetadata({
 export default async function StreamPage({ params }: { params: Promise<{ stream: string }> }) {
   const { stream: slug } = await params
   const stream = await getStream(slug)
-  if (!stream) notFound()
+  if (!stream) {
+    if ((await getHiddenStreamSlugs()).includes(slug)) redirect('/')
+    notFound()
+  }
 
   // Anything on /built that belongs to this stream, so the offer and the proof
   // are one click apart in both directions.

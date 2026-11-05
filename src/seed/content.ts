@@ -349,6 +349,9 @@ const content: SeedContent = {
       slug: 'websites',
       name: 'Websites',
       order: 30,
+      // Off the site while Simon shows Craig two streams (hide-websites).
+      // Untick in /admin to bring it back; its content and media are kept.
+      hidden: true,
       problem: 'Every change to your site is a quote and a fortnight.',
       instead: 'A site you can change yourself, the afternoon you decide to.',
       solution:

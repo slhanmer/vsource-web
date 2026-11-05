@@ -16,10 +16,23 @@ import './styles/home.scss'
 // clip (home-tweaks).
 import './styles/built.scss'
 
-export const metadata: Metadata = {
-  title: 'Software, robotics and websites — Brisbane',
-  description:
-    'Custom software, robotics and websites, built in Brisbane on hardware we own. We work out what is actually wrong, build the thing that fixes it, and stay on to run it.',
+/** "software, robotics and websites": the visible streams, lower case. */
+function streamList(names: string[]): string {
+  const lower = names.map((name) => name.toLowerCase())
+  return lower.length > 1
+    ? `${lower.slice(0, -1).join(', ')} and ${lower.at(-1)}`
+    : (lower[0] ?? '')
+}
+
+/* From the visible streams (hide-websites), so a hidden stream is not named
+   in the title or the description either. */
+export async function generateMetadata(): Promise<Metadata> {
+  const list = streamList((await getStreams()).map((stream) => stream.name))
+  const title = list.charAt(0).toUpperCase() + list.slice(1)
+  return {
+    title: `${title} — Brisbane`,
+    description: `Custom ${list}, built in Brisbane on hardware we own. We work out what is actually wrong, build the thing that fixes it, and stay on to run it.`,
+  }
 }
 
 /**
@@ -66,7 +79,7 @@ export default async function Home() {
           <MillLines />
 
           {/* One timeline for the headline and the stage (HeroRun.tsx). */}
-          <HeroRunProvider>
+          <HeroRunProvider words={streams.map((stream) => stream.name)}>
             <div className="home-hero__inner">
               <div className="home-hero__say">
                 <RotatingHeadline />

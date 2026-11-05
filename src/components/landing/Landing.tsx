@@ -41,8 +41,13 @@ export default async function Landing({ slug }: { slug: string }) {
   const landing = LANDINGS.find((item) => item.slug === slug)
   if (!landing) notFound()
 
+  /* The landing's stream may be hidden (hide-websites: /accessibility belongs
+     to Websites). The page stays; its stream links point at /contact while
+     the stream is off the site, and the breadcrumb skips it. */
   const stream = await getStream(landing.stream)
-  if (!stream) notFound()
+  const streamName =
+    stream?.name ?? landing.stream.charAt(0).toUpperCase() + landing.stream.slice(1)
+  const streamHref = stream?.href ?? '/contact'
 
   const url = `${BASE}/${landing.slug}`
 
@@ -64,8 +69,15 @@ export default async function Landing({ slug }: { slug: string }) {
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: `${BASE}/` },
-      { '@type': 'ListItem', position: 2, name: stream.name, item: `${BASE}${stream.href}` },
-      { '@type': 'ListItem', position: 3, name: landing.metaTitle, item: url },
+      ...(stream
+        ? [{ '@type': 'ListItem', position: 2, name: stream.name, item: `${BASE}${stream.href}` }]
+        : []),
+      {
+        '@type': 'ListItem',
+        position: stream ? 3 : 2,
+        name: landing.metaTitle,
+        item: url,
+      },
     ],
   }
 
@@ -83,7 +95,7 @@ export default async function Landing({ slug }: { slug: string }) {
       <div className="stream__head">
         <div>
           <p className="page__eyebrow">
-            <Link href={stream.href}>{stream.name}</Link>
+            <Link href={streamHref}>{streamName}</Link>
           </p>
           <h1 className="page__title">{landing.title}</h1>
           <p className="page__lede">
@@ -96,7 +108,7 @@ export default async function Landing({ slug }: { slug: string }) {
             )}
           </p>
         </div>
-        <StreamMark id={stream.slug} className="stream__mark" />
+        <StreamMark id={landing.stream} className="stream__mark" />
       </div>
 
       {landing.sections.map((section) => (

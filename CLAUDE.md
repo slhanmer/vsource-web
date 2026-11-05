@@ -240,6 +240,17 @@ that return plain shapes (`src/data/types.ts`), with every image as a `Photo`
 generates every stream from the `streams` collection, with no redeploy. It
 does need a stream mark in `StreamMark`, which is drawn in code.
 
+**Hiding a stream is one checkbox** (`hidden`, admin only, hide-websites).
+`getStreams()` returns visible streams only (`src/data/visible.ts`), and
+everything reads that list: the header nav (`siteNav()`, fed by
+SiteDocument), the hero's words, timeline and stage (`HeroRunProvider
+words`), What changes, the stream pages and their params, the sitemap and
+the home page's title. A hidden stream's URL redirects home, temporarily
+(307), from `[stream]/page.tsx`, read from the data, so the redirect goes
+when the box is unticked. Its content and media stay. Nothing about the
+streams is hardcoded at three: `WORDS`/`SEQUENCE` are gone, replaced by
+`sequenceOf(words)`, and the stage is one 3:1 band per stream.
+
 ⚠ **`dynamicParams` stays `true` on `[stream]` and `built/[slug]`.** With
 `false`, a save in `/admin` invalidates the `content` tag, and Next then
 404s every prerendered page in that route (`NoFallbackError`) until the next
@@ -297,8 +308,8 @@ Do not hand-maintain a URL list.
 
 ## Routes
 
-`/` · `/software` · `/robotics` · `/websites` · `/built` · `/built/[slug]` ·
-`/team` · `/contact`
+`/` · `/software` · `/robotics` · `/websites` (hidden: 307 to `/`) · `/built` ·
+`/built/[slug]` · `/team` · `/contact` · `/regulated` · `/accessibility`
 
 Permanent redirects (308) in `next.config.ts`: `/work` → `/built`, `/services` → `/`, `/crew` → `/team`.
 
@@ -393,6 +404,11 @@ As of 5 November:
   a raised plate. Screenshots use `fit: 'contain'`, so they are never cropped.
   The grid is two columns, so four cards never leave an orphan. Recheck it
   when the count changes.
+- **Websites is hidden** (hide-websites, 5 November): Simon is showing
+  Craig a two-stream site. Untick `hidden` on the Websites stream in
+  `/admin` to bring it back; nothing else changes. `/accessibility` stays,
+  its stream link pointing at `/contact` while Websites is hidden. The venue
+  projects stay on `/built`.
 - Nothing is flagged `placeholder` or `pending` anywhere.
 - Real portraits from Mik's shoot for Craig, Simon and Ronan; Asuka's as
   before. Tom has no portrait, permanently: the terminal tile is his. The

@@ -9,7 +9,7 @@ import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons'
 import HeaderContacts from './HeaderContacts'
 import HeaderReadout from './HeaderReadout'
 import ThemeSwitch from './ThemeSwitch'
-import { SITE_NAV } from './siteNav'
+import type { SiteNavItem } from './siteNav'
 
 import './styles/siteHeader.scss'
 
@@ -38,7 +38,7 @@ import './styles/siteHeader.scss'
  * nothing to defer to, and the home page stops being the one page with a
  * bespoke header. The `#home-navcue` sentinel went with it.
  */
-export default function SiteHeader() {
+export default function SiteHeader({ nav }: { nav: SiteNavItem[] }) {
   const pathname = usePathname()
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -77,7 +77,7 @@ export default function SiteHeader() {
           </Link>
 
           <nav className="site-header__nav" aria-label="Primary">
-            {SITE_NAV.map((item) => (
+            {nav.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -125,7 +125,7 @@ export default function SiteHeader() {
         aria-label="Primary mobile"
         hidden={!menuOpen}
       >
-        {SITE_NAV.map((item) => (
+        {nav.map((item) => (
           <Link
             key={item.href}
             href={item.href}

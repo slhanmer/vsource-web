@@ -225,6 +225,10 @@ export interface Stream {
    */
   order: number;
   /**
+   * Hidden streams have no page, and appear nowhere on the site.
+   */
+  hidden?: boolean | null;
+  /**
    * Where someone is now. One short sentence they would recognise — a situation, never a failing.
    */
   problem: string;
@@ -677,6 +681,7 @@ export interface StreamsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   order?: T;
+  hidden?: T;
   problem?: T;
   instead?: T;
   solution?: T;
