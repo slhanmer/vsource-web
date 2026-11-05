@@ -174,3 +174,30 @@ Seed: 2 removed; second run 0 changes.
 headline, stream links, fallbacks), stream pages (photo head, alternating
 sections; `StreamMark` only on the landing pages), and `/built` (logo at
 60%, raised cards, `contain` screenshots).
+
+## Verify (production build, `next start -p 3130`, seeded preview DB)
+
+| Check | Result |
+|---|---|
+| `pnpm tsc --noEmit` | clean |
+| `pnpm lint` | only the known trailing comma in `next.config.ts:61` (not mine to edit) |
+| `pnpm test:ci` | 47 suites, 635 tests pass (`headlineTimeline` test unchanged) |
+| `pnpm build` | passes |
+| 1. Fold frames, 1440×900, every 250ms to 5s | software → robotics (1,500ms) → websites (2,500ms) → **team, nothing lit** (3,750ms on). No JS and reduced motion: team photo, links visible, none lit |
+| 2. Stream pages | all three: a photo in the head, media sections alternating right/left, 0 `StreamMark`. Robotics clip: muted, loop, poster, playing; pause → paused, label "Play this clip" |
+| 3. `/built` | Aptium logo 60% of its plate; Training Professionals, venues and SAUCE whole (`contain`); cards are raised plates 40/58px apart; "Coming soon", "CurbHire, software" |
+| 4. Seed and migrations | every section's seed run ends with a second run at 0 changes. Five migrations this run (`hero_photos`, `stream_media`, `media_fit`, `drop_door_fields`), all applied cleanly to the preview DB through `deploy-migrate.ts` |
+| 5. axe | all 14 sitemap routes plus the 404, light and dark: **30 runs, 0 violations** |
+
+Screenshots: `C:\tmp\review-2\` (`fold\`, `streams\`, `built\`), with
+`axe.json`.
+
+## Decisions for Simon
+
+- **Aptium logo resolution:** the 185×56 PNG is upscaled about 1.8× at 60%
+  of the plate. Upload a larger PNG or an SVG to the same media document if
+  it looks soft.
+- **`huntsman-top.jpg` is gone** (§5): nothing referenced it once the door
+  fields went. It is still in git history if you want it back for a page.
+
+STATUS: done
