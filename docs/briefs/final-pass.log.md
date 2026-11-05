@@ -43,3 +43,23 @@ sides; more air in the copy; mobile type).
   dark: 30 runs, 0 violations.
 
 Screenshots: `C:\tmp\final-pass\why-*.png`.
+
+## 3. Clear the inbox
+
+- **Deleting was refused** (the auto-mode permission check blocked
+  `rm -rf`), so, as the brief says, everything went to
+  **`_to_delete/media-inbox/`**:
+  - `contact/`: Claude's 17 contact sheets.
+  - `update/`: `aptium-logo.png`, `nug.jpg`, `nug-row.jpg` and
+    `venues-montage.jpg`. I checked each one with `cmp`: it is byte-identical
+    to its seed asset.
+  - `photos/`: `at-the-desk.jpg`. This is the **unblurred** original. The
+    blurred copy is the seed asset.
+  - `hero/`, `built/`, `websites/`: already empty.
+- **Kept in `media-inbox/robotics/`, because nothing references them:**
+  - `huntsman-sim-rubble.mp4` and `huntsman-sim-rubble-poster.jpg`
+  - `huntsman-sim-steps.mp4` and `huntsman-sim-steps-poster.jpg`
+
+  `robotics-content.log.md` already lists them as unused.
+- `media-inbox/` and `_to_delete/` are untracked, so this step changes no
+  tracked files. This log entry is its commit.
