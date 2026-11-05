@@ -117,8 +117,13 @@ succeed.
   on any deployment that has a token, and the file is not there. So anything
   seeded or uploaded locally into the shared preview database shows as a
   broken image on preview deployments until the file is in Blob. Seed with
-  the right token set (as in §4), or move the files across. The starter's
-  `pnpm media:blob` does that, but it is not in this repo yet.
+  the right token set (as in §4), or move the files across with
+  **`pnpm media:blob`** (dry run; add `--run` to upload). It reads the rows
+  in `DATABASE_URL`, uploads only files the store does not already hold at
+  the same size, and writes nothing to the database. For the preview:
+  `BLOB_READ_WRITE_TOKEN="<preview store token>" pnpm media:blob --run`,
+  then redeploy. The token is in Vercel → Storage → the preview store →
+  `.env.local` tab. Full steps: `docs/media-blob.md`.
 - Images are optimised by Vercel. Do not add `unoptimized`.
 
 ## 6. Editing, and what is not editable
