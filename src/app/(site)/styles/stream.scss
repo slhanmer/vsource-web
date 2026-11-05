@@ -220,29 +220,32 @@
     max-width: 62ch;
   }
 
+  /* The project cards under the proof line (hero-stage-2): the /built
+     raised plate at a smaller scale, in a row whose column count divides
+     the number of cards (page.tsx), and one column on a narrow screen. A
+     single card keeps a card's width rather than stretching across. */
   &__projects {
+    --stream-project-max: 300px;
     list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 22px;
-    margin: 16px 0 0;
+    display: grid;
+    grid-template-columns: repeat(
+      var(--stream-project-cols, 3),
+      minmax(0, var(--stream-project-max))
+    );
+    gap: clamp(12px, 1.6vw, 20px);
+    margin: clamp(16px, 2vw, 22px) 0 0;
     padding: 0;
-    font-family: $font-family-mono;
-    font-size: 11.5px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
 
-    a {
-      color: var(--route-active);
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-      padding-bottom: 2px;
-      transition: border-color 0.3s ease;
+    > li {
+      display: flex;
+    }
 
-      &:hover,
-      &:focus-visible {
-        border-bottom-color: currentColor;
-      }
+    .built-card {
+      flex: 1 1 auto;
+    }
+
+    @media (max-width: $breakpoint-tablet) {
+      grid-template-columns: minmax(0, 420px);
     }
   }
 

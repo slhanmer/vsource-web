@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -206,11 +207,45 @@ export default async function StreamPage({ params }: { params: Promise<{ stream:
             </span>
           )}
         </p>
+        {/* Small project cards, the /built plate at a smaller scale
+            (hero-stage-2). A clip is shown as its poster: a thumbnail is no
+            place for motion. The thumbnail's alt is empty because the link
+            is named by the title beside it. Columns divide the count, so the
+            last row never strands one card (the team-grid rule). */}
         {projects.length > 0 && (
-          <ul className="stream__projects">
+          <ul
+            className="stream__projects"
+            style={{ '--stream-project-cols': projectColumns(projects.length) } as CSSProperties}
+          >
             {projects.map((project) => (
               <li key={project.slug}>
-                <Link href={`/built/${project.slug}`}>{project.title}</Link>
+                <Link href={`/built/${project.slug}`} className="built-card built-card--mini">
+                  <ProjectMedia
+                    spec={
+                      project.media.kind === 'video'
+                        ? {
+                            ...project.media,
+                            kind: 'image',
+                            fit: 'cover',
+                            src: project.media.poster,
+                            alt: '',
+                          }
+                        : { ...project.media, alt: '' }
+                    }
+                    sizes="(max-width: 700px) 100vw, 300px"
+                    className="built-card__media"
+                  />
+                  <div className="built-card__body">
+                    <h3 className="built-card__title">{project.title}</h3>
+                    <p className="built-card__meta">
+                      <span className="built-card__stream">{project.stream}</span>
+                      <span className="built-card__year">{project.year}</span>
+                      <span className={`built-card__status is-${project.status}`}>
+                        {project.status}
+                      </span>
+                    </p>
+                  </div>
+                </Link>
               </li>
             ))}
           </ul>
@@ -224,4 +259,17 @@ export default async function StreamPage({ params }: { params: Promise<{ stream:
       </p>
     </main>
   )
+}
+
+/**
+ * Columns for the project cards: one row when there are three or fewer, and
+ * otherwise a count that divides the total, so nobody is stranded on the
+ * last row. Five or seven cannot divide evenly into 2 or 3; they take 3 and
+ * the rule needs rechecking (CLAUDE.md, layout rules).
+ */
+function projectColumns(count: number): number {
+  if (count <= 3) return count
+  if (count % 3 === 0) return 3
+  if (count % 2 === 0) return 2
+  return 3
 }

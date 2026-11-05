@@ -264,6 +264,27 @@
     border-bottom-color: currentColor;
   }
 
+  // Small, for the stream pages' project lists: the same plate, a tighter
+  // pad, and the title above the meta line.
+  &--mini {
+    padding: clamp(8px, 0.9vw, 12px);
+
+    .built-card__body {
+      padding: 12px 2px 4px;
+    }
+
+    .built-card__title {
+      font-size: clamp(17px, 1.4vw, 20px);
+      line-height: 1.2;
+    }
+
+    .built-card__meta {
+      flex-wrap: wrap;
+      gap: 4px 12px;
+      margin: 8px 0 0;
+    }
+  }
+
   // The lead runs the full width with its words beside the media rather than
   // under it, so the page opens on something worth looking at.
   &--lead {
