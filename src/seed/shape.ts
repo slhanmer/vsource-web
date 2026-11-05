@@ -16,8 +16,6 @@ export function streamData(s: SeedStream, media: Resolve) {
     slug: s.slug,
     name: s.name,
     order: s.order,
-    door: s.door,
-    doorPhoto: s.doorPhoto ? media(s.doorPhoto) : null,
     problem: s.problem,
     instead: s.instead,
     solution: s.solution,

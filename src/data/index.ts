@@ -108,13 +108,10 @@ function sectionMedia(media: SectionMediaDoc): { media?: ProjectMedia } {
 }
 
 function toStream(doc: StreamDoc): Stream {
-  const doorPhoto = photo(doc.doorPhoto)
   const pagePhoto = photo(doc.pagePhoto)
   return {
     slug: doc.slug,
     name: doc.name,
-    door: doc.door,
-    ...(doorPhoto ? { doorPhoto } : {}),
     problem: doc.problem,
     instead: doc.instead,
     solution: doc.solution,

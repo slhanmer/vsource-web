@@ -9,15 +9,15 @@
  *
  * ASSETS are keyed by their path under src/seed/assets/, without the
  * extension. One file is one media document, however many fields use it:
- * built/nug is the Nug card on /built and the Websites door on the home page.
+ * built/nug is both the Nug card's screenshot and one of the venue sites.
  *
  * What is NOT here, on purpose:
  *   - Any stock portrait. Craig, Simon and Ronan have their real portraits
  *     from Mik's shoot (hero-rebuild). Tom has none, permanently.
  *   - Any stock photograph. The last three went in hero-rebuild, replaced by
  *     the shoot's (they are in `retired.media`).
- *   - The Websites stock photos. The door and row show our own sites: Snug on
- *     the door, Nug on the row, each cropped for its slot (hero-polish §3).
+ *   - The Websites stock photos. The row shows our own Nug site, cropped
+ *     for its slot (hero-polish §3).
  *   - STREAM_COMMON, landings, contact and the headline words, which stay in
  *     code (CLAUDE.md, CMS).
  *
@@ -29,10 +29,6 @@ import type { SeedContent } from './types'
 
 const content: SeedContent = {
   assets: {
-    'websites/snug-door': {
-      file: 'websites/snug-door.jpg',
-      alt: 'The Snug website: its wordmark over a dark photograph of the room at night, captioned “a tiny café, a neighbourhood wine bar”.',
-    },
     'websites/nug-row': {
       file: 'websites/nug-row.jpg',
       alt: 'The Nug General Store website: the NUG. wordmark above a photograph of a full dining room with a painted mural.',
@@ -64,10 +60,6 @@ const content: SeedContent = {
     'built/don-gino': {
       file: 'built/don-gino.jpg',
       alt: 'The Don Gino site: the name set large in yellow on black under a gold script logo, with three circular Italian tile motifs labelled Famiglia, Menu and Hours.',
-    },
-    'photos/robotics/huntsman-top': {
-      file: 'photos/robotics/huntsman-top.jpg',
-      alt: 'The Huntsman from above on a stone bench, its controller board and battery mounted at the centre.',
     },
     'photos/robotics/huntsman-studio': {
       file: 'photos/robotics/huntsman-studio.jpg',
@@ -159,8 +151,6 @@ const content: SeedContent = {
       slug: 'software',
       name: 'Software',
       order: 10,
-      door: 'Systems built to your process, not someone else’s platform.',
-      doorPhoto: null,
       problem: 'Your process lives in a spreadsheet and three people’s heads.',
       instead: 'One system, built around how you actually work.',
       solution:
@@ -243,8 +233,6 @@ const content: SeedContent = {
       slug: 'robotics',
       name: 'Robotics',
       order: 20,
-      door: 'Legged robots for places people can’t go.',
-      doorPhoto: 'photos/robotics/huntsman-top',
       problem: 'The places survivors are trapped are the places rescuers can’t safely go.',
       instead: 'Robots that walk where wheels stop.',
       solution:
@@ -344,8 +332,6 @@ const content: SeedContent = {
       slug: 'websites',
       name: 'Websites',
       order: 30,
-      door: 'Fast, accessible, and yours to edit.',
-      doorPhoto: 'websites/snug-door',
       problem: 'Every change to your site is a quote and a fortnight.',
       instead: 'A site you can change yourself, the afternoon you decide to.',
       solution:
@@ -833,6 +819,8 @@ const content: SeedContent = {
       'working.jpg',
       'placeholder-site.jpg',
       'at-the-desk.jpg',
+      'snug-door.jpg',
+      'huntsman-top.jpg',
     ],
   },
 }

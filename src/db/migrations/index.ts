@@ -5,6 +5,7 @@ import * as migration_20261105_003136_hero_rebuild from './20261105_003136_hero_
 import * as migration_20261105_011354_hero_photos from './20261105_011354_hero_photos';
 import * as migration_20261105_012459_stream_media from './20261105_012459_stream_media';
 import * as migration_20261105_012946_media_fit from './20261105_012946_media_fit';
+import * as migration_20261105_013331_drop_door_fields from './20261105_013331_drop_door_fields';
 
 export const migrations = [
   {
@@ -40,6 +41,11 @@ export const migrations = [
   {
     up: migration_20261105_012946_media_fit.up,
     down: migration_20261105_012946_media_fit.down,
-    name: '20261105_012946_media_fit'
+    name: '20261105_012946_media_fit',
+  },
+  {
+    up: migration_20261105_013331_drop_door_fields.up,
+    down: migration_20261105_013331_drop_door_fields.down,
+    name: '20261105_013331_drop_door_fields'
   },
 ];

@@ -20,8 +20,6 @@ export interface SeedStream {
   slug: string
   name: string
   order: number
-  door: string
-  doorPhoto: Key | null
   problem: string
   instead: string
   solution: string

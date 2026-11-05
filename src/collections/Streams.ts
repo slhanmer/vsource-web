@@ -36,27 +36,6 @@ export const Streams: CollectionConfig = {
       label: 'Home page',
       fields: [
         {
-          name: 'door',
-          type: 'text',
-          required: true,
-          admin: {
-            description: 'Not shown anywhere at present (the home page doors were removed).',
-          },
-        },
-        {
-          name: 'doorPhoto',
-          type: 'upload',
-          relationTo: 'media',
-          /*
-           * Unused since hero-rebuild (5 November): the fold's doors are gone,
-           * and nothing on the site reads this or `door` now. Kept until
-           * Simon decides whether the stream pages should use them.
-           */
-          admin: {
-            description: 'Not shown anywhere at present (the home page doors were removed).',
-          },
-        },
-        {
           name: 'problem',
           type: 'text',
           required: true,

@@ -142,3 +142,26 @@ Screenshots: `C:\tmp\review-2\streams\<slug>-{1440,390}.png`.
 
 Screenshots: `C:\tmp\review-2\built\built-{1440,390}-{light,dark}.png`;
 numbers in `built.json`.
+
+## §5 Drop the dead door fields
+
+`door` and `doorPhoto` are removed from the `streams` collection, the data
+layer, the seed (content, types, shape) and the generated types. Migration
+`20261105_013331_drop_door_fields` drops `door`, `door_photo_id`, their index
+and their foreign key, and applies cleanly on the preview DB.
+
+**Media, checked by reference, not by name.** After the fields went, two
+assets were referenced by nothing in the content: `websites/snug-door` and
+`photos/robotics/huntsman-top`. Both are deleted from `media` (via
+`retired.media`) and their files removed from `src/seed/assets/`.
+
+**The brief didn't match the code here.** It expected `huntsman-top.jpg` to
+stay because "the hero uses it via `hero-robotics.jpg`". It doesn't:
+`hero-robotics.jpg` is a separate file and its own media document (from
+`media-inbox/hero/`, added in §1), so nothing referenced `huntsman-top`.
+Following "check by reference", it was removed. The Huntsman photos still on
+the site are `hero-robotics` (the fold), `huntsman-studio` (the Robotics page
+head) and the walking clip and poster on `/built`. The full Snug screenshot
+(`built/snug`) stays, as one of the venue sites.
+
+Seed: 2 removed; second run 0 changes.

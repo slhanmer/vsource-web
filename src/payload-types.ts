@@ -225,14 +225,6 @@ export interface Stream {
    */
   order: number;
   /**
-   * Not shown anywhere at present (the home page doors were removed).
-   */
-  door: string;
-  /**
-   * Not shown anywhere at present (the home page doors were removed).
-   */
-  doorPhoto?: (number | null) | Media;
-  /**
    * Where someone is now. One short sentence they would recognise — a situation, never a failing.
    */
   problem: string;
@@ -681,8 +673,6 @@ export interface StreamsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   order?: T;
-  door?: T;
-  doorPhoto?: T;
   problem?: T;
   instead?: T;
   solution?: T;
