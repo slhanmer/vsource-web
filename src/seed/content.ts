@@ -109,6 +109,10 @@ const content: SeedContent = {
       file: 'photos/team-group.jpg',
       alt: 'Simon, Craig and Ronan in V Source shirts against a wall of jasmine.',
     },
+    'photos/at-the-desk': {
+      file: 'photos/at-the-desk.jpg',
+      alt: 'Craig talks through code on a monitor while Simon types at the keyboard.',
+    },
     'photos/pointing': {
       file: 'photos/pointing.jpg',
       alt: 'Craig points to a line of code on a monitor while Simon looks on.',
@@ -781,7 +785,7 @@ const content: SeedContent = {
       robotics: { photo: 'hero/hero-robotics', focus: '40% 20%' },
       websites: { photo: 'hero/hero-websites', focus: '0% 55%' },
     },
-    workingPhoto: 'photos/team-group',
+    workingPhoto: 'photos/at-the-desk',
     groupPhoto: 'photos/team-group',
     comingSoon: [
       {
@@ -813,7 +817,6 @@ const content: SeedContent = {
       'software-step.jpg',
       'working.jpg',
       'placeholder-site.jpg',
-      'at-the-desk.jpg',
       'snug-door.jpg',
       'huntsman-top.jpg',
       'huntsman-terrain-trials.jpg',
