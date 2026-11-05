@@ -98,6 +98,16 @@ export const Streams: CollectionConfig = {
         },
         { name: 'pageLede', type: 'textarea', required: true },
         {
+          /*
+           * The photograph in the stream page's head, at its own aspect, where
+           * the line-drawn stream mark used to be (review-2).
+           */
+          name: 'pagePhoto',
+          type: 'upload',
+          relationTo: 'media',
+          admin: { description: 'The photograph at the top of this stream’s page.' },
+        },
+        {
           name: 'sections',
           type: 'array',
           admin: {
@@ -124,6 +134,40 @@ export const Streams: CollectionConfig = {
               ],
             },
             pendingField(),
+            {
+              /*
+               * Optional. A section with media is two columns, text and media,
+               * alternating sides down the page; without, it stays one column.
+               * A video follows the /built clip rules: mp4, muted, looping,
+               * under ten seconds, with a poster and a pause control.
+               */
+              name: 'media',
+              type: 'group',
+              admin: { description: 'Optional: a photograph or a short clip beside this section.' },
+              fields: [
+                {
+                  name: 'upload',
+                  type: 'upload',
+                  relationTo: 'media',
+                  admin: { description: 'An image, or an mp4 clip under ten seconds.' },
+                },
+                {
+                  name: 'poster',
+                  type: 'upload',
+                  relationTo: 'media',
+                  admin: {
+                    description: 'Clips only: shown until it plays, and under reduced motion.',
+                  },
+                },
+                {
+                  name: 'alt',
+                  type: 'textarea',
+                  admin: {
+                    description: 'What it shows. Leave empty to use the media’s own alt text.',
+                  },
+                },
+              ],
+            },
           ],
         },
         { name: 'lede', type: 'text', required: true },

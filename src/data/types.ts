@@ -30,6 +30,8 @@ export interface StreamSection {
   link?: { href: string; label: string }
   /** Invented or unverified copy. Renders a visible marker. */
   pending?: boolean
+  /** A photograph or clip beside the section; the section goes two-column. */
+  media?: ProjectMedia
 }
 
 export interface Stream {
@@ -50,6 +52,8 @@ export interface Stream {
   pricing: { value: string; note: string }
   promise: string
   pageLede: string
+  /** The photograph in the stream page's head. */
+  pagePhoto?: Photo
   sections: StreamSection[]
   /** `/${slug}`. Derived, not stored. */
   href: string

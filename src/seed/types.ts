@@ -28,6 +28,7 @@ export interface SeedStream {
   stepPhoto: Key
   promise: string
   pageLede: string
+  pagePhoto: Key | null
   sections: Array<{
     slug: string
     title: string
@@ -35,6 +36,8 @@ export interface SeedStream {
     includes: Lines
     link: Link
     pending: boolean
+    /** An image or clip beside the section; null for none. */
+    media: { upload: Key; poster: Key | null; alt: string } | null
   }>
   lede: string
   caps: Lines

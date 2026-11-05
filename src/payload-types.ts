@@ -254,6 +254,10 @@ export interface Stream {
   promise: string;
   pageLede: string;
   /**
+   * The photograph at the top of this stream’s page.
+   */
+  pagePhoto?: (number | null) | Media;
+  /**
    * Specific to this stream. Anything true of all three belongs in the shared list, which is in code.
    */
   sections?:
@@ -284,6 +288,23 @@ export interface Stream {
          * Shows a visible marker on the page. Untick only when the words have been confirmed.
          */
         pending?: boolean | null;
+        /**
+         * Optional: a photograph or a short clip beside this section.
+         */
+        media?: {
+          /**
+           * An image, or an mp4 clip under ten seconds.
+           */
+          upload?: (number | null) | Media;
+          /**
+           * Clips only: shown until it plays, and under reduced motion.
+           */
+          poster?: (number | null) | Media;
+          /**
+           * What it shows. Leave empty to use the media’s own alt text.
+           */
+          alt?: string | null;
+        };
         id?: string | null;
       }[]
     | null;
@@ -667,6 +688,7 @@ export interface StreamsSelect<T extends boolean = true> {
   stepPhoto?: T;
   promise?: T;
   pageLede?: T;
+  pagePhoto?: T;
   sections?:
     | T
     | {
@@ -691,6 +713,13 @@ export interface StreamsSelect<T extends boolean = true> {
               label?: T;
             };
         pending?: T;
+        media?:
+          | T
+          | {
+              upload?: T;
+              poster?: T;
+              alt?: T;
+            };
         id?: T;
       };
   lede?: T;

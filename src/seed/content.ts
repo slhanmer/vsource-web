@@ -137,6 +137,22 @@ const content: SeedContent = {
       file: 'hero/hero-team.jpg',
       alt: 'Simon, Craig and Ronan in V Source shirts against a wall of jasmine.',
     },
+    'robotics/huntsman-terrain-trials': {
+      file: 'robotics/huntsman-terrain-trials.jpg',
+      alt: 'Four simulated terrain trials of The Huntsman: a 15° slope it walks up and down (3.5 m), mixed ground where it veers 24° and tilts 22° (2.9 m), 50 mm steps where it stalls at the first (0.8 m), and 80 mm rubble where it snags and veers 27° (0.6 m).',
+    },
+    'robotics/huntsman-model': {
+      file: 'robotics/huntsman-model.jpg',
+      alt: 'A CAD render of The Huntsman showing its eight legs, servos and central payload bay.',
+    },
+    'robotics/huntsman-sim-controls': {
+      file: 'robotics/huntsman-sim-controls.mp4',
+      alt: 'The Huntsman walking forward in a MuJoCo simulation, with its operator controls for walk, trot, rubble and crouch gaits on screen.',
+    },
+    'robotics/huntsman-sim-controls-poster': {
+      file: 'robotics/huntsman-sim-controls-poster.jpg',
+      alt: 'A still from the simulation clip: The Huntsman in MuJoCo, with its operator controls on screen.',
+    },
   },
   streams: [
     {
@@ -154,6 +170,7 @@ const content: SeedContent = {
         'The thing your business actually does, instead of the nearest platform that almost does it.',
       pageLede:
         'We build the system your work already implies, rather than reshaping how you work to fit something that nearly fits. Next.js, React and TypeScript on the front, Node and MySQL behind it, and a design system built for your industry instead of assembled from a component shop.',
+      pagePhoto: 'hero/hero-software',
       sections: [
         {
           slug: 'custom-software',
@@ -173,6 +190,11 @@ const content: SeedContent = {
             label: null,
           },
           pending: false,
+          media: {
+            upload: 'photos/pointing',
+            poster: null,
+            alt: 'Craig points to a line of code on a monitor while Simon looks on.',
+          },
         },
         {
           slug: 'regulated',
@@ -192,6 +214,11 @@ const content: SeedContent = {
             label: 'What regulated work involves',
           },
           pending: false,
+          media: {
+            upload: 'built/training-professionals',
+            poster: null,
+            alt: 'Two screens from the Training Professionals platform: the live assessment editor, and a marking view comparing a candidate’s answers with the answer guide.',
+          },
         },
       ],
       lede: 'The thing your business actually does — not the nearest platform that almost does it.',
@@ -226,6 +253,7 @@ const content: SeedContent = {
       promise: 'Robots that go where people can’t, so rescuers don’t have to.',
       pageLede:
         'After an earthquake, a building collapse or a landslide, the first hours matter most. We build legged robots to put eyes, sensors and eventually supplies into the places rescuers can’t safely reach.',
+      pagePhoto: 'photos/robotics/huntsman-studio',
       sections: [
         {
           slug: 'why-legs',
@@ -240,6 +268,11 @@ const content: SeedContent = {
             label: null,
           },
           pending: false,
+          media: {
+            upload: 'robotics/huntsman-terrain-trials',
+            poster: null,
+            alt: 'Four simulated terrain trials of The Huntsman: a 15° slope it walks up and down (3.5 m), mixed ground where it veers 24° and tilts 22° (2.9 m), 50 mm steps where it stalls at the first (0.8 m), and 80 mm rubble where it snags and veers 27° (0.6 m).',
+          },
         },
         {
           slug: 'by-evolution',
@@ -258,6 +291,11 @@ const content: SeedContent = {
             label: null,
           },
           pending: false,
+          media: {
+            upload: 'robotics/huntsman-model',
+            poster: null,
+            alt: 'A CAD render of The Huntsman showing its eight legs, servos and central payload bay.',
+          },
         },
         {
           slug: 'next',
@@ -277,6 +315,11 @@ const content: SeedContent = {
             label: null,
           },
           pending: false,
+          media: {
+            upload: 'robotics/huntsman-sim-controls',
+            poster: 'robotics/huntsman-sim-controls-poster',
+            alt: 'The Huntsman walking forward in a MuJoCo simulation, with its operator controls for walk, trot, rubble and crouch gaits on screen.',
+          },
         },
       ],
       lede: 'Bio-inspired legged robots for terrain too dangerous, too unstable or too confined for people or conventional machines.',
@@ -311,6 +354,7 @@ const content: SeedContent = {
       promise: 'A site that loads fast, reads well, and that you can change yourself.',
       pageLede:
         'Designed and built here, on the same stack and the same hardware as everything else we run. Not a theme with your logo on it, and not something you have to ring us about every time a price changes.',
+      pagePhoto: 'hero/hero-websites',
       sections: [
         {
           slug: 'accessibility',
@@ -330,6 +374,11 @@ const content: SeedContent = {
             label: 'Audits that come with the fix',
           },
           pending: false,
+          media: {
+            upload: 'websites/nug-row',
+            poster: null,
+            alt: 'The Nug General Store website: the NUG. wordmark above a photograph of a full dining room with a painted mural.',
+          },
         },
         {
           slug: 'yours-to-edit',
@@ -349,6 +398,11 @@ const content: SeedContent = {
             label: null,
           },
           pending: false,
+          media: {
+            upload: 'built/janes-deli',
+            poster: null,
+            alt: 'The Jane’s Deli site: a scalloped olive badge logo on warm paper, a photograph of three iced drinks on a pale green table, and an olive panel reading “brunch. sandwiches. filter & matcha.”',
+          },
         },
       ],
       lede: 'A site that loads fast, reads well, and that you can actually edit without calling us.',

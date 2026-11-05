@@ -71,3 +71,48 @@ deleted the duplicate (id 35, checked by filename before deleting) through
 the admin API. Result: one document, the original id 29, holding the new
 file (536,740 bytes), used by both slots. **Two further seed runs: 0
 changes.**
+
+## §3 Stream pages: photographs, staggered sections
+
+- **`pagePhoto`** (a new upload field) replaces `StreamMark` in each stream
+  page's head, at its own aspect (`CutPhoto`, 260–460px wide; full width under
+  the title on narrow screens). Software → `hero-software.jpg`, Robotics →
+  `huntsman-studio.jpg`, Websites → `hero-websites.jpg`.
+- **`sections[].media`** (optional group: `upload`, `poster`, `alt`, where an
+  empty alt falls back to the media's own alt). Images render with
+  `CutPhoto` at their own aspect. An mp4 renders with the `/built`
+  `ProjectMedia` (muted, loop, poster, `preload="none"`, pause control,
+  poster only under reduced motion), so the stream page now imports
+  `built.scss`. Kind comes from the file's MIME type. Migration
+  `20261105_012459_stream_media`.
+- **Layout:** a section with media is two columns, alternating sides (the
+  first media section has the media on the right, the next on the left).
+  Sections without media stay one column and don't count towards the
+  alternation. At ≤979px: text, then media.
+- **Seeded:**
+  - Robotics: `why-legs` → terrain trials, `by-evolution` → CAD render,
+    `next` → `huntsman-sim-controls.mp4` (9.0s, read from the mp4 header) with
+    its poster. The terrain-trials photo and the clip came from
+    `media-inbox/robotics/`; the brief gave no alt for them, so I wrote alt
+    text from the images (terrain trials: the four trials with their distances
+    and results; clip: The Huntsman walking in MuJoCo with its gait controls
+    on screen).
+  - Websites: `accessibility` → Nug, `yours-to-edit` → Jane's Deli.
+  - Software: `custom-software` → `pointing.jpg`, `regulated` → the Training
+    Professionals composite.
+  - Software and Websites have **two** sections each, so SAUCE and Bar
+    Cooper's (the brief's "if there is one") are not used.
+- **`StreamMark` is on no stream page** (0 `.markwrap` on all three). It is
+  **not deleted**: the `/regulated` and `/accessibility` landing pages still
+  use it in their heads, and so does `/built`'s (now unused) `mark` media kind.
+- Seed: 4 created, 3 updated; second run 0 changes.
+
+| Page | Head photo | Sections (media, side) |
+|---|---|---|
+| /software | hero-software | custom-software image right · regulated image left |
+| /robotics | huntsman-studio | why-legs image right · by-evolution image left · next **video** right |
+| /websites | hero-websites | accessibility image right · yours-to-edit image left |
+
+Robotics clip: muted, loop, poster, **playing** in view (t = 1.49s). The pause
+control click → paused, with the label switched to "Play this clip".
+Screenshots: `C:\tmp\review-2\streams\<slug>-{1440,390}.png`.

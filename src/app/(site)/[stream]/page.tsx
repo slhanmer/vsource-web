@@ -3,9 +3,12 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { STREAM_COMMON } from '@constants'
 import { getProjects, getStream, getStreams } from '@/data'
-import StreamMark from '@/components/home/StreamMark'
+import ProjectMedia from '@/components/built/ProjectMedia'
+import CutPhoto from '@/components/photos/CutPhoto'
 import '../styles/pages.scss'
 import '../styles/stream.scss'
+/* Section clips use the /built media frame and its pause control. */
+import '../styles/built.scss'
 
 /**
  * One offer per stream — /software, /robotics, /websites.
@@ -56,6 +59,7 @@ export default async function StreamPage({ params }: { params: Promise<{ stream:
 
   // Anything on /built that belongs to this stream, so the offer and the proof
   // are one click apart in both directions.
+  let mediaIndex = 0
   const projects = (await getProjects()).filter((project) => project.stream === stream.slug)
 
   const schema = {
@@ -81,49 +85,94 @@ export default async function StreamPage({ params }: { params: Promise<{ stream:
           <h1 className="page__title">{stream.promise}</h1>
           <p className="page__lede">{stream.pageLede}</p>
         </div>
-        <StreamMark id={stream.slug} className="stream__mark" />
+        {/* A photograph where the line drawing was (review-2), at its own
+            aspect. */}
+        {stream.pagePhoto && (
+          <CutPhoto
+            photo={stream.pagePhoto}
+            sizes="(max-width: 768px) 100vw, 460px"
+            className="stream__photo"
+          />
+        )}
       </div>
 
       <p className="stream__who">{stream.who}</p>
 
-      {stream.sections.map((section) => (
-        <section key={section.slug} id={section.slug} className="stream__section">
-          <h2 className="stream__title">
-            {section.title}
-            {section.pending && (
-              <span className="home-pending" title="Placeholder — not signed off">
-                {' '}
-                [placeholder]
-              </span>
-            )}
-          </h2>
-          <div className="stream__content">
-            {section.body.map((para) => (
-              <p key={para.slice(0, 40)} className="stream__para">
-                {para}
-              </p>
-            ))}
-            {section.includes && (
-              <ul className="stream__includes">
-                {section.includes.map((item) => (
-                  <li key={item}>{item}</li>
+      {/*
+        A section with media is two columns, text and media, and they
+        alternate sides down the page: the first with media has it on the
+        right, the next on the left. A section without media stays one text
+        column and does not count towards the alternation.
+      */}
+      {stream.sections.map((section) => {
+        const flip = section.media ? mediaIndex++ % 2 === 1 : false
+        return (
+          <section
+            key={section.slug}
+            id={section.slug}
+            className={`stream__section${section.media ? ' stream__section--media' : ''}${flip ? ' is-flipped' : ''}`}
+          >
+            <div className="stream__text">
+              <h2 className="stream__title">
+                {section.title}
+                {section.pending && (
+                  <span className="home-pending" title="Placeholder — not signed off">
+                    {' '}
+                    [placeholder]
+                  </span>
+                )}
+              </h2>
+              <div className="stream__content">
+                {section.body.map((para) => (
+                  <p key={para.slice(0, 40)} className="stream__para">
+                    {para}
+                  </p>
                 ))}
-              </ul>
+                {section.includes && (
+                  <ul className="stream__includes">
+                    {section.includes.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                )}
+                {/*
+                  The hand-off to the page that covers this subject properly. It is
+                  a field rather than a link inside `body` because `body` entries
+                  are plain strings — markdown written in one would render as
+                  literal brackets on the page.
+                */}
+                {section.link && (
+                  <p className="stream__onward">
+                    <Link href={section.link.href}>{section.link.label} &rarr;</Link>
+                  </p>
+                )}
+              </div>
+            </div>
+            {section.media && (
+              <div className="stream__figure">
+                {section.media.kind === 'video' ? (
+                  <ProjectMedia
+                    spec={section.media}
+                    sizes="(max-width: 979px) 100vw, 560px"
+                    className="stream__clip"
+                  />
+                ) : (
+                  <CutPhoto
+                    photo={{
+                      src: section.media.src ?? '',
+                      alt: section.media.alt,
+                      width: section.media.width,
+                      height: section.media.height,
+                    }}
+                    sizes="(max-width: 979px) 100vw, 560px"
+                    className="stream__image"
+                  />
+                )}
+              </div>
             )}
-            {/*
-              The hand-off to the page that covers this subject properly. It is
-              a field rather than a link inside `body` because `body` entries
-              are plain strings — markdown written in one would render as
-              literal brackets on the page.
-            */}
-            {section.link && (
-              <p className="stream__onward">
-                <Link href={section.link.href}>{section.link.label} &rarr;</Link>
-              </p>
-            )}
-          </div>
-        </section>
-      ))}
+          </section>
+        )
+      })}
 
       <section className="stream__common">
         <h2 className="stream__title">{STREAM_COMMON.heading}</h2>

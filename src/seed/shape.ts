@@ -24,6 +24,7 @@ export function streamData(s: SeedStream, media: Resolve) {
     stepPhoto: media(s.stepPhoto),
     promise: s.promise,
     pageLede: s.pageLede,
+    pagePhoto: s.pagePhoto ? media(s.pagePhoto) : null,
     sections: s.sections.map((sec) => ({
       slug: sec.slug,
       title: sec.title,
@@ -31,6 +32,13 @@ export function streamData(s: SeedStream, media: Resolve) {
       includes: rows(sec.includes),
       link: sec.link,
       pending: sec.pending,
+      media: sec.media
+        ? {
+            upload: media(sec.media.upload),
+            poster: sec.media.poster ? media(sec.media.poster) : null,
+            alt: sec.media.alt,
+          }
+        : { upload: null, poster: null, alt: null },
     })),
     lede: s.lede,
     caps: rows(s.caps),

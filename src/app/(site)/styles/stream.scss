@@ -2,9 +2,10 @@
 //  STREAM — one offer per page
 //
 //  Deliberately quiet. The home page argues; this page is for someone who has
-//  already decided to read, so it is a document rather than a composition. The
-//  only two pieces of chrome are the mark at the top and the proof block at the
-//  bottom, and the proof block is a recess like every other readout on the site.
+//  already decided to read. A photograph at the top, and sections with media
+//  stagger left and right so it reads as a page rather than one long column
+//  (review-2). The proof block at the bottom is a recess like every other
+//  readout on the site. (`.stream__mark` is now only the landing pages'.)
 ///////////////////////////////////////////////////////////////////////////////
 
 .stream {
@@ -25,6 +26,42 @@
 
   &__mark {
     width: clamp(150px, 18vw, 260px);
+  }
+
+  // The stream's photograph, in the head where the line drawing was, at its
+  // own aspect. Below the tablet breakpoint the head stacks and it goes
+  // full width under the title.
+  &__photo {
+    width: clamp(260px, 32vw, 460px);
+
+    @media (max-width: $breakpoint-tablet) {
+      width: 100%;
+    }
+  }
+
+  // ── a section with media: text and media side by side, alternating ──────
+  &__section--media {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(24px, 4vw, 60px);
+    align-items: center;
+
+    &.is-flipped .stream__figure {
+      order: -1;
+    }
+
+    // Narrow: text, then media, whichever side it was on.
+    @media (max-width: $breakpoint-desktop) {
+      grid-template-columns: minmax(0, 1fr);
+
+      &.is-flipped .stream__figure {
+        order: 0;
+      }
+    }
+  }
+
+  &__figure {
+    min-width: 0;
   }
 
   // Who it is for, said once and early, so somebody who is not that person can

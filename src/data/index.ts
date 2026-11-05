@@ -15,6 +15,7 @@ import type {
   Partner,
   Photo,
   Project,
+  ProjectMedia,
   SiteContent,
   Stream,
   Upcoming,
@@ -87,8 +88,28 @@ const CACHE_EPOCH =
 const cached = <A extends unknown[], R>(key: string, fn: (...args: A) => Promise<R>) =>
   unstable_cache(fn, ['content', key, CACHE_EPOCH], { tags: [CONTENT_CACHE_TAG] })
 
+/* A stream section's media: an image or an mp4 clip, by the file's type. */
+type SectionMediaDoc = NonNullable<StreamDoc['sections']>[number]['media']
+function sectionMedia(media: SectionMediaDoc): { media?: ProjectMedia } {
+  const upload = media?.upload
+  if (!upload || typeof upload === 'number' || !upload.url) return {}
+  const poster = photo(media?.poster)
+  const video = (upload.mimeType ?? '').startsWith('video/')
+  return {
+    media: {
+      kind: video ? 'video' : 'image',
+      src: upload.url,
+      ...(poster ? { poster: poster.src } : {}),
+      alt: media?.alt || upload.alt,
+      width: upload.width || poster?.width || 1280,
+      height: upload.height || poster?.height || 720,
+    },
+  }
+}
+
 function toStream(doc: StreamDoc): Stream {
   const doorPhoto = photo(doc.doorPhoto)
+  const pagePhoto = photo(doc.pagePhoto)
   return {
     slug: doc.slug,
     name: doc.name,
@@ -109,6 +130,7 @@ function toStream(doc: StreamDoc): Stream {
     pricing: { value: doc.pricing.value, note: doc.pricing.note },
     promise: doc.promise,
     pageLede: doc.pageLede,
+    ...(pagePhoto ? { pagePhoto } : {}),
     sections: (doc.sections ?? []).map((section) => ({
       slug: section.slug,
       title: section.title,
@@ -118,6 +140,7 @@ function toStream(doc: StreamDoc): Stream {
         ? { link: { href: section.link.href, label: section.link.label } }
         : {}),
       ...(section.pending ? { pending: true } : {}),
+      ...sectionMedia(section.media),
     })),
     href: `/${doc.slug}`,
   }
