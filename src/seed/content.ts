@@ -31,7 +31,7 @@ const content: SeedContent = {
   assets: {
     'websites/nug-row': {
       file: 'websites/nug-row.jpg',
-      alt: 'The Nug General Store website: the NUG. wordmark above a photograph of a full dining room with a painted mural.',
+      alt: 'The Nug General Store website: the NUG. wordmark over a photograph of the shopfront window, its gold lettering reading “Handmade pasta”.',
     },
     'built/huntsman-walk': {
       file: 'built/huntsman-walk.mp4',
@@ -43,7 +43,7 @@ const content: SeedContent = {
     },
     'built/nug': {
       file: 'built/nug.jpg',
-      alt: 'The Nug General Store site: the wordmark on cream above a photograph of a full dining room with yellow walls and a line-drawn mural, beside a sage panel reading “Ben makes everything himself. Ruxi looks after everyone.”',
+      alt: 'The Nug General Store website: the NUG. wordmark over a photograph of the shopfront window, its gold lettering reading “Handmade pasta”, beside a sage panel reading “Ben makes everything himself. Ruxi looks after everyone.”',
     },
     'built/snug': {
       file: 'built/snug.jpg',
@@ -129,10 +129,6 @@ const content: SeedContent = {
       file: 'hero/hero-team.jpg',
       alt: 'Simon, Craig and Ronan in V Source shirts against a wall of jasmine.',
     },
-    'robotics/huntsman-terrain-trials': {
-      file: 'robotics/huntsman-terrain-trials.jpg',
-      alt: 'Four simulated terrain trials of The Huntsman: a 15° slope it walks up and down (3.5 m), mixed ground where it veers 24° and tilts 22° (2.9 m), 50 mm steps where it stalls at the first (0.8 m), and 80 mm rubble where it snags and veers 27° (0.6 m).',
-    },
     'robotics/huntsman-model': {
       file: 'robotics/huntsman-model.jpg',
       alt: 'A CAD render of The Huntsman showing its eight legs, servos and central payload bay.',
@@ -181,9 +177,9 @@ const content: SeedContent = {
           },
           pending: false,
           media: {
-            upload: 'photos/pointing',
+            upload: 'built/training-professionals',
             poster: null,
-            alt: 'Craig points to a line of code on a monitor while Simon looks on.',
+            alt: 'Two screens from the Training Professionals platform: the live assessment editor, and a marking view comparing a candidate’s answers with the answer guide.',
           },
         },
         {
@@ -205,9 +201,9 @@ const content: SeedContent = {
           },
           pending: false,
           media: {
-            upload: 'built/training-professionals',
+            upload: 'built/sauce',
             poster: null,
-            alt: 'Two screens from the Training Professionals platform: the live assessment editor, and a marking view comparing a candidate’s answers with the answer guide.',
+            alt: 'A sheet of SAUCE components — inputs, buttons, a table and a dropdown — on a dark theme.',
           },
         },
       ],
@@ -257,9 +253,9 @@ const content: SeedContent = {
           },
           pending: false,
           media: {
-            upload: 'robotics/huntsman-terrain-trials',
-            poster: null,
-            alt: 'Four simulated terrain trials of The Huntsman: a 15° slope it walks up and down (3.5 m), mixed ground where it veers 24° and tilts 22° (2.9 m), 50 mm steps where it stalls at the first (0.8 m), and 80 mm rubble where it snags and veers 27° (0.6 m).',
+            upload: 'built/huntsman-walk',
+            poster: 'built/huntsman-walk-poster',
+            alt: 'The Huntsman, an eight-legged black robot, walking across a timber floor.',
           },
         },
         {
@@ -363,7 +359,7 @@ const content: SeedContent = {
           media: {
             upload: 'websites/nug-row',
             poster: null,
-            alt: 'The Nug General Store website: the NUG. wordmark above a photograph of a full dining room with a painted mural.',
+            alt: 'The Nug General Store website: the NUG. wordmark over a photograph of the shopfront window, its gold lettering reading “Handmade pasta”.',
           },
         },
         {
@@ -821,6 +817,7 @@ const content: SeedContent = {
       'at-the-desk.jpg',
       'snug-door.jpg',
       'huntsman-top.jpg',
+      'huntsman-terrain-trials.jpg',
     ],
   },
 }
