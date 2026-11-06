@@ -347,7 +347,7 @@ const content: SeedContent = {
       instead: 'A site you can change yourself, the afternoon you decide to.',
       solution:
         'Fast, accessible and built for the people who use it. When the menu or the hours change, you change them, without a quote or a fortnight’s wait.',
-      stepPhoto: 'websites/nug-step',
+      stepPhoto: 'built/nug',
       promise: 'A site that loads fast, reads well, and that you can change yourself.',
       pageLede:
         'Designed and built here, on the same stack and the same hardware as everything else we run. Not a theme with your logo on it, and not something you have to ring us about every time a price changes.',

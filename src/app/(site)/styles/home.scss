@@ -1702,10 +1702,17 @@
   }
 }
 
-/* The Websites row's photograph is a website screenshot, cropped (hero-polish
-   §3) with the wordmark at the top. Anchored to the top, so if `cover` trims
-   anything it trims the bottom, never the wordmark. Scoped to Websites: the
-   other streams' photographs are framed for the centre. */
-#websites .home-step__photo .cut-photo__img {
-  object-position: top;
+/* The Websites row shows the whole homepage screenshot: a website is never
+   cropped. The box takes the capture's own shape (built/nug, 1229×1044)
+   instead of filling the text column's height, and centres beside the text. */
+#websites .home-step__photo {
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 1229 / 1044;
+  align-self: center;
+
+  .cut-photo__img {
+    object-fit: contain;
+    object-position: top;
+  }
 }
