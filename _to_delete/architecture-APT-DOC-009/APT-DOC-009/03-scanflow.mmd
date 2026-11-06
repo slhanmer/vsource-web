@@ -1,0 +1,35 @@
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'Helvetica','fontSize':'13px','primaryColor':'#EDE7F6','primaryBorderColor':'#5E35B1','actorBkg':'#EDE7F6','actorBorder':'#5E35B1','actorTextColor':'#1a1a1a','signalColor':'#37474F','signalTextColor':'#1a1a1a'}}}%%
+sequenceDiagram
+    autonumber
+    participant D as MultiScan4D<br/>(Class A device)
+    participant P as Scan Pipeline<br/>(black box)
+    participant BE as Back-end API<br/>(TS/Express)
+    participant FS as Rust File Service<br/>(S3 via AWS SDK)
+    participant DB as Per-tenant<br/>MySQL
+    participant FE as Portal FE<br/>(Next.js)
+    participant U as Clinician
+
+    D->>P: Capture 3D scan + metadata (scan_id, user_id, device_id)
+    P->>BE: Deliver processed scan payload
+    BE->>FS: Store 3D model (PLY/OBJ/STL) + raw archive
+    BE->>DB: Write scan metadata to owning tenant DB
+    Note over BE,DB: Device→tenant→user ownership enforced
+
+    U->>FE: Sign in (HTTP-only cookie) + 2FA
+    FE->>BE: Subscribe / request scan list (cookie session)
+    Note right of BE: WebSocket topic users/{client}/scans/list<br/>(PLANNED — currently REST/mock, APT-439)
+    BE->>DB: Query tenant-scoped scans
+    BE-->>FE: Scan list (metadata + signed *_url)
+    FE-->>U: Render scan list (status, notes indicator)
+
+    U->>FE: Open scan in 3D viewer
+    FE->>FS: GET signed model URL
+    FS-->>FE: Model file bytes
+    Note over FE: three.js render · IndexedDB cache (500MB LRU)
+    FE-->>U: Interactive 3D model (orbit/pan/zoom)
+
+    U->>FE: Download / export (format)
+    FE->>BE: Request export + consume credit
+    BE->>DB: Decrement credit balance
+    BE-->>FE: Signed download URL
+    FE-->>U: File download

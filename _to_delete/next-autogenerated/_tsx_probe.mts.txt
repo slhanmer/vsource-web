@@ -1,0 +1,3 @@
+import config from './payload.config'
+const c = await config
+console.log('config ok', c.collections.map((x) => x.slug).join(','))

@@ -29,6 +29,11 @@ import type { SeedContent } from './types'
 
 const content: SeedContent = {
   assets: {
+    // Portrait: the What changes slot is near-square and anchored top, so the wordmark stays in.
+    'websites/nug-step': {
+      file: 'websites/nug-step.jpg',
+      alt: 'The Nug General Store website: the NUG. wordmark over a photograph of the shopfront window, its gold lettering reading “Handmade pasta”.',
+    },
     'websites/nug-row': {
       file: 'websites/nug-row.jpg',
       alt: 'The Nug General Store homepage: the NUG. wordmark above a photograph of the shopfront window with “Handmade pasta” in gold, beside a green panel with Book a table and See the pasta buttons.',
@@ -349,14 +354,12 @@ const content: SeedContent = {
       slug: 'websites',
       name: 'Websites',
       order: 30,
-      // Off the site while Simon shows Craig two streams (hide-websites).
-      // Untick in /admin to bring it back; its content and media are kept.
-      hidden: true,
+      hidden: false,
       problem: 'Every change to your site is a quote and a fortnight.',
       instead: 'A site you can change yourself, the afternoon you decide to.',
       solution:
         'Fast, accessible and built for the people who use it. When the menu or the hours change, you change them, without a quote or a fortnight’s wait.',
-      stepPhoto: 'websites/nug-row',
+      stepPhoto: 'websites/nug-step',
       promise: 'A site that loads fast, reads well, and that you can change yourself.',
       pageLede:
         'Designed and built here, on the same stack and the same hardware as everything else we run. Not a theme with your logo on it, and not something you have to ring us about every time a price changes.',

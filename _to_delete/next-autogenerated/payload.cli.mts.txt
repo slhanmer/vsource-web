@@ -1,0 +1,17 @@
+/*
+ * The Payload CLI's way into payload.config.ts. Not used by Next.
+ *
+ * WHY THIS FILE EXISTS. This repo is not "type": "module" (next.config.ts
+ * relies on CommonJS). The Payload CLI loads its config through tsx, and tsx
+ * picks CommonJS or ESM from the file extension and the package "type", so
+ * payload.config.ts loaded directly is CommonJS — and tsx's CommonJS path
+ * fails on this repo's TypeScript (`Cannot use import statement outside a
+ * module` from src/lib/access.ts). An .mts entry is always ESM, and from an ESM
+ * entry tsx loads the .ts config and everything it imports correctly.
+ *
+ * The `payload` script in package.json points the CLI here with
+ * PAYLOAD_CONFIG_PATH. Next imports payload.config.ts directly through the
+ * `@payload-config` path in tsconfig.json; its webpack does not compile .mts,
+ * which is why the config itself stays .ts.
+ */
+export { default } from './payload.config'

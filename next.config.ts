@@ -58,7 +58,7 @@ const nextConfig: NextConfig = {
       // Package SVGs (Payload's admin assets) are files, not components. Next
       // drops .svg from its own image loader once a custom svg rule exists, so
       // without this they have no loader at all and the build fails.
-      { test: /\.svg$/i, include: /node_modules/, type: 'asset/resource' },
+      { test: /\.svg$/i, include: /node_modules/, type: 'asset/resource' }
     )
 
     config.resolve.alias = {

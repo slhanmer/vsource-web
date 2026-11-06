@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(*)",
+      "Edit(src/**)",
+      "Edit(app/**)",
+      "Bash(pnpm run *)",
+      "Bash(pnpm test *)",
+      "Bash(pnpm install *)",
+      "Edit(src/hooks/**)",
+      "Edit(src/components/ui-kit/**)"
+    ],
+    "deny": [
+      "Bash(git *)",
+      "Edit(.env*)",
+      "Edit(.github/**)",
+      "Edit(next.config.*)",
+      "Edit(src/components/security/**)",
+      "Edit(src/providers/**)",
+      "Edit(src/services/**)",
+      "Edit(src/styles/**)",
+      "Edit(src/features/login/**)",
+      "Edit(src/features/register/**)",
+      "Edit(src/features/admin/**)",
+      "Edit(src/features/tenant/**)",
+      "Edit(src/components/ui-kit/**)"
+    ]
+  }
+}
