@@ -1190,12 +1190,9 @@
    The rows are descendants of the section, so the timeline is visible to them
    without `timeline-scope`.
 
-   Thirds, with a short crossfade at each boundary (B = 33.3%, 66.7%): the
-   outgoing row fades out over B-3.3% → B+1.7%, opacity only; the incoming one
-   fades in over B-1.7% → B+3.3% with the 12px rise. Outgoing is above 0.5
-   until B-0.8%, incoming only from B+0.8%, so two rows are never both past
-   half. `pointer-events` flips with them, at the midpoint of each fade, so a
-   row that is not showing cannot be clicked. Before the stage pins Software is
+   Thirds, with a straight cut at each boundary (33.33%, 66.67%).
+   `pointer-events` flips with them, so a row that is not showing cannot be
+   clicked. Before the stage pins Software is
    already showing (fill: both), and after it unpins Websites stays.
 
    ONLY WHERE IT FITS AND IS ALLOWED. Everything here is inside
@@ -1268,19 +1265,16 @@
   }
 }
 
-/* The swap. Each stream owns a third of the pinned range. The outgoing row
-   fades over the last 8% before its boundary's 34% (26→34, 59.67→67.67) and
-   the incoming one over 32→40 (65.67→73.67), so the change starts as soon as
-   a flick crosses a boundary. The midpoints are 6% apart, so two rows are
-   never above 0.5 at once. */
+/* The swap: a straight cut at each third, no fade (Craig, 6 November). The
+   stops a hundredth apart make it a hard switch on the scroll timeline. */
 @keyframes home-moves-first {
   0%,
-  26% {
+  33.33% {
     opacity: 1;
     pointer-events: auto;
   }
 
-  34%,
+  33.34%,
   100% {
     opacity: 0;
     pointer-events: none;
@@ -1289,39 +1283,34 @@
 
 @keyframes home-moves-middle {
   0%,
-  32% {
+  33.33% {
     opacity: 0;
-    transform: translateY(12px);
     pointer-events: none;
   }
 
-  40%,
-  59.67% {
+  33.34%,
+  66.66% {
     opacity: 1;
-    transform: none;
     pointer-events: auto;
   }
 
-  67.67%,
+  66.67%,
   100% {
     opacity: 0;
-    transform: none;
     pointer-events: none;
   }
 }
 
 @keyframes home-moves-last {
   0%,
-  65.67% {
+  66.66% {
     opacity: 0;
-    transform: translateY(12px);
     pointer-events: none;
   }
 
-  73.67%,
+  66.67%,
   100% {
     opacity: 1;
-    transform: none;
     pointer-events: auto;
   }
 }

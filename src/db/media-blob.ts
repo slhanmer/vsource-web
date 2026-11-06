@@ -1,7 +1,8 @@
 import { BlobNotFoundError, head, put } from '@vercel/blob'
-import { readFile, stat } from 'fs/promises'
+import { readdir, readFile, stat } from 'fs/promises'
 import path from 'path'
 import { getPayload } from 'payload'
+import sharp from 'sharp'
 
 import { type MediaRow, needsUpload, planBlobUpload } from './blob-plan'
 import { loadConfig } from './load-config'
@@ -36,6 +37,38 @@ const RUN = process.env.MEDIA_BLOB_RUN === '1'
 const token = process.env.BLOB_READ_WRITE_TOKEN
 const mediaDir = path.resolve(process.cwd(), 'public', 'media')
 
+/*
+ * Fallback for rows created by a seed run straight into Blob (production,
+ * 6 Nov): the row's filename can carry a `-N` suffix the upload never got, and
+ * the file was never in public/media. Rebuild it from the seed asset of the
+ * same base name, resized for a generated size, and upload it under the key
+ * the row expects. Still no database writes.
+ */
+const seedDir = path.resolve(process.cwd(), 'src', 'seed', 'assets')
+let seedIndex: Map<string, string> | null = null
+
+async function indexSeedAssets(dir: string, into: Map<string, string>) {
+  for (const entry of await readdir(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name)
+    if (entry.isDirectory()) await indexSeedAssets(full, into)
+    else into.set(entry.name.toLowerCase(), full)
+  }
+}
+
+async function fromSeedAsset(name: string): Promise<Buffer | null> {
+  if (!seedIndex) {
+    seedIndex = new Map()
+    await indexSeedAssets(seedDir, seedIndex)
+  }
+  const m = /^(.*?)(?:-\d+)?(?:-(\d+)x(\d+))?\.([a-z0-9]+)$/i.exec(name)
+  if (!m) return null
+  const [, base, w, h, ext] = m
+  const source = seedIndex.get(`${base}.${ext}`.toLowerCase())
+  if (!source) return null
+  if (!w || !h) return readFile(source)
+  return sharp(source).resize(Number(w), Number(h), { fit: 'cover' }).toBuffer()
+}
+
 async function remoteSize(key: string): Promise<number | null> {
   try {
     return (await head(key, { token })).size
@@ -63,19 +96,29 @@ async function main() {
   for (const file of plan) {
     const localPath = path.join(mediaDir, file.local)
     const local = await stat(localPath).catch(() => null)
-    if (!local) {
-      missing.push(`${file.local} (media ${file.row})`)
-      continue
-    }
-
     const remote = await remoteSize(file.key)
-    if (!needsUpload(local.size, remote)) {
-      skipped++
-      continue
+
+    let body: Buffer | null = null
+    if (local) {
+      if (!needsUpload(local.size, remote)) {
+        skipped++
+        continue
+      }
+    } else {
+      if (remote !== null) {
+        skipped++
+        continue
+      }
+      body = await fromSeedAsset(path.basename(file.local))
+      if (!body) {
+        missing.push(`${file.local} (media ${file.row})`)
+        continue
+      }
     }
+    const size = local ? local.size : body!.length
 
     if (RUN) {
-      await put(file.key, await readFile(localPath), {
+      await put(file.key, body ?? (await readFile(localPath)), {
         access: 'public',
         addRandomSuffix: false,
         allowOverwrite: true,
@@ -86,7 +129,9 @@ async function main() {
       })
     }
     uploaded++
-    console.log(`${RUN ? 'uploaded' : 'would upload'}  ${file.key}  (${local.size} bytes)`)
+    console.log(
+      `${RUN ? 'uploaded' : 'would upload'}  ${file.key}  (${size} bytes${local ? '' : ', from seed asset'})`
+    )
   }
 
   console.log('')
