@@ -129,17 +129,14 @@ export interface Upcoming {
   stream: string
 }
 
-/** A stream's fold files, each cut for its shape (hero-insets-2). */
+/** A stream's fold file (hero-cards). */
 export interface HeroPhoto {
-  /** Square: the run window while the stream's word is typed. */
+  /** Square, shown whole on the stream's card (the LCP). */
   photo: Photo
-  /** 3:1: the settled band, a link to the stream page (the LCP). */
-  band: Photo
 }
 
 export interface SiteContent {
-  /** The home page fold's photographs, one per stream: the slideshow, then
-   *  the three bands it settles into (the LCP). */
+  /** The home page fold's photographs, one per stream card (the LCP). */
   heroPhotos: Record<'software' | 'robotics' | 'websites', HeroPhoto>
   workingPhoto: Photo
   groupPhoto?: Photo

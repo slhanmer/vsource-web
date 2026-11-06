@@ -10,6 +10,7 @@ import * as migration_20261105_052747_hero_stage from './20261105_052747_hero_st
 import * as migration_20261105_065118_hero_bands from './20261105_065118_hero_bands';
 import * as migration_20261105_070136_step_clip from './20261105_070136_step_clip';
 import * as migration_20261105_081531_stream_hidden from './20261105_081531_stream_hidden';
+import * as migration_20261106_035749_hero_cards from './20261106_035749_hero_cards';
 
 export const migrations = [
   {
@@ -70,6 +71,11 @@ export const migrations = [
   {
     up: migration_20261105_081531_stream_hidden.up,
     down: migration_20261105_081531_stream_hidden.down,
-    name: '20261105_081531_stream_hidden'
+    name: '20261105_081531_stream_hidden',
+  },
+  {
+    up: migration_20261106_035749_hero_cards.up,
+    down: migration_20261106_035749_hero_cards.down,
+    name: '20261106_035749_hero_cards'
   },
 ];

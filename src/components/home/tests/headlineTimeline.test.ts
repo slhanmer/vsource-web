@@ -2,7 +2,7 @@ import {
   BUDGET_MS,
   DELETE_MS,
   HOLD_MS,
-  SETTLE_MS,
+  RIM_MS,
   TYPE_MS,
   sentenceOf,
   sequenceOf,
@@ -20,7 +20,7 @@ const THREE = ['Software', 'Robotics', 'Websites']
 const TWO = ['Software', 'Robotics']
 
 describe('rotating headline timeline', () => {
-  it('finishes typing and settles the stage within the 4,500 ms budget, with three streams', () => {
+  it('finishes typing and lights the last card within the 4,500 ms budget, with three streams', () => {
     // Summed here from the constants, not just trusted from timelineMs().
     let typed = 0
     const sequence = sequenceOf(THREE)
@@ -29,16 +29,16 @@ describe('rotating headline timeline', () => {
     }
     expect(typed).toBe(typedMs(THREE))
     expect(typed).toBe(3240)
-    const total = typed + SETTLE_MS
+    const total = typed + RIM_MS
     expect(total).toBe(timelineMs(THREE))
-    expect(total).toBe(3840)
+    expect(total).toBe(3440)
     expect(total).toBeLessThanOrEqual(BUDGET_MS)
     expect(BUDGET_MS).toBeLessThan(5000)
   })
 
   it('stays within the budget with two streams', () => {
     expect(typedMs(TWO)).toBe(2160)
-    expect(timelineMs(TWO)).toBe(2760)
+    expect(timelineMs(TWO)).toBe(2360)
     expect(timelineMs(TWO)).toBeLessThanOrEqual(BUDGET_MS)
   })
 

@@ -59,7 +59,7 @@ export default function RotatingHeadline() {
   const [typing, setTyping] = useState(false)
 
   const reduced = useReducedMotion()
-  /** The fold's photo frame and stream links run off this same timeline
+  /** The fold's stream cards run off this same timeline
    *  (HeroRun.tsx): each is told the moment its word finishes typing. Stable
    *  identity, so the run below is not restarted by it. Null outside the fold. */
   const wordTyped = run?.wordTyped

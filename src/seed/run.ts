@@ -311,7 +311,7 @@ async function main() {
     heroPhotos: Object.fromEntries(
       Object.entries(content.site.heroPhotos).map(([stream, hero]) => [
         stream,
-        { photo: img(hero.photo), band: img(hero.band) },
+        { photo: img(hero.photo) },
       ])
     ),
     workingPhoto: img(content.site.workingPhoto),

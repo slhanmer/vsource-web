@@ -39,8 +39,8 @@ export async function generateMetadata(): Promise<Metadata> {
  * Home page.
  *
  * The fold is the promise and the three ways in: the message, two ways on
- * (start a conversation, or see the work), and the stage, which settles into
- * one band per stream, each a link. The streams are argued straight after,
+ * (start a conversation, or see the work), and the stage: one card per
+ * stream, each a link. The streams are argued straight after,
  * in "What changes", and the
  * argument that ties them together sits *after* that — supporting material
  * for someone who is already interested, not a gate in front of the thing
@@ -53,7 +53,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * other page, and the plate opens straight onto the argument.
  *
  * Everything below the fold is a server component. The only client boundaries
- * are the rotating headline, the stage, the mill lines, the stream bands and the Reveal
+ * are the rotating headline, the stage, the mill lines and the Reveal
  * wrappers, and the copy inside a Reveal is still rendered on the server.
  */
 export default async function Home() {
@@ -68,9 +68,8 @@ export default async function Home() {
     <main className="home">
       {/*
         The fold is one machined plate: the message on the left; on the
-        right the stage, the full height of the plate and fading into it,
-        which follows the headline (one big photo per word) and then settles
-        into three bands, one link per stream (hero-stage, 5 November).
+        right the stage, three stream cards, one link per stream, whose rims
+        follow the headline as each word types (hero-cards, 6 November).
       */}
       <section className="home-hero">
         <div className="home-plate">
@@ -105,7 +104,7 @@ export default async function Home() {
               </div>
 
               {/* After the copy in the source: the two buttons come first in
-                  the tab order, then the three bands. Inside the copy block,
+                  the tab order, then the three cards. Inside the copy block,
                   because its height is set against the copy's
                   (hero-stage-2). */}
               <HeroStage

@@ -17,11 +17,11 @@
  *   types    (8 + 8 + 8) chars × TYPE_MS         24 × 42 = 1,008
  *                                                         -------
  *   typed                                                 3,240 ms
- *   settle   the stage into its bands        SETTLE_MS       600
+ *   rim      the last card's teal rim        RIM_MS          200
  *                                                         -------
- *   still                                                 3,840 ms
+ *   still                                                 3,440 ms
  *
- * With Websites hidden it is two holds, 16 + 16 characters: 2,160 typed, 2,760
+ * With Websites hidden it is two holds, 16 + 16 characters: 2,160 typed, 2,360
  * still.
  *
  * There are no recut beats. The slot is cut once, to the widest word, and
@@ -30,13 +30,14 @@
  * Each hold outlasts the longest word's typing (all are eight letters,
  * 8 × 42 = 336 ms), so a word is read for longer than it takes to appear.
  *
- * The settle (hero-stage) is part of the motion, so it is in the sum: when the
- * last word lands, the fold's stage crossfades from one big photograph into
- * the stream bands, and nothing moves after that.
+ * The stage beside the headline is three stream cards (hero-cards, 6
+ * November), standing from the first paint. As each word finishes typing its
+ * card's rim lights teal, and the run ends with Software's lit. That rim
+ * transition is the last thing that moves, so it is in the sum.
  *
- * A fourth eight-letter stream would add 1,080 ms and land at 4,920 with the
- * settle: past the budget, and then it needs the pause button back. The test
- * in tests/headlineTimeline.test.ts fails before that happens.
+ * A fourth eight-letter stream would add 1,080 ms and land at 4,520 with the
+ * rim: past the budget, and then it needs the pause button back. The test in
+ * tests/headlineTimeline.test.ts fails before that happens.
  */
 
 /** The words in the order they are shown: the full set, then back to the
@@ -55,9 +56,9 @@ export const HOLD_MS = 600
 /** The ceiling. Under five seconds, with headroom. */
 export const BUDGET_MS = 4500
 
-/** The stage's crossfade into its bands, once the run lands back on the
- *  first word (HeroStage.tsx reads it, so the CSS cannot drift from it). */
-export const SETTLE_MS = 600
+/** A stream card's rim lighting as its word lands (hero-cards). HeroStage.tsx
+ *  passes it to the CSS, so the transition cannot drift from the budget. */
+export const RIM_MS = 200
 
 /** Mount to the final character typed, in milliseconds. */
 export function typedMs(words: readonly string[]): number {
@@ -71,10 +72,10 @@ export function typedMs(words: readonly string[]): number {
   return total
 }
 
-/** Mount to the moment the fold is still: the last word typed, then the
- *  settle. This is what the budget is for. */
+/** Mount to the moment the fold is still: the last word typed, then its
+ *  card's rim. This is what the budget is for. */
 export function timelineMs(words: readonly string[]): number {
-  return typedMs(words) + SETTLE_MS
+  return typedMs(words) + RIM_MS
 }
 
 /** The headline as one sentence, for the h1's visually-hidden text:

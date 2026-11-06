@@ -22,7 +22,9 @@ import { useReducedMotion } from '@hooks'
  *     d = PEAK · √e · (dy / SIGMA) · exp(−(dx² + dy²) / (2·SIGMA²))
  *
  * peaks at PEAK where |dy| = SIGMA, and is negligible past ~2·SIGMA (≈ 200px).
- * Its slope never exceeds ~20% of the line spacing, so lines never cross.
+ * Its slope in y is at most K/SIGMA ≈ 0.40 (lines spread by 40% at the
+ * centre) and at least −0.18 (squeezed by 18% at √3·SIGMA), so lines never
+ * cross: that needs −1, which is PEAK ≈ 136.
  *
  * COST. requestAnimationFrame runs only while the bend is catching up with
  * the pointer. A resting pointer keeps its bend but costs no frames: the
@@ -36,8 +38,9 @@ import { useReducedMotion } from '@hooks'
  * each ease toward their target per frame (LERP).
  */
 
-/** Peak vertical displacement, CSS px. */
-const PEAK = 12
+/** Peak vertical displacement, CSS px. 12 until hero-cards (Simon, 6
+ *  November: more bend). */
+const PEAK = 24
 /** Gaussian sigma, CSS px. The visible reach is about twice this. */
 const SIGMA = 100
 /*

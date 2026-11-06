@@ -126,24 +126,12 @@ const content: SeedContent = {
       file: 'hero/hero-software-stage.jpg',
       alt: 'A hand points to code on a monitor.',
     },
-    'hero/hero-software-band': {
-      file: 'hero/hero-software-band.jpg',
-      alt: 'A hand points to code on a monitor.',
-    },
     'hero/hero-robotics-stage': {
       file: 'hero/hero-robotics-stage.jpg',
       alt: 'The Huntsman, an eight-legged robot, on a stone bench.',
     },
-    'hero/hero-robotics-band': {
-      file: 'hero/hero-robotics-band.jpg',
-      alt: 'The Huntsman, an eight-legged robot, on a stone bench.',
-    },
     'hero/hero-websites-stage': {
       file: 'hero/hero-websites-stage.jpg',
-      alt: 'Inside Snug at night, through the window: table lamps, glasses and plates on the counter.',
-    },
-    'hero/hero-websites-band': {
-      file: 'hero/hero-websites-band.jpg',
       alt: 'Inside Snug at night, through the window: table lamps, glasses and plates on the counter.',
     },
     'hero/hero-software': {
@@ -804,9 +792,9 @@ const content: SeedContent = {
   ],
   site: {
     heroPhotos: {
-      software: { photo: 'hero/hero-software-stage', band: 'hero/hero-software-band' },
-      robotics: { photo: 'hero/hero-robotics-stage', band: 'hero/hero-robotics-band' },
-      websites: { photo: 'hero/hero-websites-stage', band: 'hero/hero-websites-band' },
+      software: { photo: 'hero/hero-software-stage' },
+      robotics: { photo: 'hero/hero-robotics-stage' },
+      websites: { photo: 'hero/hero-websites-stage' },
     },
     workingPhoto: 'photos/at-the-desk',
     groupPhoto: 'photos/team-group',
@@ -845,6 +833,9 @@ const content: SeedContent = {
       'huntsman-terrain-trials.jpg',
       'hero-robotics.jpg',
       'hero-team.jpg',
+      'hero-software-band.jpg',
+      'hero-robotics-band.jpg',
+      'hero-websites-band.jpg',
     ],
   },
 }

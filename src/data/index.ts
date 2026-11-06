@@ -299,16 +299,12 @@ export const getPartners = cached('partners', async (): Promise<Partner[]> => {
   return docs.map(toPartner)
 })
 
-/** A stream's two fold files: the square run window and the 3:1 band
- *  (hero-insets-2). */
+/** A stream's fold file: the square photograph on its card (hero-cards). */
 function heroPhoto(
-  entry: { photo?: number | Media | null; band?: number | Media | null } | null | undefined,
+  entry: { photo?: number | Media | null } | null | undefined,
   stream: string
 ): HeroPhoto {
-  return {
-    photo: must(entry?.photo, `The hero photo for ${stream}`),
-    band: must(entry?.band, `The hero band for ${stream}`),
-  }
+  return { photo: must(entry?.photo, `The hero photo for ${stream}`) }
 }
 
 export const getSite = cached('site', async (): Promise<SiteContent> => {

@@ -107,7 +107,7 @@ export interface SeedContent {
   crew: SeedCrew[]
   partners: SeedPartner[]
   site: {
-    heroPhotos: Record<'software' | 'robotics' | 'websites', { photo: Key; band: Key }>
+    heroPhotos: Record<'software' | 'robotics' | 'websites', { photo: Key }>
     workingPhoto: Key
     groupPhoto: Key | null
     comingSoon: Array<{ name: string; stream: string }>

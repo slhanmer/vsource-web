@@ -27,9 +27,6 @@
      Light in both themes: supplied artwork is drawn for white. Global now
      (global.scss), because /built's logo media uses the same plate. */
   --home-logo-plate: var(--logo-plate);
-  /* Under a stream name on its band (hero-stage). Dark in both themes: the
-     name is --text-on-dark, over a photograph, whatever the page is. */
-  --home-stage-scrim: rgba(4, 8, 7, 0.78);
 }
 
 [data-theme='dark'] .home {
@@ -408,234 +405,169 @@
 }
 
 /* ── the stage (HeroStage.tsx) ───────────────────────────────────────────
-   WINDOWS CUT INTO THE PLATE (hero-insets, 5 November). The site's own
-   language: the same recessed edge as every other photograph (`.cut-photo`),
-   light catching the lower inner rim, on its own layer ABOVE the image so the
-   photograph cannot cover it, and $radius-md. No masks, no faded edges, no
-   bleed: the torn edges of hero-stage and hero-stage-2 read as mud.
+   THREE STREAM CARDS (hero-cards, 6 November), stacked, standing from the
+   first paint: no run window, no crossfade, no settle. Each card is raised
+   (lighter, light on its top edge). In it, on the left, the stream's square
+   photograph WHOLE in a 1:1 window cut into the card; on the right, a sunken
+   well with the name and "See more →". The photo box sets the card's height.
 
-   The stage is the copy block's second column, ending at the content
-   column's right edge. Its geometry is the files' (below).
-
-   Two layers. The slideshow (`__solo`): one window, one big photo per word
-   while the headline runs, crossfading on opacity alone. The bands
-   (`__bands`): three 3:1 windows, one link per stream, which is where the
-   stage settles and stays. With no `.is-running`
-   (the server, no JS, reduced motion, and the end of the run) only the bands
-   show. */
+   The stage is the copy block's second column, at its full width. The photo
+   is ~30% of the card, CAPPED so every card fits the fold with
+   --home-fold-air above it and above the foot's rule: on a short screen the
+   photo gets smaller, never the name. */
 .home-stage {
-  /* hero-insets-2: was $spacing-md. */
-  --home-stage-gap: clamp(16px, 1.6vw, 28px);
+  --home-stage-gap: clamp(14px, 1.4vw, 22px);
   --home-stage-carve: inset 0 3px 8px -3px var(--carve-dark), inset 0 -1px 0 var(--carve-lip);
-  position: absolute;
-  /* LOCKED TO THE FILES' SHAPES (hero-insets-2). One 3:1 band per visible
-     stream and a gap between each (three streams: as tall as it is wide plus
-     two gaps; two: two thirds of its width plus one); the run
-     window fills the same box, which is nearly square, and the square file
-     covers it with a sliver trimmed. It sits in the copy block's second
-     column, in the flow, centred on the copy by the grid's
-     `align-items: center`.
-
-     Its width is the column, CAPPED so the whole stage fits the fold with
-     --home-fold-air above it and above the foot's rule: on a short screen
-     it gets narrower (the bands keep 3:1), never the foot. */
+  --home-card-pad: clamp(8px, 0.8vw, 12px);
+  /* n cards of (photo + 2 × pad) and n − 1 gaps fit the room. n is the number
+     of visible streams (--home-stage-count, set by HeroStage; hide-websites). */
+  --home-card-photo: min(
+    30%,
+    calc(
+      (
+          100svh - var(--home-fold-trim) - 2 * var(--home-fold-air) - var(--home-foot-h) -
+            (var(--home-stage-count, 3) - 1) * var(--home-stage-gap) - 28px
+        ) /
+        var(--home-stage-count, 3) - 2 * var(--home-card-pad)
+    )
+  );
   position: relative;
   z-index: 1;
   justify-self: end;
-  width: min(
-    100%,
-    /* n bands at 3:1 and n − 1 gaps fit the room: w·n/3 + (n − 1)·gap ≤ room.
-       n is the number of visible streams (--home-stage-count, set by
-       HeroStage; hide-websites). */
-    calc(
-        (
-            100svh - var(--home-fold-trim) - 2 * var(--home-fold-air) - var(--home-foot-h) -
-              (var(--home-stage-count, 3) - 1) * var(--home-stage-gap) - 28px
-          ) *
-          3 / var(--home-stage-count, 3)
-      )
-  );
+  width: 100%;
+  display: grid;
+  gap: var(--home-stage-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 
-  &__solo {
+  &__item {
+    display: flex;
+  }
+}
+
+/* One card, one link. */
+.home-card {
+  position: relative;
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: var(--home-card-photo) minmax(0, 1fr);
+  gap: var(--home-card-pad);
+  padding: var(--home-card-pad);
+  border-radius: $radius-md;
+  background: var(--surface-card);
+  /* Raised: light on the top edge, a hairline seating the bottom one (the
+     /built card's pair). No drop shadow. */
+  box-shadow:
+    inset 0 1px 0 var(--carve-lip),
+    0 1px 0 var(--border-subtle-colour);
+  color: var(--text-primary);
+  text-decoration: none;
+  outline: none;
+
+  /* The rim: teal on hover, and on the card whose word has just typed
+     (`is-current`, from the headline's timeline). Cyan points: these
+     navigate. Its transition is RIM_MS, which is in the 2.2.2 budget. */
+  &::after {
+    content: '';
     position: absolute;
     inset: 0;
-    overflow: hidden;
-    border-radius: $radius-md;
-    background: var(--surface-sunken);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity var(--home-stage-settle, 600ms) ease;
-  }
-
-  &__solo-img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-
-    &.is-shown {
-      opacity: 1;
-    }
-  }
-
-  /* The recessed edge, above the photographs (CutPhoto's reason: an inset
-     shadow on the frame paints under its content). */
-  &__edge {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    border-radius: inherit;
-    box-shadow: var(--home-stage-carve);
-    pointer-events: none;
-  }
-
-  &__bands {
-    position: relative;
-    display: grid;
-    gap: var(--home-stage-gap);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    transition: opacity var(--home-stage-settle, 600ms) ease;
-  }
-
-  /* WHILE THE RUN PLAYS (hero-insets-2 §3: the band names showed through
-     the run window). The run window is opaque and goes ABOVE the bands, the
-     bands go transparent, and their names are `visibility: hidden`, so no
-     label pixel can reach the screen. The links themselves stay focusable
-     (a `visibility: hidden` link cannot take focus), so focus is still the
-     exception: a keyboard user who tabs in during the run brings the bands
-     forward and sees the window they are on. */
-  &.is-running &__solo {
     z-index: 2;
-    opacity: 1;
-    /* Into the run at once, so the bands never ghost through a half-faded
-       window; out of it (the settle) over SETTLE_MS, from the base rule. */
-    transition: none;
-  }
-
-  &.is-running &__bands {
-    opacity: 0;
+    border-radius: inherit;
     pointer-events: none;
-    transition: none;
-
-    .home-stage__name {
-      visibility: hidden;
-    }
-
-    &:focus-within {
-      z-index: 3;
-      opacity: 1;
-      pointer-events: auto;
-
-      .home-stage__name {
-        visibility: visible;
-      }
-    }
+    box-shadow: inset 0 0 0 2px transparent;
+    transition: box-shadow var(--home-stage-rim, 200ms) ease;
   }
 
-  &__band {
+  &:hover::after,
+  &.is-current::after {
+    box-shadow: inset 0 0 0 2px var(--route-active);
+  }
+
+  /* Focus is an outline outside the card, so it is never mistaken for the
+     current rim that Software keeps once the run is over. */
+  &:focus-visible {
+    outline: 3px solid var(--route-active);
+    outline-offset: 3px;
+  }
+
+  /* The photograph's window: the file's shape, so it is shown whole. */
+  &__photo {
     position: relative;
-    aspect-ratio: 3 / 1;
-  }
-
-  /* The whole window is the link. */
-  &__link {
-    position: absolute;
-    inset: 0;
-    display: block;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
-    border-radius: $radius-md;
+    border-radius: $radius-sm;
     background: var(--surface-sunken);
-    color: var(--text-on-dark);
-    text-decoration: none;
-    outline: none;
 
-    /* The recessed edge, above the photograph and its scrim. Hover lights
-       the rim teal (cyan points: these navigate). */
+    /* The recessed edge, above the photograph (an inset shadow on the frame
+       would paint under it). */
     &::after {
       content: '';
       position: absolute;
       inset: 0;
-      z-index: 2;
       border-radius: inherit;
-      pointer-events: none;
       box-shadow: var(--home-stage-carve);
-      transition: box-shadow 0.2s ease;
-    }
-
-    &:hover::after {
-      box-shadow:
-        var(--home-stage-carve),
-        inset 0 0 0 2px var(--route-active);
-    }
-
-    /* Always visible on focus, at once: the teal rim with a dark line
-       inside it, so it holds against a bright photograph in either theme. */
-    &:focus-visible::after {
-      transition: none;
-      box-shadow:
-        inset 0 0 0 3px var(--route-active),
-        inset 0 0 0 5px var(--home-stage-scrim);
-    }
-  }
-
-  /* The photograph, and a short scrim along its foot for the name: the scrim
-     is for contrast, inside the window, not an edge. */
-  &__photo {
-    position: absolute;
-    inset: 0;
-
-    &::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: min(72%, 120px);
-      background: linear-gradient(0deg, var(--home-stage-scrim), transparent);
       pointer-events: none;
     }
   }
 
-  &__band-img {
+  &__img {
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    transition: filter 0.25s ease;
+    /* The box is square and so is the file; contain guarantees no crop even
+       if a file arrives a pixel off. */
+    object-fit: contain;
   }
 
-  &__link:hover &__band-img,
-  &__link:focus-visible &__band-img {
-    filter: brightness(1.1);
+  /* The sunken well: the name at its top left, "See more" under it. */
+  &__well {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(6px, 0.6vw, 10px);
+    min-width: 0;
+    padding: clamp(12px, 1.2vw, 18px) clamp(14px, 1.4vw, 22px);
+    border-radius: $radius-sm;
+    background: var(--surface-sunken);
+    box-shadow: var(--home-stage-carve);
   }
 
-  /* Bottom-left, inside the window. */
   &__name {
-    position: absolute;
-    z-index: 1;
-    left: clamp(14px, 1.4vw, 22px);
-    bottom: clamp(10px, 1.2vw, 18px);
     font-family: $font-family-display;
-    /* hero-insets-2: was clamp(20px, 1.7vw, 28px). */
-    font-size: clamp(22px, 2vw, 34px);
+    font-size: clamp(22px, 2vw, 32px);
     font-weight: 600;
     line-height: 1.1;
     letter-spacing: 0.02em;
   }
+
+  &__more {
+    font-family: $font-family-mono;
+    font-size: clamp(13px, 0.95vw, 15px);
+    line-height: 1.3;
+    letter-spacing: 0.04em;
+    color: var(--route-active);
+  }
+
+  &__arrow {
+    display: inline-block;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover &__arrow,
+  &:focus-visible &__arrow {
+    transform: translateX(3px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-stage__solo,
-  .home-stage__solo-img,
-  .home-stage__bands,
-  .home-stage__band-img,
-  .home-stage__link::after {
+  .home-card::after {
     transition: none;
+  }
+
+  .home-card:hover .home-card__arrow,
+  .home-card:focus-visible .home-card__arrow {
+    transform: none;
   }
 }
 
@@ -800,12 +732,10 @@
   }
 }
 
-/* ── narrow screens: copy, then the windows ───────────────────────────────
-   Below the two-column breakpoint the message comes first, then the stage as
-   three windows stacked full width, each about 16:9, with the same cut edge
-   and already settled: no slideshow here, whatever the run is doing. The fold
-   may be taller than one screen. The copy is NEVER shrunk to make it fit
-   (hero-rebuild). */
+/* ── narrow screens: copy, then the cards ─────────────────────────────────
+   Below the two-column breakpoint the message comes first, then the same
+   cards stacked full width, the photo at about 28%. The fold may be taller
+   than one screen. The copy is NEVER shrunk to make it fit (hero-rebuild). */
 @media (max-width: $breakpoint-desktop) {
   .home-plate {
     padding-block: clamp(20px, 5vw, 36px) clamp(24px, 5vw, 40px);
@@ -813,22 +743,8 @@
 
   /* In the copy block's one column, after the copy, full width. */
   .home-stage {
-    width: 100%;
+    --home-card-photo: 28%;
     justify-self: stretch;
-  }
-
-  .home-stage__solo {
-    display: none;
-  }
-
-  .home-stage__bands,
-  .home-stage.is-running .home-stage__bands {
-    opacity: 1;
-    pointer-events: auto;
-
-    .home-stage__name {
-      visibility: visible;
-    }
   }
 }
 

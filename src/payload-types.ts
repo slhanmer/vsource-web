@@ -889,38 +889,26 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface Site {
   id: number;
   /**
-   * The home page fold: two files per stream. The square one fills the stage while its word is typed; then the three 3:1 ones settle into bands that link to the stream pages. Each is shown centred: crop the file, do not expect the site to.
+   * The home page fold: one square photograph per stream, shown whole on its stream card. Crop the file; the site will not.
    */
   heroPhotos?: {
     software?: {
       /**
-       * The run window, while the word is typed. Square, at least 1200×1200.
+       * The stream card. Square, at least 1200×1200.
        */
       photo?: (number | null) | Media;
-      /**
-       * The settled band, a link to the stream page. 3:1, at least 1800×600.
-       */
-      band?: (number | null) | Media;
     };
     robotics?: {
       /**
-       * The run window, while the word is typed. Square, at least 1200×1200.
+       * The stream card. Square, at least 1200×1200.
        */
       photo?: (number | null) | Media;
-      /**
-       * The settled band, a link to the stream page. 3:1, at least 1800×600.
-       */
-      band?: (number | null) | Media;
     };
     websites?: {
       /**
-       * The run window, while the word is typed. Square, at least 1200×1200.
+       * The stream card. Square, at least 1200×1200.
        */
       photo?: (number | null) | Media;
-      /**
-       * The settled band, a link to the stream page. 3:1, at least 1800×600.
-       */
-      band?: (number | null) | Media;
     };
   };
   /**
@@ -956,19 +944,16 @@ export interface SiteSelect<T extends boolean = true> {
           | T
           | {
               photo?: T;
-              band?: T;
             };
         robotics?:
           | T
           | {
               photo?: T;
-              band?: T;
             };
         websites?:
           | T
           | {
               photo?: T;
-              band?: T;
             };
       };
   workingPhoto?: T;
