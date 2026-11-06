@@ -2,6 +2,7 @@ import { CONTACT } from '@constants'
 import { getStreams } from '@/data'
 import CursorSpark from './CursorSpark'
 import { fontVariables } from './fonts'
+import SiteAnalytics from './SiteAnalytics'
 import SiteFooter from './SiteFooter'
 import SiteHeader from './SiteHeader'
 import { siteNav } from './siteNav'
@@ -122,6 +123,7 @@ export default async function SiteDocument({ children }: { children: React.React
           </div>
           <CursorSpark />
         </Providers>
+        <SiteAnalytics />
       </body>
     </html>
   )
