@@ -202,12 +202,22 @@
     transition: box-shadow 0.3s ease;
   }
 
-  &:hover &__media,
-  &:focus-visible &__media {
-    box-shadow:
-      inset 0 3px 8px -3px var(--carve-dark),
-      inset 0 -1px 0 var(--carve-lip),
-      inset 0 0 0 1.5px var(--brand-highlight);
+  /* The rim is drawn on a layer above the image: an inset shadow paints
+     under the content, so an image that fills the frame hid it. */
+  &__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: inset 0 0 0 1.5px transparent;
+    transition: box-shadow 0.3s ease;
+  }
+
+  &:hover &__media::after,
+  &:focus-visible &__media::after {
+    box-shadow: inset 0 0 0 1.5px var(--brand-highlight);
   }
 
   &__body {
