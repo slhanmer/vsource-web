@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
 
   // Media is served from Vercel Blob when BLOB_READ_WRITE_TOKEN is set.
   images: {
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [{ protocol: 'https', hostname: '*.public.blob.vercel-storage.com' }],
   },
 

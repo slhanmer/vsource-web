@@ -1,0 +1,19 @@
+# V Source Development
+
+> A small Brisbane company that designs, builds and runs custom software, legged robotics and websites. The people who build it are the people who run it afterwards.
+
+V Source builds software to fit how a business already works, rather than reshaping the business around a platform that nearly fits. Work includes regulated software (TGA-regulated medical device software, built to IEC 62304), accessibility to WCAG 2.2 AA, Australian hosting, and ongoing support.
+
+## Streams
+
+- [Software](https://www.vsource.dev/software): custom systems built around how you actually work
+- [Robotics](https://www.vsource.dev/robotics): Project Arachnid and The Huntsman, a legged platform for search and rescue
+- [Websites](https://www.vsource.dev/websites): fast, accessible sites the owners can edit themselves
+
+## More
+
+- [Built](https://www.vsource.dev/built): projects and current work
+- [Team](https://www.vsource.dev/team): the people who build it
+- [Regulated software](https://www.vsource.dev/regulated)
+- [Accessibility](https://www.vsource.dev/accessibility)
+- [Contact](https://www.vsource.dev/contact): Brisbane, Australia

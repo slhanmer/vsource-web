@@ -808,7 +808,7 @@ const content: SeedContent = {
         stream: 'software',
       },
       {
-        name: 'Paw Connect',
+        name: 'Paw Connection',
         stream: 'software',
       },
     ],
