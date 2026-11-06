@@ -1,7 +1,7 @@
 'use client'
 
 import { Fragment, useEffect, useRef, useState } from 'react'
-import { useReducedMotion } from '@hooks'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useHeroRun } from './HeroRun'
 import { DELETE_MS, HOLD_MS, TYPE_MS, sentenceOf } from './headlineTimeline'
 

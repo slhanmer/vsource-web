@@ -2,8 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Script from 'next/script'
-import { Button, Input, HoneypotField, useToast } from '@components'
-import { readVisitOrigin } from '@utils'
+import Button from '@/components/ui-kit/Button'
+import Input from '@/components/ui-kit/Input'
+import HoneypotField from '@/components/security/HoneyPot'
+import { useToast } from '@/components/ui-kit/Toast'
+import { readVisitOrigin } from '@/utils/visitOrigin'
 
 import '../styles/contact.scss'
 

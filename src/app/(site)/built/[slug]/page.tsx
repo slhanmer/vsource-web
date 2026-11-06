@@ -1,4 +1,5 @@
-import type { Metadata } from 'next'
+import type { Metadata, ResolvingMetadata } from 'next'
+import { withShareCard } from '../../shareCard'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -27,21 +28,27 @@ export async function generateStaticParams() {
   return (await getProjects()).map((project) => ({ slug: project.slug }))
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>
-}): Promise<Metadata> {
+export async function generateMetadata(
+  {
+    params,
+  }: {
+    params: Promise<{ slug: string }>
+  },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const { slug } = await params
   const project = await getProject(slug)
   if (!project) return {}
 
-  return {
-    title: `${project.title} — Built`,
-    description: project.lede,
-    alternates: { canonical: `/built/${project.slug}` },
-    openGraph: { url: `/built/${project.slug}`, title: `${project.title} — Built` },
-  }
+  return withShareCard(
+    {
+      title: `${project.title} — Built`,
+      description: project.lede,
+      alternates: { canonical: `/built/${project.slug}` },
+      openGraph: { url: `/built/${project.slug}`, title: `${project.title} — Built` },
+    },
+    parent
+  )
 }
 
 export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -71,8 +78,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
       <ProjectMedia
         spec={project.media}
-        priority
-        sizes="(max-width: 1320px) 100vw, 1280px"
+        preload
+        sizes="(max-width: 1366px) 94vw, 1275px"
         className="built-project__media"
       />
 
@@ -144,7 +151,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                       alt={site.screenshot.alt}
                       width={site.screenshot.width}
                       height={site.screenshot.height}
-                      sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 260px"
+                      sizes="(max-width: 559px) 92vw, (max-width: 1099px) 47vw, 235px"
                       className="built-site__img"
                     />
                   </span>

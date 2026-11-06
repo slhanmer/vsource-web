@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect } from 'react'
-import { ToastProvider } from '@components'
-import { recordVisitOrigin } from '@utils'
+import { ToastProvider } from '@/components/ui-kit/Toast'
+import { recordVisitOrigin } from '@/utils/visitOrigin'
 import '@configs/fontawesome'
 
 /** Client provider tree. Deliberately thin — nothing to fetch before paint. */

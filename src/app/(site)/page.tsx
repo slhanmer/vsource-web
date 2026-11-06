@@ -167,7 +167,7 @@ export default async function Home() {
         <div className="home-why__grid">
           <CutPhoto
             photo={site.workingPhoto}
-            sizes="(max-width: 979px) 100vw, 580px"
+            sizes="(max-width: 979px) 92vw, (max-width: 1366px) 40vw, 545px"
             className="home-why__photo"
           />
           <div className="home-why__copy">
@@ -243,7 +243,7 @@ export default async function Home() {
                     alt=""
                     width={member.portrait.width}
                     height={member.portrait.height}
-                    sizes="(max-width: 560px) 100vw, (max-width: 979px) 33vw, 240px"
+                    sizes="(max-width: 560px) 92vw, (max-width: 979px) 31vw, (max-width: 1366px) 18vw, 245px"
                     className="home-face__img"
                   />
                 ) : (

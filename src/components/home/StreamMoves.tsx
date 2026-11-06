@@ -89,13 +89,13 @@ export default function StreamMoves({ streams }: { streams: Stream[] }) {
                   {stream.stepClip ? (
                     <ProjectMedia
                       spec={stream.stepClip}
-                      sizes="(max-width: 979px) 92vw, (max-width: 1440px) 44vw, 600px"
+                      sizes="(max-width: 979px) 92vw, (max-width: 1366px) 43vw, 585px"
                       className="home-step__photo home-step__clip"
                     />
                   ) : (
                     <CutPhoto
                       photo={stream.stepPhoto}
-                      sizes="(max-width: 979px) 92vw, (max-width: 1440px) 44vw, 600px"
+                      sizes="(max-width: 979px) 92vw, (max-width: 1366px) 43vw, 585px"
                       className="home-step__photo"
                     />
                   )}

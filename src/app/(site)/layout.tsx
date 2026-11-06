@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import SiteDocument, { SITE_URL } from '@components/layouts/SiteDocument'
+// Links styled as .basic-button need this on every page, not only where <Button> renders.
+import '@components/ui-kit/styles/button.scss'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -18,13 +20,13 @@ export const metadata: Metadata = {
     title: 'V Source — Custom Software Development, Brisbane',
     description:
       'Custom software built and run by the people who wrote it. Design, build, accessibility and Australian hosting, from one small Brisbane team.',
-    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'V Source Development, Brisbane' }],
+    // The image is opengraph-image.tsx, beside this file (perf-og).
   },
   twitter: {
     card: 'summary_large_image',
     title: 'V Source — Custom Software Development, Brisbane',
     description: 'Custom software built and run by the people who wrote it. Brisbane, Australia.',
-    images: ['/og.png'],
+    // The image is twitter-image.tsx, beside this file (perf-og).
   },
 }
 

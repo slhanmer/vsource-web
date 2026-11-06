@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { useReducedMotion } from '@hooks'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 import Image from 'next/image'
 import type { ProjectMedia as Spec } from '@/data/types'
 import StreamMark from '@/components/home/StreamMark'
@@ -19,6 +19,12 @@ import StreamMark from '@/components/home/StreamMark'
  *   - **Nothing is fetched until it is on screen.** `preload="none"` plus a
  *     poster means the still is all that loads for a card nobody scrolls to,
  *     and an observer starts it when it arrives and pauses it when it leaves.
+ *     The poster is a `next/image` UNDER the video (perf-og), not the video's
+ *     `poster` attribute: an attribute poster is the raw upload, fetched at
+ *     once wherever the clip is on the page, at full size. As an image it is
+ *     resized for `sizes`, served as AVIF or WebP, lazy below the fold, and
+ *     preloaded where it is the LCP (the /built lead). The video has no frame
+ *     until it plays, so the image shows through it until then.
  *     A page of autoplaying video that all starts at once is how a showpiece
  *     becomes the slowest page on the site.
  *   - **It stops.** Auto-starting motion that loops for more than five seconds
@@ -33,15 +39,16 @@ import StreamMark from '@/components/home/StreamMark'
 
 interface Props {
   spec: Spec
-  /** Index media is smaller and lazier than the one on a project's own page. */
-  priority?: boolean
+  /** The page's LCP element: preloaded at high fetch priority. One per page. */
+  preload?: boolean
   className?: string
   /** The width this media renders at, for the optimiser. Required, because the
    *  same component sits in three layouts of very different widths. */
   sizes: string
 }
 
-export default function ProjectMedia({ spec, priority = false, className = '', sizes }: Props) {
+export default function ProjectMedia({ spec, preload = false, className = '', sizes }: Props) {
+  const eager = preload ? { preload: true, fetchPriority: 'high' as const } : {}
   const video = useRef<HTMLVideoElement>(null)
   // Two different pauses, kept apart on purpose. `stopped` is the viewer's
   // choice, made with the button, and it holds until they choose again.
@@ -105,8 +112,8 @@ export default function ProjectMedia({ spec, priority = false, className = '', s
           alt={spec.alt}
           width={spec.width}
           height={spec.height}
-          sizes="320px"
-          priority={priority}
+          sizes={sizes}
+          {...eager}
           className="built-media__logo"
         />
       </div>
@@ -123,7 +130,7 @@ export default function ProjectMedia({ spec, priority = false, className = '', s
           width={spec.width}
           height={spec.height}
           sizes={sizes}
-          priority={priority}
+          {...eager}
           className="built-media__img"
         />
       </div>
@@ -136,10 +143,19 @@ export default function ProjectMedia({ spec, priority = false, className = '', s
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
     >
+      {spec.poster && (
+        <Image
+          src={spec.poster}
+          alt=""
+          fill
+          sizes={sizes}
+          {...eager}
+          className="built-media__poster"
+        />
+      )}
       <video
         ref={video}
         className="built-media__video"
-        poster={spec.poster}
         width={spec.width}
         height={spec.height}
         muted

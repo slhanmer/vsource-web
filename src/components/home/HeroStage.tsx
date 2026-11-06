@@ -15,9 +15,9 @@ interface Props {
   streams: Array<{ slug: string; name: string; href: string }>
 }
 
-/* The photo box is ~30% of a stage column that is at most ~620px wide, and
-   28% of the screen on a narrow one. */
-const SIZES = '(max-width: 979px) 30vw, 200px'
+/* Measured on the preview (perf-og), CSS px: 82–222 at 360–900 wide (about
+   24.5vw of the screen), and 124–166 from 1024 up. */
+const SIZES = '(max-width: 979px) 25vw, 170px'
 
 /**
  * The fold's stage (hero-cards, 6 November): three stacked stream cards, one
@@ -35,7 +35,12 @@ const SIZES = '(max-width: 979px) 30vw, 200px'
  *
  * Each card is one link, named by the stream: the photo is decoration (empty
  * alt) and "See more" is aria-hidden, so a screen reader hears
- * "Software, link". The photographs are preloaded: they are the LCP.
+ * "Software, link".
+ *
+ * NOT PRELOADED (perf-og). The fold's LCP is the sub copy, at mobile and
+ * desktop, not a card photo, and three preloads at the head competed with
+ * the fonts and CSS that the text needs. They load as normal images, which
+ * for an image in the viewport is straight after layout.
  */
 export default function HeroStage({ photos, streams }: Props) {
   const run = useHeroRun()
@@ -72,7 +77,6 @@ export default function HeroStage({ photos, streams }: Props) {
                   width={photo.width}
                   height={photo.height}
                   sizes={SIZES}
-                  preload
                   className="home-card__img"
                 />
               </span>

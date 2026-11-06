@@ -1,16 +1,21 @@
-import type { Metadata } from 'next'
+import type { Metadata, ResolvingMetadata } from 'next'
+import { withShareCard } from '../shareCard'
 import Link from 'next/link'
 import { getProjects, getSite } from '@/data'
 import ProjectMedia from '@/components/built/ProjectMedia'
 import '../styles/pages.scss'
 import '../styles/built.scss'
 
-export const metadata: Metadata = {
+const META: Metadata = {
   title: 'Built — projects and current work',
   description:
     'Systems, sites and machines we have built and still run, from Brisbane. Medical device software to IEC 62304, accessible web work, and hardware that has to keep walking.',
   alternates: { canonical: '/built' },
   openGraph: { url: '/built', title: 'Built — projects and current work' },
+}
+
+export function generateMetadata(_: unknown, parent: ResolvingMetadata): Promise<Metadata> {
+  return withShareCard(META, parent)
 }
 
 /**
@@ -42,8 +47,8 @@ export default async function BuiltPage() {
         <Link href={`/built/${featured.slug}`} className="built-card built-card--lead">
           <ProjectMedia
             spec={featured.media}
-            priority
-            sizes="(max-width: 979px) 100vw, 710px"
+            preload
+            sizes="(max-width: 979px) 91vw, (max-width: 1366px) 51vw, 690px"
             className="built-card__media"
           />
           <div className="built-card__body">
@@ -72,7 +77,7 @@ export default async function BuiltPage() {
           <Link key={project.slug} href={`/built/${project.slug}`} className="built-card">
             <ProjectMedia
               spec={project.media}
-              sizes="(max-width: 700px) 100vw, (max-width: 1080px) 50vw, 400px"
+              sizes="(max-width: 700px) 87vw, (max-width: 1366px) 44vw, 580px"
               className="built-card__media"
             />
             <div className="built-card__body">

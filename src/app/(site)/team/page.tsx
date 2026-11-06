@@ -1,4 +1,5 @@
-import type { Metadata } from 'next'
+import type { Metadata, ResolvingMetadata } from 'next'
+import { withShareCard } from '../shareCard'
 import Image from 'next/image'
 import { type CrewMember, getCrew, getSite } from '@/data'
 import CutPhoto from '@/components/photos/CutPhoto'
@@ -6,12 +7,16 @@ import TerminalTile from '@/components/photos/TerminalTile'
 import '../styles/pages.scss'
 import '../styles/crew.scss'
 
-export const metadata: Metadata = {
+const META: Metadata = {
   title: 'Team — the people who build it',
   description:
     'A technical director off the tools, a developer who ran kitchens, and a QA lead who reads the documentation before the auditor does. A small team in Brisbane.',
   alternates: { canonical: '/team' },
   openGraph: { url: '/team', title: 'Team — the people who build it' },
+}
+
+export function generateMetadata(_: unknown, parent: ResolvingMetadata): Promise<Metadata> {
+  return withShareCard(META, parent)
 }
 
 /**
@@ -63,7 +68,7 @@ export default async function TeamPage() {
       {site.groupPhoto && (
         <CutPhoto
           photo={site.groupPhoto}
-          sizes="(max-width: 1320px) 100vw, 1320px"
+          sizes="(max-width: 1366px) 96vw, 1275px"
           className="crew-group"
         />
       )}
@@ -84,7 +89,7 @@ export default async function TeamPage() {
                   alt=""
                   width={member.portrait.width}
                   height={member.portrait.height}
-                  sizes="(max-width: 860px) 100vw, (max-width: 1320px) 30vw, 380px"
+                  sizes="(max-width: 860px) 88vw, (max-width: 1366px) 28vw, 375px"
                   className="crew__portrait-img"
                 />
               ) : (

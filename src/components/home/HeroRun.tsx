@@ -9,7 +9,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { useReducedMotion } from '@hooks'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { sequenceOf } from './headlineTimeline'
 
 /**

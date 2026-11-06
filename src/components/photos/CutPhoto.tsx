@@ -14,14 +14,19 @@ import './styles/cutPhoto.scss'
  * Optimised by the host (Vercel), so `sizes` decides which width is fetched —
  * pass the width the photo actually renders at. The width and height reserve
  * the box before the file arrives.
+ *
+ * `preload` is for the one photograph that is a page's LCP element: it is
+ * preloaded from the head at high fetch priority. Nowhere else (perf-og).
  */
 export default function CutPhoto({
   photo,
   sizes,
+  preload = false,
   className = '',
 }: {
   photo: Photo
   sizes: string
+  preload?: boolean
   className?: string
 }) {
   return (
@@ -32,6 +37,7 @@ export default function CutPhoto({
         width={photo.width}
         height={photo.height}
         sizes={sizes}
+        {...(preload ? { preload: true, fetchPriority: 'high' as const } : {})}
         className="cut-photo__img"
       />
       <span className="cut-photo__edge" aria-hidden="true" />

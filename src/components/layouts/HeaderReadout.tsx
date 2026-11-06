@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useReducedMotion } from '@hooks'
-import { SITE_STATUS } from '@constants'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { SITE_STATUS } from '@/constants/status'
 
 /** Milliseconds per character. */
 const CHAR_MS = 16

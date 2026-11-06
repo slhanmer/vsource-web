@@ -3,7 +3,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope, faPhone, faLocationDot } from '@fortawesome/free-solid-svg-icons'
 import { faLinkedinIn } from '@fortawesome/free-brands-svg-icons'
-import { CONTACT } from '@constants'
+import { CONTACT } from '@/constants/contact'
 
 /**
  * The four ways to reach us, at the right of the readout strip.

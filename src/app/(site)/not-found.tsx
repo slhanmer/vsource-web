@@ -1,7 +1,6 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { Button } from '@components'
 import VSourceMark from '@components/ui-kit/VSourceMark'
 
 import './not-found.scss'
@@ -28,8 +27,24 @@ export default function NotFound() {
         </div>
 
         <div className="notfound-card__actions">
-          <Button label="Go back" variant="secondary" handleClick={() => router.back()} />
-          <Button label="Home page" handleClick={() => router.push('/')} />
+          {/* Plain buttons in the kit's classes, not the kit's <Button>
+              (perf-og): this boundary ships with every page, and <Button>
+              brought the utils and hooks barrels, and with them half the
+              ui-kit, into every page's JavaScript. */}
+          <button
+            type="button"
+            className="basic-button secondary-button"
+            onClick={() => router.back()}
+          >
+            <span className="label-span">Go back</span>
+          </button>
+          <button
+            type="button"
+            className="basic-button primary-button"
+            onClick={() => router.push('/')}
+          >
+            <span className="label-span">Home page</span>
+          </button>
         </div>
       </div>
     </main>

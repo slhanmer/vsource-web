@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
-import type { Metadata } from 'next'
+import type { Metadata, ResolvingMetadata } from 'next'
+import { withShareCard } from '../shareCard'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { STREAM_COMMON } from '@constants'
@@ -43,21 +44,27 @@ export async function generateStaticParams() {
   return (await getStreams()).map((stream) => ({ stream: stream.slug }))
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ stream: string }>
-}): Promise<Metadata> {
+export async function generateMetadata(
+  {
+    params,
+  }: {
+    params: Promise<{ stream: string }>
+  },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const { stream: slug } = await params
   const stream = await getStream(slug)
   if (!stream) return {}
 
-  return {
-    title: `${stream.name} — ${stream.promise}`,
-    description: stream.pageLede,
-    alternates: { canonical: stream.href },
-    openGraph: { url: stream.href, title: `${stream.name} — V Source` },
-  }
+  return withShareCard(
+    {
+      title: `${stream.name} — ${stream.promise}`,
+      description: stream.pageLede,
+      alternates: { canonical: stream.href },
+      openGraph: { url: stream.href, title: `${stream.name} — V Source` },
+    },
+    parent
+  )
 }
 
 export default async function StreamPage({ params }: { params: Promise<{ stream: string }> }) {
@@ -99,9 +106,11 @@ export default async function StreamPage({ params }: { params: Promise<{ stream:
         {/* A photograph where the line drawing was (review-2), at its own
             aspect. */}
         {stream.pagePhoto && (
+          // The LCP at mobile (perf-og), and on the fold everywhere.
           <CutPhoto
             photo={stream.pagePhoto}
-            sizes="(max-width: 768px) 100vw, 460px"
+            sizes="(max-width: 768px) 93vw, (max-width: 1440px) 32vw, 460px"
+            preload
             className="stream__photo"
           />
         )}
@@ -164,7 +173,7 @@ export default async function StreamPage({ params }: { params: Promise<{ stream:
                 {section.media.kind === 'video' ? (
                   <ProjectMedia
                     spec={section.media}
-                    sizes="(max-width: 979px) 100vw, 560px"
+                    sizes="(max-width: 979px) 94vw, (max-width: 1366px) 46vw, 610px"
                     className="stream__clip"
                   />
                 ) : (
@@ -175,7 +184,7 @@ export default async function StreamPage({ params }: { params: Promise<{ stream:
                       width: section.media.width,
                       height: section.media.height,
                     }}
-                    sizes="(max-width: 979px) 100vw, 560px"
+                    sizes="(max-width: 979px) 94vw, (max-width: 1366px) 46vw, 610px"
                     className="stream__image"
                   />
                 )}
@@ -242,7 +251,7 @@ export default async function StreamPage({ params }: { params: Promise<{ stream:
                           }
                         : { ...project.media, alt: '' }
                     }
-                    sizes="(max-width: 700px) 100vw, 300px"
+                    sizes="(max-width: 540px) 77vw, (max-width: 979px) 405px, 285px"
                     className="built-card__media"
                   />
                   <div className="built-card__body">

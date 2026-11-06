@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useSyncExternalStore } from 'react'
-import { useReducedMotion } from '@hooks'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 /**
  * The fold plate's mill lines, bending gently around the pointer — a magnet

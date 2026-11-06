@@ -1,15 +1,20 @@
-import type { Metadata } from 'next'
+import type { Metadata, ResolvingMetadata } from 'next'
+import { withShareCard } from '../shareCard'
 import { CONTACT } from '@constants'
 import ContactForm from './ContactForm'
 import '../styles/pages.scss'
 import '../styles/contact.scss'
 
-export const metadata: Metadata = {
+const META: Metadata = {
   title: 'Contact — Software Developers in Brisbane',
   description:
     'Tell us what you are building and you will get a straight answer about what it would take, and whether we are the right people to build it. Brisbane, Australia.',
   alternates: { canonical: '/contact' },
   openGraph: { url: '/contact', title: 'Contact — Software Developers in Brisbane' },
+}
+
+export function generateMetadata(_: unknown, parent: ResolvingMetadata): Promise<Metadata> {
+  return withShareCard(META, parent)
 }
 
 export default function ContactPage() {

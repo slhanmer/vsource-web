@@ -32,6 +32,18 @@
     object-fit: cover;
   }
 
+  /* The clip's still, under the video (perf-og). The video is positioned so
+     it paints above the still (an absolutely positioned image would paint
+     over a static video); until it plays it has no frame, so the still shows
+     through. */
+  &__poster {
+    object-fit: cover;
+  }
+
+  &__video {
+    position: relative;
+  }
+
   // Work that cannot be shown at all. The mark stands in, and the reason is
   // written underneath rather than left as an empty box — a blank frame reads
   // as something failing to load.
@@ -86,8 +98,12 @@
 // screenshots and composites, whose edges are the content.
 .built-media--contain {
   background: var(--surface-card);
+  // The frame takes the image's own shape, so the hover rim sits on its edge
+  // rather than around empty bars. next/image's width/height still reserve it.
+  aspect-ratio: auto;
 
   .built-media__img {
+    height: auto;
     object-fit: contain;
   }
 }
